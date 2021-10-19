@@ -29,7 +29,6 @@ pylint = "^2.11.1"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
 pytest-xdist = "^2.4.0"
-requests-mock = "^1.9.3"
 
 [tool.poetry.scripts]
 earhorn = 'earhorn.cli:run'
