@@ -8,8 +8,14 @@ all: install format lint test
 install-poetry:
 	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -
 
+.git/hooks/pre-commit:
+	pre-commit install
+
+.git/hooks/commit-msg:
+	pre-commit install --hook-type commit-msg
+
 INSTALL_STAMP := .installed
-install: $(INSTALL_STAMP)
+install: $(INSTALL_STAMP) .git/hooks/pre-commit .git/hooks/commit-msg
 $(INSTALL_STAMP):
 	poetry install
 	touch $(INSTALL_STAMP)

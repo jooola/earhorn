@@ -25,16 +25,21 @@ repos:
       - id: name-tests-test
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.3.0
+    rev: v2.4.1
     hooks:
       - id: prettier
         files: \.(md|yml|yaml|json)$
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.0.0
+    rev: v2.1.0
     hooks:
       - id: codespell
         # args: [--ignore-words=.codespellignore]
+
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.16.0
+    hooks:
+      - id: gitlint
 
   - repo: local
     hooks:
@@ -42,14 +47,6 @@ repos:
         name: Format code
         description: Format code
         entry: bash -c '[[ "$CI" != "true" ]] && make format || true'
-        language: system
-        pass_filenames: false
-        always_run: true
-
-      - id: lint
-        name: Lint code
-        description: Lint code
-        entry: bash -c '[[ "$CI" != "true" ]] && make lint || true'
         language: system
         pass_filenames: false
         always_run: true
