@@ -1,2 +1,3 @@
 # earhorn
-Listen, monitor and save your streams 
+
+Listen, monitor and archive your streams!
