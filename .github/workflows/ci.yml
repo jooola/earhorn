@@ -58,6 +58,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
+      - run: pip install --upgrade pip setuptools wheel
       - run: make install-poetry
       - run: make test
 
