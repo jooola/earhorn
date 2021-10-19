@@ -10,14 +10,13 @@ classifiers = [
   "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.6",
   "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.6.15,<4.0"
+python = ">=3.7,<4.0"
 click = "^8.0.1"
 loguru = "^0.5.3"
 more-itertools = "^8.10.0"
