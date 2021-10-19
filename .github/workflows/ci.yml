@@ -70,12 +70,10 @@ jobs:
         id: semrel
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          update-file: package.json
           changelog-generator-opt: "emojis=true"
-      - run: npm publish
-        if: steps.semrel.outputs.version != ''
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - if: steps.semrel.outputs.version != ''
+        run: echo ${{ steps.semrel.outputs }}
 
   publish:
     needs: test
