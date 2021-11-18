@@ -2,6 +2,8 @@ from pathlib import Path
 from threading import Thread
 from typing import List, Optional
 
+from loguru import logger
+
 from .archive import Archiver
 
 
@@ -26,5 +28,8 @@ def listen(
         archiver.start()
         threads.append(archiver)
 
-    for thread in threads:
-        thread.join()
+    if len(threads) == 0:
+        logger.warning("nothing to do, exiting...")
+    else:
+        for thread in threads:
+            thread.join()
