@@ -27,7 +27,7 @@ lint: install
 	poetry run mypy earhorn || true
 
 test: install
-	poetry run pytest -n $(CPU_CORES) --color=yes -v --cov=earhorn tests
+	# poetry run pytest -n $(CPU_CORES) --color=yes -v --cov=earhorn tests
 
 ci-publish:
 	poetry publish --no-interaction --build
