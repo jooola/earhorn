@@ -58,6 +58,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
+      - run: sudo apt-get install -y ffmpeg
       - run: make install-poetry
       - run: make test
 

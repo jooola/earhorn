@@ -5,18 +5,25 @@ from typing import List, Optional
 from loguru import logger
 
 from .archive import Archiver
+from .silence import SilenceListener
 
 
 # pylint: disable=too-many-arguments
 def listen(
     url: str,
-    archive_path: Optional[Path],
+    silence_hook: Optional[str],
+    archive_path: Optional[str],
     archive_segment_size: int,
     archive_segment_filename: str,
     archive_segment_format: str,
 ):
 
     threads: List[Thread] = []
+    if silence_hook is not None:
+        silence_listener = SilenceListener(url, Path(silence_hook))
+        silence_listener.start()
+        threads.append(silence_listener)
+
     if archive_path is not None:
         archiver = Archiver(
             url,
