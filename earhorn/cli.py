@@ -29,7 +29,10 @@ from .earhorn import listen
     help="Archive segment format.",
     default="ogg",
 )
-@click.argument("url")
+@click.argument(
+    "url",
+    envvar="URL",
+)
 def run(**kwargs):
     """
     URL of the stream.
