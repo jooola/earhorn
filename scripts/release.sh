@@ -45,7 +45,7 @@ make lint || error "linting project failed!"
 make test || error "testing project failed!"
 
 new_tag="v$pkg_version"
-release="Release $new_tag"
+release="chore: release $new_tag"
 
 git stash pop --quiet
 git add "$pyproject" || error "could not stage $pyproject!"
