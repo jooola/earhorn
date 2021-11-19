@@ -38,10 +38,8 @@ class Archiver(Thread):
     def run(self):
         logger.info("starting archiver listener")
         args = (
-            "/usr/bin/ffmpeg",
-            "-hide_banner",
-            "-nostats",
-            *("-i", self.url),
+            *("ffmpeg", "-hide_banner", "-nostats"),
+            *("-re", "-i", self.url),
             "-vn",  # Drop video
             *("-c", "copy"),
             *("-map", "0"),
