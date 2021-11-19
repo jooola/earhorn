@@ -79,8 +79,7 @@ class SilenceListener(Thread):
         with Popen(
             (
                 *("ffmpeg", "-hide_banner", "-nostats"),
-                "-re",
-                *("-i", self.url),
+                *("-re", "-i", self.url),
                 "-vn",  # Drop video
                 *("-af", f"silencedetect=noise={NOISE}"),
                 *("-f", "null", "/dev/null"),
