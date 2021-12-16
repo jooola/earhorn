@@ -24,7 +24,7 @@ more-itertools = "^8.10.0"
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
 isort = "^5.9.3"
-mypy = "^0.910"
+mypy = "^0.920"
 pylint = "^2.12.2"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
