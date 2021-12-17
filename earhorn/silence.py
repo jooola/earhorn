@@ -103,3 +103,5 @@ class SilenceListener(Thread):
                 logger.info(f"silence {event.kind}: {event.when}")
                 handle_silence_event(self.hook, event)
                 previous = event
+
+        logger.info("stopped silence listener")
