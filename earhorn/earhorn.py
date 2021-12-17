@@ -2,6 +2,7 @@ from pathlib import Path
 from threading import Thread
 from typing import List, Optional
 
+import httpx
 from loguru import logger
 
 from .archive import Archiver
@@ -17,6 +18,8 @@ def listen(
     archive_segment_filename: str,
     archive_segment_format: str,
 ):
+    with httpx.stream("GET", url) as response:
+        response.raise_for_status()
 
     threads: List[Thread] = []
     if silence_hook is not None:
