@@ -28,7 +28,7 @@ mypy = "^0.920"
 pylint = "^2.12.2"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
-pytest-xdist = "^2.4.0"
+pytest-xdist = "^2.5.0"
 
 [tool.poetry.scripts]
 earhorn = 'earhorn.cli:run'
