@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  earhorn:
+    image: earhorn:latest
+    environment:
+      URL: https://stream.example.org/mount.ogg
+      SILENCE_HOOK: /silence-hook.sh
+      ARCHIVE_PATH: /archive
+      # ARCHIVE_SEGMENT_SIZE: 3600
+      # ARCHIVE_SEGMENT_FILENAME: archive-%Y%m%d_%H%M%S.ogg
+      # ARCHIVE_SEGMENT_FORMAT: ogg
+    volumes:
+      - ./silence-hook.sh:/silence-hook.sh:ro
+      - ./archive:/archive:rw
