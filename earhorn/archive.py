@@ -36,7 +36,7 @@ class Archiver(Thread):
         self.segment_format = segment_format
 
     def run(self):
-        logger.info("starting archiver listener")
+        logger.info("starting archiver")
         args = (
             *("ffmpeg", "-hide_banner", "-nostats"),
             *("-re", "-i", self.url),
@@ -53,5 +53,8 @@ class Archiver(Thread):
         )
 
         cmd = run(args, check=False, stderr=DEVNULL)
+        logger.debug(f"ffmpeg command exited with {cmd.returncode}")
         if cmd.returncode not in (0, 255):
             cmd.check_returncode()
+
+        logger.info("stopped archiver")
