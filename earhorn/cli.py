@@ -1,14 +1,14 @@
 import click
 
 from .archive import TIMESTAMP_FORMAT
-from .earhorn import listen
+from .earhorn import run
 
 
 @click.command()
 @click.option(
-    "--silence-hook",
-    envvar="SILENCE_HOOK",
-    help="Hook to run in case of silence.",
+    "--hook",
+    envvar="HOOK",
+    help="Hook to run to handle events.",
     type=click.Path(),
 )
 @click.option(
@@ -39,8 +39,8 @@ from .earhorn import listen
     "url",
     envvar="URL",
 )
-def run(**kwargs):
+def main(**kwargs):
     """
     URL of the stream.
     """
-    listen(**kwargs)
+    run(**kwargs)
