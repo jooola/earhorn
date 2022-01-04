@@ -7,21 +7,13 @@ from typing import Optional
 
 from loguru import logger
 
-from .event import Event
+from .event import SilenceEvent
 
 NOISE = 0.001
 
 SILENCE_DETECT_RE = re.compile(
     r"\[silencedetect.*\] silence_(start|end): (\d+(?:\.\d+)?)(?: \| silence_duration: (\d+\.\d+))?"
 )
-
-
-class SilenceEvent(Event):
-    name = "silence"
-
-    kind: str
-    seconds: Optional[float]
-    duration: Optional[float]
 
 
 def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
