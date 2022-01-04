@@ -45,11 +45,3 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
-
-      - id: lint
-        name: Lint code
-        description: Lint code
-        entry: bash -c '[[ "$CI" != "true" ]] && make lint || true'
-        language: system
-        pass_filenames: false
-        always_run: true
