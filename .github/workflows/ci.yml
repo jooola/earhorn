@@ -87,7 +87,7 @@ jobs:
           make ci-publish
 
   publish-docker:
-    needs: publish
+    needs: test
     runs-on: ubuntu-latest
 
     env:
