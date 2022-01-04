@@ -52,9 +52,5 @@ class Archiver(Thread):
             self.path / self.segment_filename,
         )
 
-        cmd = run(args, check=False, stderr=DEVNULL)
-        logger.debug(f"ffmpeg command exited with {cmd.returncode}")
-        if cmd.returncode not in (0, 255):
-            cmd.check_returncode()
-
-        logger.info("stopped archiver")
+        run(args, check=True, stderr=DEVNULL)
+        logger.info("archiver stopped")
