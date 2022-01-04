@@ -21,7 +21,7 @@ format: install
 lint: install
 	poetry run black . --diff --check
 	poetry run isort . --profile black --check
-	poetry run pylint earhorn tests
+	poetry run pylint --jobs=$(CPU_CORES) earhorn tests
 	poetry run mypy earhorn tests || true
 
 test: install
