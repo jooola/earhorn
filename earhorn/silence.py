@@ -1,5 +1,4 @@
 import re
-from enum import Enum
 from math import isclose
 from queue import Queue
 from subprocess import DEVNULL, PIPE, Popen
