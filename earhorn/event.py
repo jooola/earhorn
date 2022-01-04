@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
 from queue import Empty, Queue
 from subprocess import run
@@ -18,6 +19,24 @@ class Event(BaseModel):
     # pylint: disable=unnecessary-lambda
     when: datetime = Field(default_factory=lambda: now())
     name: str
+
+
+class SilenceEvent(Event):
+    name = "silence"
+
+    kind: str
+    seconds: Optional[float]
+    duration: Optional[float]
+
+
+class StatusKind(str, Enum):
+    UP = "up"
+    DOWN = "down"
+
+
+class StatusEvent(Event):
+    name = "status"
+    kind: StatusKind
 
 
 def handler(

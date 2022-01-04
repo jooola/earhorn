@@ -1,4 +1,3 @@
-from enum import Enum
 from queue import Queue
 from threading import Event as ThreadEvent
 from time import sleep
@@ -6,17 +5,7 @@ from time import sleep
 import httpx
 from loguru import logger
 
-from .event import Event
-
-
-class StatusKind(str, Enum):
-    UP = "up"
-    DOWN = "down"
-
-
-class StatusEvent(Event):
-    name = "status"
-    kind: StatusKind
+from .event import StatusEvent, StatusKind
 
 
 def check_stream(
