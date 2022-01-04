@@ -75,7 +75,7 @@ def silence_listener(event_queue: Queue, url: str):
         previous = None
 
         logger.debug("starting to parse stdout")
-        for line in process.stderr.readline():  # type: ignore
+        for line in process.stderr:  # type: ignore
             event = parse_silence_detect(line)
             if event is None:
                 continue
