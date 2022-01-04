@@ -41,9 +41,6 @@ trap 'e=$?; git stash pop --quiet; exit $e' EXIT
 
 git clean -xdf
 
-make lint || error "linting project failed!"
-make test || error "testing project failed!"
-
 new_tag="v$pkg_version"
 release="chore: release $new_tag"
 
