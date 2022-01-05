@@ -72,7 +72,7 @@ class Handler(Thread):
     def run(self):
         logger.info("starting event handler")
 
-        while not self.stop.is_set():
+        while not self.stop.is_set() or not self.queue.empty():
             try:
                 event = self.queue.get(timeout=5)
                 handler(event, self.hook)
