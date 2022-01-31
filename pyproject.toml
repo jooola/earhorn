@@ -18,7 +18,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
 click = "^8.0.1"
-loguru = "^0.5.3"
+loguru = ">=0.5.3,<0.7.0"
 more-itertools = "^8.10.0"
 httpx = ">=0.21.1,<0.23.0"
 pydantic = "^1.9.0"
