@@ -4,7 +4,7 @@ from .archive import TIMESTAMP_FORMAT
 from .earhorn import run
 
 
-@click.command()
+@click.command(context_settings={"max_content_width": 120})
 @click.option(
     "--hook",
     envvar="HOOK",
@@ -22,18 +22,21 @@ from .earhorn import run
     envvar="ARCHIVE_SEGMENT_SIZE",
     help="Archive segment size in seconds.",
     default=3600,
+    show_default=True,
 )
 @click.option(
     "--archive-segment-filename",
     envvar="ARCHIVE_SEGMENT_FILENAME",
     help="Archive segment filename (without extension).",
     default=f"archive-{TIMESTAMP_FORMAT}",
+    show_default=True,
 )
 @click.option(
     "--archive-segment-format",
     envvar="ARCHIVE_SEGMENT_FORMAT",
     help="Archive segment format.",
     default="ogg",
+    show_default=True,
 )
 @click.argument(
     "url",

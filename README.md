@@ -29,13 +29,12 @@ Usage: earhorn [OPTIONS] URL
   URL of the stream.
 
 Options:
-  --hook PATH                     Hook to run to handle events.
-  --archive-path PATH             Path to the archive directory.
-  --archive-segment-size INTEGER  Archive segment size in seconds.
-  --archive-segment-filename TEXT
-                                  Archive segment filename.
-  --archive-segment-format TEXT   Archive segment format.
-  --help                          Show this message and exit.
+  --hook PATH                       Hook to run to handle events.
+  --archive-path PATH               Path to the archive directory.
+  --archive-segment-size INTEGER    Archive segment size in seconds.  [default: 3600]
+  --archive-segment-filename TEXT   Archive segment filename (without extension).  [default: archive-%Y%m%d_%H%M%S]
+  --archive-segment-format TEXT     Archive segment format.  [default: ogg]
+  --help                            Show this message and exit.
 
 ```
 
