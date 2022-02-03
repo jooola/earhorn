@@ -26,8 +26,8 @@ from .earhorn import run
 @click.option(
     "--archive-segment-filename",
     envvar="ARCHIVE_SEGMENT_FILENAME",
-    help="Archive segment filename.",
-    default=f"archive-{TIMESTAMP_FORMAT}.ogg",
+    help="Archive segment filename (without extension).",
+    default=f"archive-{TIMESTAMP_FORMAT}",
 )
 @click.option(
     "--archive-segment-format",

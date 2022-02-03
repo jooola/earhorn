@@ -49,7 +49,7 @@ class Archiver(Thread):
             *("-segment_time", str(self.segment_size)),
             *("-segment_format", self.segment_format),
             *("-reset_timestamps", "1"),
-            self.path / self.segment_filename,
+            self.path / f"{self.segment_filename}.{self.segment_format}",
         )
 
         run(args, check=True, stderr=DEVNULL)
