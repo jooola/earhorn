@@ -32,3 +32,7 @@ release: lint test
 
 ci-publish:
 	poetry publish --no-interaction --build
+
+changelog:
+	git-chglog --output CHANGELOG.md
+	pre-commit run prettier --all || true
