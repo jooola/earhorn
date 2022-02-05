@@ -33,7 +33,7 @@ pytest-cov = "^3.0.0"
 pytest-xdist = "^2.5.0"
 
 [tool.poetry.scripts]
-earhorn = 'earhorn.cli:main'
+earhorn = 'earhorn.main:cli'
 
 [build-system]
 requires = ["poetry-core"]
