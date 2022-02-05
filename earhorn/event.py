@@ -8,7 +8,7 @@ from typing import List, Optional, Protocol, Union
 
 from loguru import logger
 from pydantic import BaseModel, Field
-from typing_extensions import TypeAlias, Literal
+from typing_extensions import Literal, TypeAlias
 
 
 def now():
