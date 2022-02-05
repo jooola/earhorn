@@ -63,6 +63,17 @@ from .silence import SilenceListener
     default="ogg",
     show_default=True,
 )
+@click.option(
+    "--archive-segment-format-options",
+    envvar="ARCHIVE_SEGMENT_FORMAT_OPTIONS",
+    help="Archive segment format options.",
+)
+@click.option(
+    "--archive-copy-stream",
+    envvar="ARCHIVE_COPY_STREAM",
+    help="Copy the stream to archive without transcoding.",
+    is_flag=True,
+)
 @click.argument(
     "url",
     envvar="URL",
@@ -76,6 +87,8 @@ def cli(
     archive_segment_size: int,
     archive_segment_filename: str,
     archive_segment_format: str,
+    archive_segment_format_options: Optional[str],
+    archive_copy_stream: bool,
 ):
     """
     URL of the stream.
@@ -120,6 +133,8 @@ def cli(
                 archive_segment_size,
                 archive_segment_filename,
                 archive_segment_format,
+                archive_segment_format_options,
+                archive_copy_stream,
             )
             archiver.start()
             threads.append(archiver)
