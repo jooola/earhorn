@@ -2,6 +2,34 @@
 
 ## [Unreleased]
 
+<a name="v0.7.0"></a>
+
+## [v0.7.0] - 2022-02-05
+
+### :rocket: Features
+
+- rename prometheus metrics names
+
+<a name="v0.6.0"></a>
+
+## [v0.6.0] - 2022-02-05
+
+### :bug: Bug Fixes
+
+- py37 compatibility fix for Protocol
+- py37 compatibility fix for Literal
+- type object not being subscriptable
+
+### :gear: CI/CD
+
+- add py310 to the test matrix
+
+### :rocket: Features
+
+- enhance cli usage
+- allow to transcode the stream for archiving ([#37](https://github.com/jooola/earhorn/issues/37))
+- add prometheus metrics endpoint ([#36](https://github.com/jooola/earhorn/issues/36))
+
 <a name="v0.5.2"></a>
 
 ## v0.5.2 - 2022-02-03
@@ -34,4 +62,6 @@
 - allow url to be specified using env var
 - initial work
 
-[unreleased]: https://github.com/jooola/earhorn/compare/v0.5.2...HEAD
+[unreleased]: https://github.com/jooola/earhorn/compare/v0.7.0...HEAD
+[v0.7.0]: https://github.com/jooola/earhorn/compare/v0.6.0...v0.7.0
+[v0.6.0]: https://github.com/jooola/earhorn/compare/v0.5.2...v0.6.0
