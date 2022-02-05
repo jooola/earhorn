@@ -54,7 +54,7 @@ class FileHook:  # pylint: disable=too-few-public-methods
 
 class Handler(Thread):
     name = "handler"
-    queue: Queue[AnyEvent]
+    queue: Queue
     stop: ThreadEvent
     hooks: List[Hook] = []
 

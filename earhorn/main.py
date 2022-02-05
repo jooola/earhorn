@@ -10,7 +10,7 @@ from loguru import logger
 
 from .archive import TIMESTAMP_FORMAT, Archiver
 from .check import check_stream
-from .event import AnyEvent, FileHook, Handler
+from .event import FileHook, Handler
 from .silence import SilenceListener
 
 
@@ -74,7 +74,7 @@ def cli(
     signal(SIGTERM, stop_handler)
 
     # Setup event handler before doing any checks
-    event_queue: Queue[AnyEvent] = Queue()
+    event_queue: Queue = Queue()
 
     handler = Handler(event_queue, stop_event)
     if hook is not None:
