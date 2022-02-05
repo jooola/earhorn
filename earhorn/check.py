@@ -5,7 +5,7 @@ from time import sleep
 import httpx
 from loguru import logger
 
-from .event import StatusEvent, StatusKind
+from .event import StatusEvent
 
 
 def check_stream(
@@ -20,11 +20,11 @@ def check_stream(
         try:
             with httpx.stream("GET", url) as response:
                 response.raise_for_status()
-                event_queue.put(StatusEvent(kind=StatusKind.UP))
+                event_queue.put(StatusEvent(kind="up"))
                 return
 
         except (httpx.ConnectError, httpx.HTTPStatusError) as error:
             logger.error(f"could not stream from '{url}'")
             logger.debug(error)
-            event_queue.put(StatusEvent(kind=StatusKind.DOWN))
+            event_queue.put(StatusEvent(kind="down"))
             sleep(5)

@@ -10,11 +10,11 @@ from loguru import logger
 
 from .archive import TIMESTAMP_FORMAT, Archiver
 from .check import check_stream
-from .event import Event, Handler
+from .event import AnyEvent, FileHook, Handler
 from .silence import SilenceListener
 
 
-# pylint: disable=too-many-arguments
+# pylint: disable=too-many-arguments,too-many-locals
 @click.command(context_settings={"max_content_width": 120})
 @click.option(
     "--hook",
@@ -74,8 +74,12 @@ def cli(
     signal(SIGTERM, stop_handler)
 
     # Setup event handler before doing any checks
-    event_queue: Queue[Event] = Queue()
-    handler = Handler(event_queue, stop_event, hook)
+    event_queue: Queue[AnyEvent] = Queue()
+
+    handler = Handler(event_queue, stop_event)
+    if hook is not None:
+        handler.hooks.append(FileHook(hook))
+
     handler.start()
 
     while not stop_event.is_set():

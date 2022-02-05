@@ -1,14 +1,14 @@
 from datetime import datetime
-from enum import Enum
 from pathlib import Path
 from queue import Empty, Queue
 from subprocess import run
 from threading import Event as ThreadEvent
 from threading import Thread
-from typing import Optional
+from typing import List, Literal, Optional, Protocol, Union
 
 from loguru import logger
 from pydantic import BaseModel, Field
+from typing_extensions import TypeAlias
 
 
 def now():
@@ -18,64 +18,64 @@ def now():
 class Event(BaseModel):
     # pylint: disable=unnecessary-lambda
     when: datetime = Field(default_factory=lambda: now())
-    name: str
 
 
 class SilenceEvent(Event):
     name = "silence"
-
-    kind: str
+    kind: Literal["start", "end"]
     seconds: Optional[float]
     duration: Optional[float]
 
 
-class StatusKind(str, Enum):
-    UP = "up"
-    DOWN = "down"
-
-
 class StatusEvent(Event):
     name = "status"
-    kind: StatusKind
+    kind: Literal["up", "down"]
 
 
-def handler(
-    event: Event,
-    hook: Optional[Path],
-):
-    logger.debug(f"{event.name}: {event.json()}")
-    if hook is not None:
-        run((hook, event.json()), check=True)
+AnyEvent: TypeAlias = Union[SilenceEvent, StatusEvent]
+
+
+class Hook(Protocol):  # pylint: disable=too-few-public-methods
+    def __call__(self, event: AnyEvent):
+        pass
+
+
+class FileHook:  # pylint: disable=too-few-public-methods
+    filepath: Path
+
+    def __init__(self, filepath: str) -> None:
+        self.filepath = Path(filepath)
+        if not self.filepath.is_file():
+            raise ValueError(f"hook '{self.filepath}' is not a file!")
+
+    def __call__(self, event: AnyEvent):
+        run((self.filepath, event.json()), check=True)
 
 
 class Handler(Thread):
     name = "handler"
-    queue: Queue
+    queue: Queue[AnyEvent]
     stop: ThreadEvent
-    hook: Optional[Path] = None
+    hooks: List[Hook] = []
 
     def __init__(
         self,
         queue: Queue,
         stop: ThreadEvent,
-        hook: Optional[str],
     ):
         Thread.__init__(self)
         self.queue = queue
         self.stop = stop
-
-        if hook is not None:
-            self.hook = Path(hook)
-            if not self.hook.is_file():
-                raise ValueError(f"hook '{self.hook}' is not a file!")
 
     def run(self):
         logger.info("starting event handler")
 
         while not self.stop.is_set() or not self.queue.empty():
             try:
-                event = self.queue.get(timeout=5)
-                handler(event, self.hook)
+                event: AnyEvent = self.queue.get(timeout=5)
+                logger.debug(f"{event.name}: {event.json()}")
+                for hook in self.hooks:
+                    hook(event)
                 self.queue.task_done()
             except Empty:
                 pass
