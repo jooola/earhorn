@@ -4,11 +4,11 @@ from queue import Empty, Queue
 from subprocess import run
 from threading import Event as ThreadEvent
 from threading import Thread
-from typing import List, Literal, Optional, Protocol, Union
+from typing import List, Optional, Protocol, Union
 
 from loguru import logger
 from pydantic import BaseModel, Field
-from typing_extensions import TypeAlias
+from typing_extensions import TypeAlias, Literal
 
 
 def now():
