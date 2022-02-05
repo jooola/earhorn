@@ -10,6 +10,8 @@ from loguru import logger
 from pydantic import BaseModel, Field
 from typing_extensions import Literal, Protocol, TypeAlias
 
+from .prometheus import stream_silence, stream_status
+
 
 def now():
     return datetime.now()
@@ -50,6 +52,15 @@ class FileHook:  # pylint: disable=too-few-public-methods
 
     def __call__(self, event: AnyEvent):
         run((self.filepath, event.json()), check=True)
+
+
+class PrometheusHook:  # pylint: disable=too-few-public-methods
+    def __call__(self, event: AnyEvent):
+        if isinstance(event, StatusEvent):
+            stream_status.state(event.kind)  # pylint: disable=no-member
+        elif isinstance(event, SilenceEvent):
+            state_map = {"start": "up", "end": "down"}
+            stream_silence.state(state_map[event.kind])  # pylint: disable=no-member
 
 
 class Handler(Thread):

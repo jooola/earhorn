@@ -7,10 +7,11 @@ from typing import List, Optional
 
 import click
 from loguru import logger
+from prometheus_client import start_http_server
 
 from .archive import TIMESTAMP_FORMAT, Archiver
 from .check import check_stream
-from .event import FileHook, Handler
+from .event import FileHook, Handler, PrometheusHook
 from .silence import SilenceListener
 
 
@@ -21,6 +22,19 @@ from .silence import SilenceListener
     envvar="HOOK",
     help="Hook to run to handle events.",
     type=click.Path(),
+)
+@click.option(
+    "--prometheus",
+    envvar="PROMETHEUS",
+    help="Enable prometheus metrics.",
+    is_flag=True,
+)
+@click.option(
+    "--prometheus-listen-port",
+    envvar="PROMETHEUS_LISTEN_PORT",
+    help="Listen port for the prometheus metrics server.",
+    default=9950,
+    show_default=True,
 )
 @click.option(
     "--archive-path",
@@ -56,6 +70,8 @@ from .silence import SilenceListener
 def cli(
     url: str,
     hook: Optional[str],
+    prometheus: bool,
+    prometheus_listen_port: int,
     archive_path: Optional[str],
     archive_segment_size: int,
     archive_segment_filename: str,
@@ -79,6 +95,11 @@ def cli(
     handler = Handler(event_queue, stop_event)
     if hook is not None:
         handler.hooks.append(FileHook(hook))
+
+    if prometheus:
+        logger.info("starting prometheus server")
+        start_http_server(prometheus_listen_port)
+        handler.hooks.append(PrometheusHook())
 
     handler.start()
 
