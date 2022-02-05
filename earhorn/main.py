@@ -20,26 +20,32 @@ from .silence import SilenceListener
 @click.option(
     "--hook",
     envvar="HOOK",
-    help="Hook to run to handle events.",
+    help="Path to a custom script executed to handle stream state `events`.",
     type=click.Path(),
 )
 @click.option(
     "--prometheus",
     envvar="PROMETHEUS",
-    help="Enable prometheus metrics.",
+    help=(
+        "Enable the prometheus metrics endpoint. The endpoint expose the state "
+        "of the `stream`"
+    ),
     is_flag=True,
 )
 @click.option(
     "--prometheus-listen-port",
     envvar="PROMETHEUS_LISTEN_PORT",
-    help="Listen port for the prometheus metrics server.",
+    help="Listen port for the prometheus metrics endpoint.",
     default=9950,
     show_default=True,
 )
 @click.option(
     "--archive-path",
     envvar="ARCHIVE_PATH",
-    help="Path to the archive directory.",
+    help=(
+        "Path to the archive storage directory. If defined, the archiver will save "
+        "the `stream` in segments in the storage path."
+    ),
     type=click.Path(),
 )
 @click.option(
@@ -71,7 +77,11 @@ from .silence import SilenceListener
 @click.option(
     "--archive-copy-stream",
     envvar="ARCHIVE_COPY_STREAM",
-    help="Copy the stream to archive without transcoding.",
+    help=(
+        "Copy the `stream` without transcoding (reduce CPU usage). "
+        "WARNING: The stream has to be in the same format as the "
+        "`--archive-segment-format`."
+    ),
     is_flag=True,
 )
 @click.argument(
@@ -91,7 +101,11 @@ def cli(
     archive_copy_stream: bool,
 ):
     """
-    URL of the stream.
+    URL of the `stream`.
+
+    \b
+    See the ffmpeg documentation for details about the `--archive-segment-*` options:
+    https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment
     """
     stop_event = ThreadEvent()
 
