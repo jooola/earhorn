@@ -53,7 +53,7 @@ def silence_listener(event_queue: Queue, url: str):
     with Popen(
         (
             *("ffmpeg", "-hide_banner", "-nostats"),
-            *("-re", "-i", url),
+            *("-i", url),
             "-vn",  # Drop video
             *("-af", f"silencedetect=noise={NOISE}"),
             *("-f", "null", "/dev/null"),
