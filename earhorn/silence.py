@@ -7,6 +7,7 @@ from typing import Optional
 
 from loguru import logger
 
+from ._ffmpeg import FFMPEG
 from .event import SilenceEvent
 
 NOISE = 0.001
@@ -52,7 +53,7 @@ def validate_silence_duration(
 def silence_listener(event_queue: Queue, url: str):
     with Popen(
         (
-            *("ffmpeg", "-hide_banner", "-nostats"),
+            *(FFMPEG, "-hide_banner", "-nostats"),
             *("-i", url),
             "-vn",  # Drop video
             *("-af", f"silencedetect=noise={NOISE}"),

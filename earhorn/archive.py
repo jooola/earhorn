@@ -5,6 +5,8 @@ from typing import Optional
 
 from loguru import logger
 
+from ._ffmpeg import FFMPEG
+
 TIMESTAMP_FORMAT = "%Y%m%d_%H%M%S"
 
 
@@ -45,7 +47,7 @@ class Archiver(Thread):
     def run(self):
         logger.info("starting archiver")
 
-        cmd = ["ffmpeg", "-hide_banner", "-nostats"]
+        cmd = [FFMPEG, "-hide_banner", "-nostats"]
 
         cmd += ("-i", self.url)
         cmd += ("-vn",)  # Drop video
