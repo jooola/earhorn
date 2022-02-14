@@ -49,7 +49,7 @@ class Archiver(Thread):
 
         cmd = [FFMPEG, "-hide_banner", "-nostats"]
 
-        cmd += ("-i", self.url)
+        cmd += ("-re", "-i", self.url)
         cmd += ("-vn",)  # Drop video
         if self.copy_stream:
             logger.info("enabling stream copy")
