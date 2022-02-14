@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+<a name="v0.8.0"></a>
+
+## [v0.8.0] - 2022-02-14
+
+### :rocket: Features
+
+- allow to override ffmpeg executable path
+
+<a name="v0.8.0-alpha.0"></a>
+
+## [v0.8.0-alpha.0] - 2022-02-09
+
+### :rocket: Features
+
+- remove -re flag
+
 <a name="v0.7.0"></a>
 
 ## [v0.7.0] - 2022-02-05
@@ -62,6 +78,8 @@
 - allow url to be specified using env var
 - initial work
 
-[unreleased]: https://github.com/jooola/earhorn/compare/v0.7.0...HEAD
+[unreleased]: https://github.com/jooola/earhorn/compare/v0.8.0...HEAD
+[v0.8.0]: https://github.com/jooola/earhorn/compare/v0.8.0-alpha.0...v0.8.0
+[v0.8.0-alpha.0]: https://github.com/jooola/earhorn/compare/v0.7.0...v0.8.0-alpha.0
 [v0.7.0]: https://github.com/jooola/earhorn/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://github.com/jooola/earhorn/compare/v0.5.2...v0.6.0
