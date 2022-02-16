@@ -43,7 +43,7 @@ zabbix_export:
             key: earhon.metrics
           triggers:
             - uuid: e3dc6674c8c145dbb7913719f7e099a8
-              expression: "last(/Template App Earhorn by HTTP/earhorn.silence)=1"
+              expression: "last(/Template App Earhorn by HTTP/earhorn.silence,#3)=1"
               name: "Silence detected on {HOST.HOST}"
               priority: AVERAGE
 
