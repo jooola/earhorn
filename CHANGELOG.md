@@ -1,3 +1,11 @@
+<a name="v0.8.2"></a>
+
+## [v0.8.2](https://github.com/jooola/earhorn/compare/v0.8.1...v0.8.2) (2022-02-19)
+
+### :bug: Bug Fixes
+
+- assume no silence when silence listener start
+
 <a name="v0.8.1"></a>
 
 ## [v0.8.1](https://github.com/jooola/earhorn/compare/v0.8.0...v0.8.1) (2022-02-19)
