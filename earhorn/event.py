@@ -1,7 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 from queue import Empty, Queue
-from subprocess import run
+from subprocess import CalledProcessError, run
 from threading import Event as ThreadEvent
 from threading import Thread
 from typing import List, Optional, Union
@@ -51,7 +51,10 @@ class FileHook:  # pylint: disable=too-few-public-methods
             raise ValueError(f"hook '{self.filepath}' is not a file!")
 
     def __call__(self, event: AnyEvent):
-        run((self.filepath, event.json()), check=True)
+        try:
+            run((self.filepath, event.json()), check=True)
+        except CalledProcessError as exception:
+            logger.error(exception)
 
 
 class PrometheusHook:  # pylint: disable=too-few-public-methods
