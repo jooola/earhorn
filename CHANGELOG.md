@@ -1,3 +1,17 @@
+<a name="v0.8.1"></a>
+
+## [v0.8.1](https://github.com/jooola/earhorn/compare/v0.8.0...v0.8.1) (2022-02-19)
+
+### :bug: Bug Fixes
+
+- prevent hook to stop the event handler on error
+- executable bit on organizer script
+- only trigger zabbix alert ~15s of silence
+
+### :rocket: Features
+
+- add template for zabbix monitoring
+
 <a name="v0.8.0"></a>
 
 ## [v0.8.0](https://github.com/jooola/earhorn/compare/v0.8.0-alpha.0...v0.8.0) (2022-02-14)
