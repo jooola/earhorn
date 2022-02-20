@@ -1,7 +1,6 @@
 zabbix_export:
   version: "5.4"
-  date: "2022-02-16T10:17:41Z"
-
+  date: "2022-02-20T10:43:42Z"
   groups:
     - uuid: a571c0d144b14fd4a87a9d9b2aa9fcd6
       name: Templates/Applications
@@ -17,22 +16,23 @@ zabbix_export:
           name: "Earhorn metrics"
           type: HTTP_AGENT
           key: earhon.metrics
-          tags:
-            - tag: Application
-              value: Earhorn
           delay: 5s
           history: 1h
           trends: "0"
           value_type: TEXT
           url: "{$EARHORN.METRICS.SCHEME}://{HOST.CONN}:{$EARHORN.METRICS.PORT}/"
-
+          tags:
+            - tag: Application
+              value: Earhorn
+          triggers:
+            - uuid: aaa03bc804a74d55b1ca94f0a2bc12f4
+              expression: "nodata(/Template App Earhorn by HTTP/earhon.metrics,1m)=1"
+              name: "No stream data on {HOST.HOST}"
+              priority: HIGH
         - uuid: e41b064de6444ecaa966de77866818fb
           name: "Earhon stream silence"
           type: DEPENDENT
           key: earhorn.silence
-          tags:
-            - tag: Application
-              value: Earhorn
           delay: "0"
           preprocessing:
             - type: PROMETHEUS_PATTERN
@@ -41,19 +41,18 @@ zabbix_export:
                 - ""
           master_item:
             key: earhon.metrics
+          tags:
+            - tag: Application
+              value: Earhorn
           triggers:
             - uuid: e3dc6674c8c145dbb7913719f7e099a8
-              expression: "last(/Template App Earhorn by HTTP/earhorn.silence,#3)=1"
+              expression: "min(/Template App Earhorn by HTTP/earhorn.silence,15s)=1"
               name: "Silence detected on {HOST.HOST}"
               priority: AVERAGE
-
         - uuid: 88bf0aa49b94470e91ba921b38e770ce
           name: "Earhon stream status"
           type: DEPENDENT
           key: earhorn.status
-          tags:
-            - tag: Application
-              value: Earhorn
           delay: "0"
           preprocessing:
             - type: PROMETHEUS_PATTERN
@@ -62,6 +61,9 @@ zabbix_export:
                 - ""
           master_item:
             key: earhon.metrics
+          tags:
+            - tag: Application
+              value: Earhorn
           triggers:
             - uuid: 9c9bc0287c7d4360b2d2436e26272932
               expression: "last(/Template App Earhorn by HTTP/earhorn.status)=0"
@@ -74,23 +76,26 @@ zabbix_export:
         - macro: "{$EARHORN.METRICS.SCHEME}"
           value: http
           description: "Scheme used to call the metrics endpoint"
-
   graphs:
     - uuid: 144b63f2bd924157bd52c205be2d409e
       name: "Stream status"
+      yaxismax: "1"
       show_work_period: "NO"
+      show_triggers: "NO"
+      ymin_type_1: FIXED
+      ymax_type_1: FIXED
       graph_items:
         - sortorder: "1"
           drawtype: FILLED_REGION
-          color: 607D8B
-          calc_fnc: ALL
+          color: F44336
+          calc_fnc: MIN
           item:
             host: "Template App Earhorn by HTTP"
             key: earhorn.silence
         - sortorder: "2"
           drawtype: BOLD_LINE
-          color: F63100
-          calc_fnc: ALL
+          color: 0D47A1
+          calc_fnc: MAX
           item:
             host: "Template App Earhorn by HTTP"
             key: earhorn.status
