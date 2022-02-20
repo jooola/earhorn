@@ -93,4 +93,4 @@ class SilenceListener(Thread):
     def run(self):
         logger.info("starting silence listener")
         silence_listener(self.event_queue, self.url)
-        logger.info("stopped silence listener")
+        logger.info("silence listener stopped")
