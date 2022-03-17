@@ -11,7 +11,7 @@ from prometheus_client import start_http_server
 
 from .archive import TIMESTAMP_FORMAT, Archiver
 from .check import check_stream
-from .event import FileHook, Handler, PrometheusHook
+from .event import EventHandler, FileHook, PrometheusHook
 from .silence import SilenceListener
 
 
@@ -119,16 +119,16 @@ def cli(
     # Setup event handler before doing any checks
     event_queue: Queue = Queue()
 
-    handler = Handler(event_queue, stop_event)
+    event_handler = EventHandler(event_queue, stop_event)
     if hook is not None:
-        handler.hooks.append(FileHook(hook))
+        event_handler.hooks.append(FileHook(hook))
 
     if prometheus:
         logger.info("starting prometheus server")
         start_http_server(prometheus_listen_port)
-        handler.hooks.append(PrometheusHook())
+        event_handler.hooks.append(PrometheusHook())
 
-    handler.start()
+    event_handler.start()
 
     while not stop_event.is_set():
         threads: List[Thread] = []

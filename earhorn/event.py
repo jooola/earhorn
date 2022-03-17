@@ -66,8 +66,8 @@ class PrometheusHook:  # pylint: disable=too-few-public-methods
             stream_silence.state(state_map[event.kind])  # pylint: disable=no-member
 
 
-class Handler(Thread):
-    name = "handler"
+class EventHandler(Thread):
+    name = "event_handler"
     queue: Queue
     stop: ThreadEvent
     hooks: List[Hook] = []
