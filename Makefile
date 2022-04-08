@@ -8,6 +8,8 @@ all: install format lint test
 install-poetry:
 	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -
 
+POETRY_VIRTUALENVS_IN_PROJECT = true
+
 INSTALL_STAMP := .installed
 install: $(INSTALL_STAMP)
 $(INSTALL_STAMP):
