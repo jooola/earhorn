@@ -51,6 +51,18 @@ Options:
 
 ```
 
+## Developmement
+
+To develop this project, start by reading the `Makefile` to have a basic understanding of the possible tasks.
+
+Install the project and the dependencies in a virtual environement:
+
+```sh
+make install
+source .venv/bin/activate
+earhorn --help
+```
+
 ## Releases
 
 To release a new version, first bump the version number in `pyproject.toml` by hand or by using:
