@@ -84,6 +84,15 @@ from .silence import SilenceListener
     ),
     is_flag=True,
 )
+@click.option(
+    "--s3-archive-url",
+    envvar="S3_ARCHIVE_URL",
+    help=(
+        "Path to the s3 storage directory. If defined, the archiver will save "
+        "the `stream` in segments in the s3 storage path."
+    ),
+    type=str,
+)
 @click.argument(
     "url",
     envvar="URL",
@@ -99,6 +108,7 @@ def cli(
     archive_segment_format: str,
     archive_segment_format_options: Optional[str],
     archive_copy_stream: bool,
+    s3_archive_url: str
 ):
     """
     URL of the `stream`.
@@ -139,6 +149,23 @@ def cli(
         silence_listener = SilenceListener(event_queue, url)
         silence_listener.start()
         threads.append(silence_listener)
+
+        if s3_archive_url is not None:
+            archiver = Archiver(
+                url,
+                s3_archive_url,
+                archive_segment_size,
+                archive_segment_filename,
+                archive_segment_format,
+                archive_segment_format_options,
+                archive_copy_stream,
+            )
+            archiver.start()
+            threads.append(archiver)
+
+        for thread in threads:
+            thread.join()
+            
 
         if archive_path is not None:
             archiver = Archiver(
