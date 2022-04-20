@@ -9,7 +9,7 @@ import click
 from loguru import logger
 from prometheus_client import start_http_server
 
-from .archive import TIMESTAMP_FORMAT, Archiver
+from .archive import TIMESTAMP_FORMAT, Archiver, get_files_and_upload
 from .check import check_stream
 from .event import EventHandler, FileHook, PrometheusHook
 from .silence import SilenceListener
@@ -84,6 +84,14 @@ from .silence import SilenceListener
     ),
     is_flag=True,
 )
+@click.option(
+    "--s3-archive",
+    envvar="S3_ARCHIVE",
+    help=(
+        "Specifying wheter to save to s3 bucket or not"
+    ),
+    is_flag=True,
+)
 @click.argument(
     "url",
     envvar="URL",
@@ -99,6 +107,7 @@ def cli(
     archive_segment_format: str,
     archive_segment_format_options: Optional[str],
     archive_copy_stream: bool,
+    s3_archive: bool
 ):
     """
     URL of the `stream`.
@@ -112,6 +121,7 @@ def cli(
     def stop_handler(_signum, _frame):
         logger.info("stopping...")
         stop_event.set()
+        get_files_and_upload("earhorn_segments.csv", archive_path)
 
     signal(SIGINT, stop_handler)
     signal(SIGTERM, stop_handler)
@@ -149,6 +159,7 @@ def cli(
                 archive_segment_format,
                 archive_segment_format_options,
                 archive_copy_stream,
+                s3_archive
             )
             archiver.start()
             threads.append(archiver)
