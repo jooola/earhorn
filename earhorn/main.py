@@ -40,6 +40,11 @@ from .silence import SilenceListener
     show_default=True,
 )
 @click.option(
+    "--stream-url",
+    envvar="STREAM_URL",
+    help="URL to the icecast stream.",
+)
+@click.option(
     "--archive-path",
     envvar="ARCHIVE_PATH",
     help=(
@@ -84,15 +89,11 @@ from .silence import SilenceListener
     ),
     is_flag=True,
 )
-@click.argument(
-    "url",
-    envvar="URL",
-)
 def cli(
-    url: str,
-    hook: Optional[str],
     prometheus: bool,
     prometheus_listen_port: int,
+    hook: Optional[str],
+    stream_url: Optional[str],
     archive_path: Optional[str],
     archive_segment_size: int,
     archive_segment_filename: str,
@@ -101,8 +102,6 @@ def cli(
     archive_copy_stream: bool,
 ):
     """
-    URL of the `stream`.
-
     \b
     See the ffmpeg documentation for details about the `--archive-segment-*` options:
     https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment
@@ -133,25 +132,26 @@ def cli(
     while not stop_event.is_set():
         threads: List[Thread] = []
 
-        # Check the stream until it is available
-        check_stream(event_queue, stop_event, url)
+        if stream_url is not None:
+            # Check the stream until it is available
+            check_stream(event_queue, stop_event, stream_url)
 
-        silence_listener = SilenceListener(event_queue, url)
-        silence_listener.start()
-        threads.append(silence_listener)
+            silence_listener = SilenceListener(event_queue, stream_url)
+            silence_listener.start()
+            threads.append(silence_listener)
 
-        if archive_path is not None:
-            archiver = Archiver(
-                url,
-                Path(archive_path),
-                archive_segment_size,
-                archive_segment_filename,
-                archive_segment_format,
-                archive_segment_format_options,
-                archive_copy_stream,
-            )
-            archiver.start()
-            threads.append(archiver)
+            if archive_path is not None:
+                archiver = Archiver(
+                    stream_url,
+                    Path(archive_path),
+                    archive_segment_size,
+                    archive_segment_filename,
+                    archive_segment_format,
+                    archive_segment_format_options,
+                    archive_copy_stream,
+                )
+                archiver.start()
+                threads.append(archiver)
 
         for thread in threads:
             thread.join()
