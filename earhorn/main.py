@@ -13,6 +13,7 @@ from .archive import TIMESTAMP_FORMAT, Archiver
 from .check import check_stream
 from .event import EventHandler, FileHook, PrometheusHook
 from .silence import SilenceListener
+from .stats import StatsHandler
 
 
 # pylint: disable=too-many-arguments,too-many-locals
@@ -36,11 +37,28 @@ from .silence import SilenceListener
     help="URL to the icecast stream.",
 )
 @click.option(
+    "--stats-url",
+    envvar="STATS_URL",
+    help="URL to the icecast admin xml stats page.",
+)
+@click.option(
+    "--stats-user",
+    envvar="STATS_USER",
+    help="Username for the icecast admin xml stats page.",
+    default="admin",
+    show_default=True,
+)
+@click.option(
+    "--stats-password",
+    envvar="STATS_PASSWORD",
+    help="Password for the icecast admin xml stats page.",
+)
+@click.option(
     "--archive-path",
     envvar="ARCHIVE_PATH",
     help=(
-        "Path to the archive storage directory. If defined, the archiver will save "
-        "the `stream` in segments in the storage path."
+        "Path to the archive storage directory. If defined, the archiver will "
+        "save the `stream` in segments in the storage path."
     ),
     type=click.Path(),
 )
@@ -84,6 +102,9 @@ def cli(
     listen_port: int,
     hook: Optional[str],
     stream_url: Optional[str],
+    stats_url: Optional[str],
+    stats_user: str,
+    stats_password: str,
     archive_path: Optional[str],
     archive_segment_size: int,
     archive_segment_filename: str,
@@ -115,6 +136,15 @@ def cli(
     logger.info("starting prometheus server")
     start_http_server(listen_port)
     event_handler.hooks.append(PrometheusHook())
+
+    if stats_url is not None:
+        logger.info("loading icecast stats handler")
+        stats_handler = StatsHandler(
+            stop=stop_event,
+            url=stats_url,
+            auth=(stats_user, stats_password),
+        )
+        stats_handler.start()
 
     event_handler.start()
 
