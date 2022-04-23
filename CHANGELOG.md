@@ -1,3 +1,23 @@
+<a name="v0.9.0-alpha.1"></a>
+
+## [v0.9.0-alpha.1](https://github.com/jooola/earhorn/compare/v0.9.0-alpha.0...v0.9.0-alpha.1) (2022-04-24)
+
+### :rocket: Features
+
+- add stats extraction time metric
+
+<a name="v0.9.0-alpha.0"></a>
+
+## [v0.9.0-alpha.0](https://github.com/jooola/earhorn/compare/v0.8.2...v0.9.0-alpha.0) (2022-04-24)
+
+### :rocket: Features
+
+- add icecast stats parser
+- become a prometheus exporter
+- replace url argument with --stream-url flag
+- rename handler to event_handler
+- update zabbix integrations template
+
 <a name="v0.8.2"></a>
 
 ## [v0.8.2](https://github.com/jooola/earhorn/compare/v0.8.1...v0.8.2) (2022-02-19)
