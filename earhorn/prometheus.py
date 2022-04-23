@@ -1,4 +1,13 @@
-from prometheus_client import Enum, Gauge, Info
+from prometheus_client import Enum, Gauge, Info, Summary
+
+# Internal
+
+stats_extraction_seconds = Summary(
+    "earhorn_stats_extraction_seconds",
+    "Time spent extracting Icecast stats",
+)
+
+# Stream
 
 stream_status = Enum(
     "earhorn_stream_status",

@@ -24,6 +24,7 @@ from .prometheus import (
     icecast_sources_slow_listeners,
     icecast_sources_total_bytes_read,
     icecast_sources_total_bytes_sent,
+    stats_extraction_seconds,
 )
 
 
@@ -47,6 +48,7 @@ def must_find_int(root, key: str) -> int:
     return int(must_find_text(root, key))
 
 
+@stats_extraction_seconds.time()
 def extract_xml_stats(blob: str):
     """
     See https://www.icecast.org/docs/icecast-2.4.1/server-stats.html for
