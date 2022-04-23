@@ -18,26 +18,17 @@ from .silence import SilenceListener
 # pylint: disable=too-many-arguments,too-many-locals
 @click.command(context_settings={"max_content_width": 120})
 @click.option(
+    "--listen-port",
+    envvar="LISTEN_PORT",
+    help="Listen port for the prometheus metrics endpoint.",
+    default=9950,
+    show_default=True,
+)
+@click.option(
     "--hook",
     envvar="HOOK",
     help="Path to a custom script executed to handle stream state `events`.",
     type=click.Path(),
-)
-@click.option(
-    "--prometheus",
-    envvar="PROMETHEUS",
-    help=(
-        "Enable the prometheus metrics endpoint. The endpoint expose the state "
-        "of the `stream`"
-    ),
-    is_flag=True,
-)
-@click.option(
-    "--prometheus-listen-port",
-    envvar="PROMETHEUS_LISTEN_PORT",
-    help="Listen port for the prometheus metrics endpoint.",
-    default=9950,
-    show_default=True,
 )
 @click.option(
     "--stream-url",
@@ -90,8 +81,7 @@ from .silence import SilenceListener
     is_flag=True,
 )
 def cli(
-    prometheus: bool,
-    prometheus_listen_port: int,
+    listen_port: int,
     hook: Optional[str],
     stream_url: Optional[str],
     archive_path: Optional[str],
@@ -122,10 +112,9 @@ def cli(
     if hook is not None:
         event_handler.hooks.append(FileHook(hook))
 
-    if prometheus:
-        logger.info("starting prometheus server")
-        start_http_server(prometheus_listen_port)
-        event_handler.hooks.append(PrometheusHook())
+    logger.info("starting prometheus server")
+    start_http_server(listen_port)
+    event_handler.hooks.append(PrometheusHook())
 
     event_handler.start()
 
