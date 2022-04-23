@@ -6,13 +6,33 @@ Listen, monitor and archive your streams!
 
 ## Install
 
+If you need to listen or archive an Icecast stream, you will need `ffmpeg`:
+
 ```sh
 sudo apt install ffmpeg
+```
+
+Install earhorn from pip:
+
+```sh
 pip install earhorn
 ```
 
+You can start archiving an Icecast stream by providing a stream url and an archive path:
+
 ```sh
-earhorn --archive-path=/to/my/archive https://stream.example.org/live.ogg
+earhorn \
+  --stream-url https://stream.example.org/live.ogg \
+  --archive-path=/to/my/archive
+```
+
+You can also start exporting the Icecast stats as prometheus metrics by providing an Icecast stats url:
+
+```sh
+earhorn \
+  --stats-url https://stream.example.org/admin/stats.xml \
+  --stats-user admin \
+  --stats-password hackme
 ```
 
 ### Docker
@@ -24,19 +44,18 @@ docker pull ghcr.io/jooola/earhorn
 ## Usage
 
 ```
-Usage: earhorn [OPTIONS] URL
-
-  URL of the `stream`.
+Usage: earhorn [OPTIONS]
 
   See the ffmpeg documentation for details about the `--archive-segment-*` options:
   https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment
 
 Options:
+  --listen-port INTEGER           Listen port for the prometheus metrics endpoint.  [default: 9950]
   --hook PATH                     Path to a custom script executed to handle stream state `events`.
-  --prometheus                    Enable the prometheus metrics endpoint. The endpoint expose the state of the
-                                  `stream`
-  --prometheus-listen-port INTEGER
-                                  Listen port for the prometheus metrics endpoint.  [default: 9950]
+  --stream-url TEXT               URL to the icecast stream.
+  --stats-url TEXT                URL to the icecast admin xml stats page.
+  --stats-user TEXT               Username for the icecast admin xml stats page.  [default: admin]
+  --stats-password TEXT           Password for the icecast admin xml stats page.
   --archive-path PATH             Path to the archive storage directory. If defined, the archiver will save the
                                   `stream` in segments in the storage path.
   --archive-segment-size INTEGER  Archive segment size in seconds.  [default: 3600]
