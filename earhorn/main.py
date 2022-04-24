@@ -179,5 +179,8 @@ def cli(
                 archiver.start()
                 threads.append(archiver)
 
+            silence_listener.join()
+            archiver.join()
+
     for thread in threads:
         thread.join()
