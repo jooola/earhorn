@@ -149,7 +149,6 @@ def cli(
     threads: List[Thread] = []
 
     if stats_url is not None:
-        logger.info("loading icecast stats handler")
         stats_exporter = StatsExporter(
             stop=stop_event,
             url=stats_url,
