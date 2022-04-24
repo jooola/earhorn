@@ -19,89 +19,105 @@ def test_extract_xml_stats(benchmark: Callable):
     blob = stats_filepath.read_text(encoding="utf-8")
     benchmark(extract_xml_stats, blob)
 
-    assert generate_restricted("icecast_server_info") == [
-        "# HELP icecast_server_info Icecast server info",
-        "# TYPE icecast_server_info gauge",
-        'icecast_server_info{server_id="Icecast 2.4.4",server_start="2022-03-15T18:29:12+0100"} 1.0',
-    ]
-    assert generate_restricted("icecast_clients") == [
-        "# HELP icecast_clients Icecast clients",
-        "# TYPE icecast_clients gauge",
-        "icecast_clients 7.0",
+    assert generate_restricted("icecast_info") == [
+        "# HELP icecast_info Details usually set in the server config, such as: admin, host, location, server_id, server_start_iso8601.",
+        "# TYPE icecast_info gauge",
+        'icecast_info{admin="icemaster@radio.org",host="localhost",location="Moon",server_id="Icecast 2.4.4",server_start_iso8601="2022-03-15T18:29:12+0100"} 1.0',
     ]
     assert generate_restricted("icecast_client_connections") == [
-        "# HELP icecast_client_connections Icecast client connections",
+        "# HELP icecast_client_connections Client connections are basically anything that is not a source connection. These include listeners (not concurrent, but cumulative), any admin function accesses, and any static content (file serving) accesses. This is an accumulating counter.",
         "# TYPE icecast_client_connections gauge",
         "icecast_client_connections 3935.0",
     ]
-    assert generate_restricted("icecast_listeners") == [
-        "# HELP icecast_listeners Icecast listeners",
-        "# TYPE icecast_listeners gauge",
-        "icecast_listeners 5.0",
-    ]
-    assert generate_restricted("icecast_listener_connections") == [
-        "# HELP icecast_listener_connections Icecast listener connections",
-        "# TYPE icecast_listener_connections gauge",
-        "icecast_listener_connections 117.0",
-    ]
-    assert generate_restricted("icecast_file_connections") == [
-        "# HELP icecast_file_connections Icecast file connections",
-        "# TYPE icecast_file_connections gauge",
-        "icecast_file_connections 14.0",
+    assert generate_restricted("icecast_clients") == [
+        "# HELP icecast_clients Number of currently active client connections.",
+        "# TYPE icecast_clients gauge",
+        "icecast_clients 7.0",
     ]
     assert generate_restricted("icecast_connections") == [
-        "# HELP icecast_connections Icecast connections",
+        "# HELP icecast_connections The total of all inbound TCP connections since start-up. This is an accumulating counter.",
         "# TYPE icecast_connections gauge",
         "icecast_connections 4201.0",
     ]
+    assert generate_restricted("icecast_file_connections") == [
+        "# HELP icecast_file_connections This is an accumulating counter.",
+        "# TYPE icecast_file_connections gauge",
+        "icecast_file_connections 14.0",
+    ]
+    assert generate_restricted("icecast_listener_connections") == [
+        "# HELP icecast_listener_connections Number of listener connections to mount points. This is an accumulating counter.",
+        "# TYPE icecast_listener_connections gauge",
+        "icecast_listener_connections 117.0",
+    ]
+    assert generate_restricted("icecast_listeners") == [
+        "# HELP icecast_listeners Number of currently active listener connections.",
+        "# TYPE icecast_listeners gauge",
+        "icecast_listeners 5.0",
+    ]
     assert generate_restricted("icecast_source_client_connections") == [
-        "# HELP icecast_source_client_connections Icecast source client connections",
+        "# HELP icecast_source_client_connections Source client connections are the number of times (cumulative since start-up, not just currently connected) a source client has connected to Icecast. This is an accumulating counter.",
         "# TYPE icecast_source_client_connections gauge",
         "icecast_source_client_connections 2.0",
     ]
     assert generate_restricted("icecast_source_relay_connections") == [
-        "# HELP icecast_source_relay_connections Icecast source relay connections",
+        "# HELP icecast_source_relay_connections Number of outbound relay connections to (master) icecast servers. This is an accumulating counter.",
         "# TYPE icecast_source_relay_connections gauge",
         "icecast_source_relay_connections 0.0",
     ]
     assert generate_restricted("icecast_source_total_connections") == [
-        "# HELP icecast_source_total_connections Icecast source total connections",
+        "# HELP icecast_source_total_connections Both clients and relays. This is an accumulating counter.",
         "# TYPE icecast_source_total_connections gauge",
         "icecast_source_total_connections 2.0",
     ]
-    assert generate_restricted("icecast_sources_info") == [
-        "# HELP icecast_sources_info Icecast sources info",
-        "# TYPE icecast_sources_info gauge",
-        'icecast_sources_info{audio_info="channels=2;samplerate=44100;bitrate=320",mount="/main.mp3",source_ip="192.168.100.20",stream_start="2022-03-15T18:29:19+0100",user_agent="Liquidsoap/1.4.4 (Unix; OCaml 4.10.0)"} 1.0',
-        'icecast_sources_info{audio_info="channels=2;quality=0.8;samplerate=44100",mount="/main.ogg",source_ip="192.168.100.20",stream_start="2022-03-15T18:29:19+0100",user_agent="Liquidsoap/1.4.4 (Unix; OCaml 4.10.0)"} 1.0',
+    assert generate_restricted("icecast_sources") == [
+        "# HELP icecast_sources The total of currently connected sources.",
+        "# TYPE icecast_sources gauge",
+        "icecast_sources 2.0",
     ]
-    assert generate_restricted("icecast_sources_listener_peak") == [
-        "# HELP icecast_sources_listener_peak Icecast sources listener peak",
-        "# TYPE icecast_sources_listener_peak gauge",
-        'icecast_sources_listener_peak{mount="/main.mp3"} 7.0',
-        'icecast_sources_listener_peak{mount="/main.ogg"} 4.0',
+    assert generate_restricted("icecast_stats") == [
+        "# HELP icecast_stats The total of currently connected STATS clients.",
+        "# TYPE icecast_stats gauge",
+        "icecast_stats 0.0",
     ]
-    assert generate_restricted("icecast_sources_listeners") == [
-        "# HELP icecast_sources_listeners Icecast sources listeners",
-        "# TYPE icecast_sources_listeners gauge",
-        'icecast_sources_listeners{mount="/main.mp3"} 3.0',
-        'icecast_sources_listeners{mount="/main.ogg"} 2.0',
+    assert generate_restricted("icecast_stats_connections") == [
+        "# HELP icecast_stats_connections Number of times a stats client has connected to Icecast. This is an accumulating counter.",
+        "# TYPE icecast_stats_connections gauge",
+        "icecast_stats_connections 0.0",
     ]
-    assert generate_restricted("icecast_sources_slow_listeners") == [
-        "# HELP icecast_sources_slow_listeners Icecast sources slow listeners",
-        "# TYPE icecast_sources_slow_listeners gauge",
-        'icecast_sources_slow_listeners{mount="/main.mp3"} 2.0',
-        'icecast_sources_slow_listeners{mount="/main.ogg"} 2.0',
+
+    assert generate_restricted("icecast_source_info") == [
+        "# HELP icecast_source_info Details for the Icecast source, such as: server_name, server_description, server_type, audio_info, user_agent, stream_start_iso8601, max_listeners.",
+        "# TYPE icecast_source_info gauge",
+        'icecast_source_info{audio_info="channels=2;samplerate=44100;bitrate=320",mount="/main.mp3",server_description="Main (mp3 320kbps)",server_name="Radio",server_type="audio/mpeg",stream_start_iso8601="2022-03-15T18:29:19+0100",user_agent="Liquidsoap/1.4.4 (Unix; OCaml 4.10.0)"} 1.0',
+        'icecast_source_info{audio_info="channels=2;quality=0.8;samplerate=44100",mount="/main.ogg",server_description="Main (ogg 256kbps)",server_name="Radio",server_type="application/ogg",stream_start_iso8601="2022-03-15T18:29:19+0100",user_agent="Liquidsoap/1.4.4 (Unix; OCaml 4.10.0)"} 1.0',
     ]
-    assert generate_restricted("icecast_sources_total_bytes_read") == [
-        "# HELP icecast_sources_total_bytes_read Icecast sources total bytes read",
-        "# TYPE icecast_sources_total_bytes_read gauge",
-        'icecast_sources_total_bytes_read{mount="/main.mp3"} 6.1103882e+09',
-        'icecast_sources_total_bytes_read{mount="/main.ogg"} 4.499297657e+09',
+    assert generate_restricted("icecast_source_listener_peak") == [
+        "# HELP icecast_source_listener_peak Peak concurrent number of listener connections for this mountpoint.",
+        "# TYPE icecast_source_listener_peak gauge",
+        'icecast_source_listener_peak{mount="/main.mp3"} 7.0',
+        'icecast_source_listener_peak{mount="/main.ogg"} 4.0',
     ]
-    assert generate_restricted("icecast_sources_total_bytes_sent") == [
-        "# HELP icecast_sources_total_bytes_sent Icecast sources total bytes send",
-        "# TYPE icecast_sources_total_bytes_sent gauge",
-        'icecast_sources_total_bytes_sent{mount="/main.mp3"} 2.0338244727e+010',
-        'icecast_sources_total_bytes_sent{mount="/main.ogg"} 9.051758982e+09',
+    assert generate_restricted("icecast_source_listeners") == [
+        "# HELP icecast_source_listeners The number of currently connected listeners.",
+        "# TYPE icecast_source_listeners gauge",
+        'icecast_source_listeners{mount="/main.mp3"} 3.0',
+        'icecast_source_listeners{mount="/main.ogg"} 2.0',
+    ]
+    assert generate_restricted("icecast_source_slow_listeners") == [
+        "# HELP icecast_source_slow_listeners Number of slow listeners.",
+        "# TYPE icecast_source_slow_listeners gauge",
+        'icecast_source_slow_listeners{mount="/main.mp3"} 2.0',
+        'icecast_source_slow_listeners{mount="/main.ogg"} 2.0',
+    ]
+    assert generate_restricted("icecast_source_total_bytes_read") == [
+        "# HELP icecast_source_total_bytes_read Total number of bytes received from the source client.",
+        "# TYPE icecast_source_total_bytes_read gauge",
+        'icecast_source_total_bytes_read{mount="/main.mp3"} 6.1103882e+09',
+        'icecast_source_total_bytes_read{mount="/main.ogg"} 4.499297657e+09',
+    ]
+    assert generate_restricted("icecast_source_total_bytes_sent") == [
+        "# HELP icecast_source_total_bytes_sent Total number of bytes sent to all listener connections since last source connect.",
+        "# TYPE icecast_source_total_bytes_sent gauge",
+        'icecast_source_total_bytes_sent{mount="/main.mp3"} 2.0338244727e+010',
+        'icecast_source_total_bytes_sent{mount="/main.ogg"} 9.051758982e+09',
     ]
