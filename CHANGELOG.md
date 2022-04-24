@@ -1,3 +1,19 @@
+<a name="v0.9.0-alpha.2"></a>
+
+## [v0.9.0-alpha.2](https://github.com/jooola/earhorn/compare/v0.9.0-alpha.1...v0.9.0-alpha.2) (2022-04-24)
+
+### :bug: Bug Fixes
+
+- add stats exporter to thread list
+- infinity loop when stream_url is not provided
+- do not stop stats thread on read Timeout
+
+### :rocket: Features
+
+- start even_handler earlier
+- rebuild prometheus icecast exporter
+- raise error if no stream or stats url is provided
+
 <a name="v0.9.0-alpha.1"></a>
 
 ## [v0.9.0-alpha.1](https://github.com/jooola/earhorn/compare/v0.9.0-alpha.0...v0.9.0-alpha.1) (2022-04-24)
