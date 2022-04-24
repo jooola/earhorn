@@ -120,8 +120,8 @@ def extract_xml_stats(blob: str):
         )
 
 
-class StatsHandler(Thread):
-    name = "stats_handler"
+class StatsExporter(Thread):
+    name = "stats_exporter"
     stop: ThreadEvent
     url: str
     auth: Tuple[str, str]
