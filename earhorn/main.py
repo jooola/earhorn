@@ -121,6 +121,7 @@ def cli(
     if stream_url is None and stats_url is None:
         raise click.UsageError("Specify at least one of --stream-url or --stats-url.")
 
+    # Setup stop mechanism
     stop_event = ThreadEvent()
 
     def stop_handler(_signum, _frame):
