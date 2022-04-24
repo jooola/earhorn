@@ -1,6 +1,6 @@
 # pylint: disable=line-too-long
-
 from pathlib import Path
+from typing import Callable
 
 from prometheus_client import REGISTRY, generate_latest
 
@@ -14,10 +14,10 @@ def generate_restricted(key):
     return blob.decode(encoding="utf-8").splitlines()
 
 
-def test_extract_xml_stats():
+def test_extract_xml_stats(benchmark: Callable):
     stats_filepath = here / "stats.xml"
     blob = stats_filepath.read_text(encoding="utf-8")
-    extract_xml_stats(blob)
+    benchmark(extract_xml_stats, blob)
 
     assert generate_restricted("icecast_server_info") == [
         "# HELP icecast_server_info Icecast server info",
