@@ -1,3 +1,11 @@
+<a name="v0.9.0-alpha.3"></a>
+
+## [v0.9.0-alpha.3](https://github.com/jooola/earhorn/compare/v0.9.0-alpha.2...v0.9.0-alpha.3) (2022-04-24)
+
+### :bug: Bug Fixes
+
+- prevent looping during silence_listener/archiver start
+
 <a name="v0.9.0-alpha.2"></a>
 
 ## [v0.9.0-alpha.2](https://github.com/jooola/earhorn/compare/v0.9.0-alpha.1...v0.9.0-alpha.2) (2022-04-24)
