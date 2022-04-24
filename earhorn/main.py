@@ -143,6 +143,8 @@ def cli(
     if hook is not None:
         event_handler.hooks.append(FileHook(hook))
 
+    event_handler.start()
+
     # Starting services
     threads: List[Thread] = []
 
@@ -155,8 +157,6 @@ def cli(
         )
         stats_exporter.start()
         threads.append(stats_exporter)
-
-    event_handler.start()
 
     if stream_url is not None:
         while not stop_event.is_set():
