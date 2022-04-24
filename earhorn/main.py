@@ -117,6 +117,10 @@ def cli(
     See the ffmpeg documentation for details about the `--archive-segment-*` options:
     https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment
     """
+
+    if stream_url is None and stats_url is None:
+        raise click.UsageError("Specify at least one of --stream-url or --stats-url.")
+
     stop_event = ThreadEvent()
 
     def stop_handler(_signum, _frame):
