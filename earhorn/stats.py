@@ -141,7 +141,11 @@ class StatsHandler(Thread):
                 response.raise_for_status()
                 extract_xml_stats(response.text)
 
-            except (httpx.ConnectError, httpx.HTTPStatusError) as error:
+            except (
+                httpx.ConnectError,
+                httpx.HTTPStatusError,
+                httpx.ReadTimeout,
+            ) as error:
                 logger.error(f"could not get stats from '{self.url}'")
                 logger.debug(error)
                 sleep(5)
