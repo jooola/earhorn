@@ -133,14 +133,18 @@ def cli(
 
     # Setup event handler before doing any checks
     event_queue: Queue = Queue()
-
     event_handler = EventHandler(event_queue, stop_event)
+
+    # Setup prometheus hook
+    start_http_server(listen_port)
+    event_handler.hooks.append(PrometheusHook())
+
+    # Setup file hook
     if hook is not None:
         event_handler.hooks.append(FileHook(hook))
 
-    logger.info("starting prometheus server")
-    start_http_server(listen_port)
-    event_handler.hooks.append(PrometheusHook())
+    # Starting services
+    threads: List[Thread] = []
 
     if stats_url is not None:
         logger.info("loading icecast stats handler")
@@ -153,10 +157,8 @@ def cli(
 
     event_handler.start()
 
-    while not stop_event.is_set():
-        threads: List[Thread] = []
-
-        if stream_url is not None:
+    if stream_url is not None:
+        while not stop_event.is_set():
             # Check the stream until it is available
             check_stream(event_queue, stop_event, stream_url)
 
@@ -177,5 +179,5 @@ def cli(
                 archiver.start()
                 threads.append(archiver)
 
-        for thread in threads:
-            thread.join()
+    for thread in threads:
+        thread.join()
