@@ -1,62 +1,19 @@
-from threading import Event as ThreadEvent
-from threading import Thread
-from time import sleep
 from typing import Dict, Tuple
 
 import httpx
 from loguru import logger
 from lxml import etree
-from prometheus_client import Gauge
-
-from .prometheus import (
-    icecast,
-    icecast_client_connections,
-    icecast_clients,
-    icecast_connections,
-    icecast_file_connections,
-    icecast_listener_connections,
-    icecast_listeners,
-    icecast_source,
-    icecast_source_client_connections,
-    icecast_source_listener_peak,
-    icecast_source_listeners,
-    icecast_source_relay_connections,
-    icecast_source_slow_listeners,
-    icecast_source_total_bytes_read,
-    icecast_source_total_bytes_sent,
-    icecast_source_total_connections,
-    icecast_sources,
-    icecast_stats,
-    icecast_stats_connections,
-    stats_extraction,
+from prometheus_client.core import (
+    REGISTRY,
+    CollectorRegistry,
+    GaugeMetricFamily,
+    InfoMetricFamily,
 )
+from prometheus_client.registry import Collector
 
+from .prometheus import stats_scraping
 
-def set_gauge_factory(metric: Gauge):
-    def func(element: etree._Element):
-        if element.text is not None:
-            metric.set(int(element.text))
-
-    return func
-
-
-def set_gauge_labels_factory(metric: Gauge):
-    def func(element: etree._Element, labels: Dict[str, str]):
-        if element.text is not None:
-            metric.labels(**labels).set(int(element.text))
-
-    return func
-
-
-ICECAST_SOURCE_MAPPING = {
-    "listener_peak": set_gauge_labels_factory(icecast_source_listener_peak),
-    "listeners": set_gauge_labels_factory(icecast_source_listeners),
-    "slow_listeners": set_gauge_labels_factory(icecast_source_slow_listeners),
-    "total_bytes_read": set_gauge_labels_factory(icecast_source_total_bytes_read),
-    "total_bytes_sent": set_gauge_labels_factory(icecast_source_total_bytes_sent),
-}
-
-ICECAST_SOURCE_INFO_LIST = {
+ICECAST_SOURCE_INFO_KEYS = {
     "server_name",
     "server_description",
     "server_type",
@@ -65,39 +22,7 @@ ICECAST_SOURCE_INFO_LIST = {
     "stream_start_iso8601",
 }
 
-
-def extract_icecast_source_stats(element: etree._Element):
-    infos: Dict[str, str] = {}
-    labels = {"mount": element.attrib.get("mount")}
-
-    for child in element.iterchildren():
-        if child.tag in ICECAST_SOURCE_INFO_LIST:
-            if child.text is not None:
-                infos[child.tag] = child.text
-
-        elif child.tag in ICECAST_SOURCE_MAPPING:
-            ICECAST_SOURCE_MAPPING[child.tag](child, labels)
-
-    icecast_source.labels(**labels).info(infos)
-
-
-ICECAST_MAPPING = {
-    "client_connections": set_gauge_factory(icecast_client_connections),
-    "clients": set_gauge_factory(icecast_clients),
-    "connections": set_gauge_factory(icecast_connections),
-    "file_connections": set_gauge_factory(icecast_file_connections),
-    "listener_connections": set_gauge_factory(icecast_listener_connections),
-    "listeners": set_gauge_factory(icecast_listeners),
-    "source_client_connections": set_gauge_factory(icecast_source_client_connections),
-    "source_relay_connections": set_gauge_factory(icecast_source_relay_connections),
-    "source_total_connections": set_gauge_factory(icecast_source_total_connections),
-    "sources": set_gauge_factory(icecast_sources),
-    "stats": set_gauge_factory(icecast_stats),
-    "stats_connections": set_gauge_factory(icecast_stats_connections),
-    "source": extract_icecast_source_stats,
-}
-
-ICECAST_INFO_LIST = {
+ICECAST_INFO_KEYS = {
     "admin",
     "host",
     "location",
@@ -106,64 +31,206 @@ ICECAST_INFO_LIST = {
 }
 
 
-def extract_icecast_stats(element: etree._Element):
-    infos: Dict[str, str] = {}
-    for child in element.iterchildren():
-        if child.tag in ICECAST_INFO_LIST:
-            if child.text is not None:
-                infos[child.tag] = child.text
+def gauge_metric_family_with_labels(
+    name: str,
+    documentation: str,
+    value: str,
+    labels: Dict[str, str],
+):
+    metric = GaugeMetricFamily(
+        name=name,
+        documentation=documentation,
+        labels=list(labels.keys()),
+    )
+    metric.add_metric(
+        list(labels.values()),
+        int(value),
+    )
+    return metric
 
-        elif child.tag in ICECAST_MAPPING:
-            ICECAST_MAPPING[child.tag](child)
 
-    icecast.info(infos)
+def icecast_metrics_factory():
+    return InfoMetricFamily(
+        name="icecast",
+        documentation="Details usually set in the server config, such as: admin, host, "
+        "location, server_id, server_start_iso8601.",
+    ), {
+        "client_connections": GaugeMetricFamily(
+            name="icecast_client_connections",
+            documentation="Client connections are basically anything that is not a source "
+            "connection. These include listeners (not concurrent, but cumulative), "
+            "any admin function accesses, and any static content (file serving) "
+            "accesses. This is an accumulating counter.",
+        ),
+        "clients": GaugeMetricFamily(
+            name="icecast_clients",
+            documentation="Number of currently active client connections.",
+        ),
+        "connections": GaugeMetricFamily(
+            name="icecast_connections",
+            documentation="The total of all inbound TCP connections since start-up. "
+            "This is an accumulating counter.",
+        ),
+        "file_connections": GaugeMetricFamily(
+            name="icecast_file_connections",
+            documentation="This is an accumulating counter.",
+        ),
+        "listener_connections": GaugeMetricFamily(
+            name="icecast_listener_connections",
+            documentation="Number of listener connections to mount points. "
+            "This is an accumulating counter.",
+        ),
+        "listeners": GaugeMetricFamily(
+            name="icecast_listeners",
+            documentation="Number of currently active listener connections.",
+        ),
+        "source_client_connections": GaugeMetricFamily(
+            name="icecast_source_client_connections",
+            documentation="Source client connections are the number of times (cumulative since "
+            "start-up, not just currently connected) a source client has connected "
+            "to Icecast. This is an accumulating counter.",
+        ),
+        "source_relay_connections": GaugeMetricFamily(
+            name="icecast_source_relay_connections",
+            documentation="Number of outbound relay connections to (master) icecast servers. "
+            "This is an accumulating counter.",
+        ),
+        "source_total_connections": GaugeMetricFamily(
+            name="icecast_source_total_connections",
+            documentation="Both clients and relays. This is an accumulating counter.",
+        ),
+        "sources": GaugeMetricFamily(
+            name="icecast_sources",
+            documentation="The total of currently connected sources.",
+        ),
+        "stats": GaugeMetricFamily(
+            name="icecast_stats",
+            documentation="The total of currently connected STATS clients.",
+        ),
+        "stats_connections": GaugeMetricFamily(
+            name="icecast_stats_connections",
+            documentation="Number of times a stats client has connected to Icecast. "
+            "This is an accumulating counter.",
+        ),
+    }
 
 
-@stats_extraction.time()
-def extract_xml_stats(blob: str):
-    element = etree.fromstring(blob)
-    extract_icecast_stats(element)
+def icecast_source_metrics_factory():
+    return InfoMetricFamily(
+        name="icecast_source",
+        documentation="Details for the Icecast source, such as: server_name, "
+        "server_description, server_type, audio_info, user_agent, "
+        "stream_start_iso8601, max_listeners.",
+        labels=["mount"],
+    ), {
+        "listener_peak": GaugeMetricFamily(
+            name="icecast_source_listener_peak",
+            documentation="Peak concurrent number of listener connections for this mountpoint.",
+            labels=["mount"],
+        ),
+        "listeners": GaugeMetricFamily(
+            name="icecast_source_listeners",
+            documentation="The number of currently connected listeners.",
+            labels=["mount"],
+        ),
+        "slow_listeners": GaugeMetricFamily(
+            name="icecast_source_slow_listeners",
+            documentation="Number of slow listeners.",
+            labels=["mount"],
+        ),
+        "total_bytes_read": GaugeMetricFamily(
+            name="icecast_source_total_bytes_read",
+            documentation="Total number of bytes received from the source client.",
+            labels=["mount"],
+        ),
+        "total_bytes_sent": GaugeMetricFamily(
+            name="icecast_source_total_bytes_sent",
+            documentation="Total number of bytes sent to all listener connections since "
+            "last source connect.",
+            labels=["mount"],
+        ),
+    }
 
 
-class StatsExporter(Thread):
-    name = "stats_exporter"
-    stop: ThreadEvent
+# pylint: disable=too-few-public-methods
+class StatsCollector(Collector):
+    """
+    Collect and forward stats defined in
+    https://icecast.org/docs/icecast-latest/server-stats.html
+    """
+
     url: str
     auth: Tuple[str, str]
-    rate: int
 
     def __init__(
         self,
-        stop: ThreadEvent,
         url: str,
         auth: Tuple[str, str],
-        rate: int = 15,
+        registry: CollectorRegistry = REGISTRY,
     ):
-        Thread.__init__(self)
-        self.stop = stop
         self.url = url
         self.auth = auth
-        self.rate = rate
 
-    def run(self):
-        logger.info(f"starting stats exporter with a {self.rate}s refresh rate ")
+        if registry:
+            registry.register(self)
 
-        while not self.stop.is_set():
-            try:
-                logger.trace(f"fetching stats from '{self.url}'")
-                response = httpx.get(self.url, auth=self.auth)
-                response.raise_for_status()
-                extract_xml_stats(response.text)
+    @stats_scraping.time()
+    def collect(self):
+        try:
+            logger.trace(f"fetching stats from '{self.url}'")
+            response = httpx.get(self.url, auth=self.auth)
+            response.raise_for_status()
 
-            except (
-                httpx.ConnectError,
-                httpx.HTTPStatusError,
-                httpx.ReadTimeout,
-            ) as error:
-                logger.error(f"could not get stats from '{self.url}'")
-                logger.debug(error)
+        except (
+            httpx.ConnectError,
+            httpx.HTTPStatusError,
+            httpx.ReadTimeout,
+        ) as error:
+            logger.error(f"could not get stats from '{self.url}'")
+            logger.debug(error)
+            return []
 
-            if not self.stop.is_set():
-                sleep(self.rate)
+        root = etree.fromstring(response.text)
 
-        logger.info("stats exporter stopped")
+        icecast_info, icecast_metrics = icecast_metrics_factory()
+        icecast_source_info, icecast_source_metrics = icecast_source_metrics_factory()
+
+        metrics = []
+        metrics.append(icecast_info)
+        metrics.extend(icecast_metrics.values())
+        metrics.append(icecast_source_info)
+        metrics.extend(icecast_source_metrics.values())
+
+        infos: Dict[str, str] = {}
+        for child in root.iterchildren():
+            if child.tag in ICECAST_INFO_KEYS:
+                if child.text is not None:
+                    infos[child.tag] = child.text
+
+            elif child.tag in icecast_metrics:
+                if child.text is not None:
+                    icecast_metrics[child.tag].add_metric(
+                        [],
+                        int(child.text),
+                    )
+
+            elif child.tag == "source":
+                source_infos: Dict[str, str] = {}
+                source_labels = [child.attrib.get("mount")]
+
+                for source_child in child.iterchildren():
+                    if source_child.tag in ICECAST_SOURCE_INFO_KEYS:
+                        if source_child.text is not None:
+                            source_infos[source_child.tag] = source_child.text
+
+                    if source_child.tag in icecast_source_metrics:
+                        if source_child.text is not None:
+                            icecast_source_metrics[source_child.tag].add_metric(
+                                source_labels,
+                                int(source_child.text),
+                            )
+
+                icecast_source_info.add_metric(source_labels, source_infos)
+        icecast_info.add_metric([], infos)
+
+        return metrics

@@ -36,6 +36,7 @@ pylint = "^2.13.7"
 pytest = "^7.1.1"
 pytest-benchmark = "^3.4.1"
 pytest-cov = "^3.0.0"
+pytest-httpx = "^0.20.0"
 pytest-xdist = "^2.5.0"
 
 [tool.poetry.scripts]

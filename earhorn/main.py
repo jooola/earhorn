@@ -13,7 +13,7 @@ from .archive import TIMESTAMP_FORMAT, Archiver
 from .check import check_stream
 from .event import EventHandler, FileHook, PrometheusHook
 from .silence import SilenceListener
-from .stats import StatsExporter
+from .stats import StatsCollector
 
 
 # pylint: disable=too-many-arguments,too-many-locals
@@ -149,13 +149,10 @@ def cli(
     threads: List[Thread] = []
 
     if stats_url is not None:
-        stats_exporter = StatsExporter(
-            stop=stop_event,
+        StatsCollector(
             url=stats_url,
             auth=(stats_user, stats_password),
         )
-        stats_exporter.start()
-        threads.append(stats_exporter)
 
     if stream_url is not None:
         while not stop_event.is_set():
