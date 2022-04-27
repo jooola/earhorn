@@ -37,6 +37,6 @@ ci-publish:
 
 changelog:
 	git-chglog --output CHANGELOG.md
-	pre-commit run prettier --all || true
+	if command -v npx > /dev/null; then npx prettier --write CHANGELOG.md; fi
 	git add CHANGELOG.md
 	git commit -m "docs: regenerate changelog"
