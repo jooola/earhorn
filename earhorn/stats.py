@@ -9,7 +9,6 @@ from prometheus_client.core import (
     GaugeMetricFamily,
     InfoMetricFamily,
 )
-from prometheus_client.registry import Collector
 
 from .prometheus import stats_scraping
 
@@ -153,7 +152,7 @@ def icecast_source_metrics_factory():
 
 
 # pylint: disable=too-few-public-methods
-class StatsCollector(Collector):
+class StatsCollector:
     """
     Collect and forward stats defined in
     https://icecast.org/docs/icecast-latest/server-stats.html
