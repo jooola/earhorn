@@ -1,3 +1,11 @@
+<a name="v0.10.1"></a>
+
+## [v0.10.1](https://github.com/jooola/earhorn/compare/v0.10.0...v0.10.1) (2022-04-27)
+
+### :bug: Bug Fixes
+
+- don't import internal Collector class
+
 <a name="v0.10.0"></a>
 
 ## [v0.10.0](https://github.com/jooola/earhorn/compare/v0.9.0...v0.10.0) (2022-04-27)
