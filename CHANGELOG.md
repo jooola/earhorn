@@ -1,3 +1,11 @@
+<a name="v0.10.0"></a>
+
+## [v0.10.0](https://github.com/jooola/earhorn/compare/v0.9.0...v0.10.0) (2022-04-27)
+
+### :rocket: Features
+
+- icecast stats using a prometheus custom collector
+
 <a name="v0.9.0"></a>
 
 ## [v0.9.0](https://github.com/jooola/earhorn/compare/v0.9.0-alpha.3...v0.9.0) (2022-04-25)
