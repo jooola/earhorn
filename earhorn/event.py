@@ -86,7 +86,7 @@ class EventHandler(Thread):
 
         while not self.stop.is_set() or not self.queue.empty():
             try:
-                event: AnyEvent = self.queue.get(timeout=5)
+                event: AnyEvent = self.queue.get(timeout=2)
                 logger.debug(f"{event.name}: {event.json()}")
                 for hook in self.hooks:
                     hook(event)
