@@ -183,10 +183,10 @@ class StatsCollector:
         except (
             httpx.ConnectError,
             httpx.HTTPStatusError,
+            httpx.ReadError,
             httpx.ReadTimeout,
         ) as error:
-            logger.error(f"could not get stats from '{self.url}'")
-            logger.debug(error)
+            logger.error(error)
             return []
 
         root = etree.fromstring(response.text)
