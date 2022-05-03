@@ -149,7 +149,7 @@ def cli(
     threads: List[Thread] = []
 
     if stats_url is not None:
-        StatsCollector(
+        stats_collector = StatsCollector(
             url=stats_url,
             auth=(stats_user, stats_password),
         )
@@ -181,3 +181,5 @@ def cli(
 
     for thread in threads:
         thread.join()
+
+    stats_collector.close()

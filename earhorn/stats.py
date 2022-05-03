@@ -158,6 +158,7 @@ class StatsCollector:
     https://icecast.org/docs/icecast-latest/server-stats.html
     """
 
+    _client: httpx.Client
     url: str
     auth: Tuple[str, str]
 
@@ -169,15 +170,19 @@ class StatsCollector:
     ):
         self.url = url
         self.auth = auth
+        self._client = httpx.Client()
 
         if registry:
             registry.register(self)  # type: ignore
+
+    def close(self):
+        self._client.close()
 
     @stats_scraping.time()
     def collect(self):
         try:
             logger.trace(f"fetching stats from '{self.url}'")
-            response = httpx.get(self.url, auth=self.auth)
+            response = self._client.get(self.url, auth=self.auth)
             response.raise_for_status()
 
         except (
