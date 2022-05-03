@@ -1,3 +1,31 @@
+<a name="v0.11.0-alpha.1"></a>
+
+## [v0.11.0-alpha.1](https://github.com/jooola/earhorn/compare/v0.11.0-alpha.0...v0.11.0-alpha.1) (2022-05-03)
+
+### :bug: Bug Fixes
+
+- reorder cli flags
+- update log message
+- improve logging in stats collector
+
+### :rocket: Features
+
+- allow tweaking silence detect settings
+- listen stream with a single ffmpeg command ([#73](https://github.com/jooola/earhorn/issues/73))
+
+<a name="v0.11.0-alpha.0"></a>
+
+## [v0.11.0-alpha.0](https://github.com/jooola/earhorn/compare/v0.10.1...v0.11.0-alpha.0) (2022-05-03)
+
+### :bug: Bug Fixes
+
+- improve perf sharing a httpx client instance
+- catch errors from flaky icecasts servers
+
+### :rocket: Features
+
+- reduce event handler queue timeout to 2s
+
 <a name="v0.10.1"></a>
 
 ## [v0.10.1](https://github.com/jooola/earhorn/compare/v0.10.0...v0.10.1) (2022-04-27)
