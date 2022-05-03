@@ -173,15 +173,17 @@ class StatsCollector:
         self._client = httpx.Client()
 
         if registry:
+            logger.debug("registering stats collector")
             registry.register(self)  # type: ignore
 
     def close(self):
+        logger.debug("closing stats collector")
         self._client.close()
 
     @stats_scraping.time()
     def collect(self):
+        logger.trace(f"collecting stats from '{self.url}'")
         try:
-            logger.trace(f"fetching stats from '{self.url}'")
             response = self._client.get(self.url, auth=self.auth)
             response.raise_for_status()
 
