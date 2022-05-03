@@ -52,10 +52,12 @@ Usage: earhorn [OPTIONS]
 Options:
   --listen-port INTEGER           Listen port for the prometheus metrics endpoint.  [default: 9950]
   --hook PATH                     Path to a custom script executed to handle stream state `events`.
-  --stream-url TEXT               URL to the icecast stream.
   --stats-url TEXT                URL to the icecast admin xml stats page.
   --stats-user TEXT               Username for the icecast admin xml stats page.  [default: admin]
   --stats-password TEXT           Password for the icecast admin xml stats page.
+  --stream-url TEXT               URL to the icecast stream.
+  --silence-detect-noise TEXT     Silence detect noise.  [default: -60dB]
+  --silence-detect-duration TEXT  Silence detect duration.  [default: 2]
   --archive-path PATH             Path to the archive storage directory. If defined, the archiver will save the
                                   `stream` in segments in the storage path.
   --archive-segment-size INTEGER  Archive segment size in seconds.  [default: 3600]
