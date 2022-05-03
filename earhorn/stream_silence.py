@@ -13,7 +13,10 @@ SILENCE_DETECT_RE = re.compile(
     r"\[silencedetect.*\] silence_(start|end): (\d+(?:\.\d+)?)(?: \| silence_duration: (\d+\.\d+))?"
 )
 
-DEFAULT_SILENCE_DETECT_NOISE: float = 0.001
+# https://ffmpeg.org/ffmpeg-filters.html#silencedetect
+DEFAULT_SILENCE_DETECT_NOISE: str = "-60dB"
+# https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax
+DEFAULT_SILENCE_DETECT_DURATION: str = "2"
 
 
 def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
@@ -53,19 +56,22 @@ def validate_silence_duration(
 class SilenceHandler:
     event_queue: Queue
 
-    noise: float
+    noise: str
+    duration: str
 
     def __init__(
         self,
         event_queue: Queue,
-        noise: float = DEFAULT_SILENCE_DETECT_NOISE,
+        noise: str = DEFAULT_SILENCE_DETECT_NOISE,
+        duration: str = DEFAULT_SILENCE_DETECT_DURATION,
     ):
         self.event_queue = event_queue
         self.noise = noise
+        self.duration = duration
 
     def ffmpeg_output(self):
         return [
-            *("-af", f"silencedetect=noise={self.noise}"),
+            *("-af", f"silencedetect=noise={self.noise}:d={self.duration}"),
             *("-f", "null", "/dev/null"),
         ]
 

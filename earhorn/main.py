@@ -17,7 +17,11 @@ from .stream_archive import (
     ArchiveHandler,
 )
 from .stream_check import check_stream
-from .stream_silence import SilenceHandler
+from .stream_silence import (
+    DEFAULT_SILENCE_DETECT_DURATION,
+    DEFAULT_SILENCE_DETECT_NOISE,
+    SilenceHandler,
+)
 
 
 # pylint: disable=too-many-arguments,too-many-locals
@@ -102,6 +106,20 @@ from .stream_silence import SilenceHandler
     ),
     is_flag=True,
 )
+@click.option(
+    "--silence-detect-noise",
+    envvar="SILENCE_DETECT_NOISE",
+    help="Silence detect noise.",
+    default=DEFAULT_SILENCE_DETECT_NOISE,
+    show_default=True,
+)
+@click.option(
+    "--silence-detect-duration",
+    envvar="SILENCE_DETECT_DURATION",
+    help="Silence detect duration.",
+    default=DEFAULT_SILENCE_DETECT_DURATION,
+    show_default=True,
+)
 def cli(
     listen_port: int,
     hook: Optional[str],
@@ -115,6 +133,8 @@ def cli(
     archive_segment_format: str,
     archive_segment_format_options: Optional[str],
     archive_copy_stream: bool,
+    silence_detect_noise: str,
+    silence_detect_duration: str,
 ):
     """
     \b
@@ -163,7 +183,11 @@ def cli(
             check_stream(event_queue, stop_event, stream_url)
 
             handlers: List[StreamListenerHandler] = [
-                SilenceHandler(event_queue=event_queue)
+                SilenceHandler(
+                    event_queue=event_queue,
+                    noise=silence_detect_noise,
+                    duration=silence_detect_duration,
+                )
             ]
 
             if archive_path is not None:
