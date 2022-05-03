@@ -40,11 +40,6 @@ from .stream_silence import (
     type=click.Path(),
 )
 @click.option(
-    "--stream-url",
-    envvar="STREAM_URL",
-    help="URL to the icecast stream.",
-)
-@click.option(
     "--stats-url",
     envvar="STATS_URL",
     help="URL to the icecast admin xml stats page.",
@@ -60,6 +55,25 @@ from .stream_silence import (
     "--stats-password",
     envvar="STATS_PASSWORD",
     help="Password for the icecast admin xml stats page.",
+)
+@click.option(
+    "--stream-url",
+    envvar="STREAM_URL",
+    help="URL to the icecast stream.",
+)
+@click.option(
+    "--silence-detect-noise",
+    envvar="SILENCE_DETECT_NOISE",
+    help="Silence detect noise.",
+    default=DEFAULT_SILENCE_DETECT_NOISE,
+    show_default=True,
+)
+@click.option(
+    "--silence-detect-duration",
+    envvar="SILENCE_DETECT_DURATION",
+    help="Silence detect duration.",
+    default=DEFAULT_SILENCE_DETECT_DURATION,
+    show_default=True,
 )
 @click.option(
     "--archive-path",
@@ -106,35 +120,21 @@ from .stream_silence import (
     ),
     is_flag=True,
 )
-@click.option(
-    "--silence-detect-noise",
-    envvar="SILENCE_DETECT_NOISE",
-    help="Silence detect noise.",
-    default=DEFAULT_SILENCE_DETECT_NOISE,
-    show_default=True,
-)
-@click.option(
-    "--silence-detect-duration",
-    envvar="SILENCE_DETECT_DURATION",
-    help="Silence detect duration.",
-    default=DEFAULT_SILENCE_DETECT_DURATION,
-    show_default=True,
-)
 def cli(
     listen_port: int,
     hook: Optional[str],
-    stream_url: Optional[str],
     stats_url: Optional[str],
     stats_user: str,
     stats_password: str,
+    stream_url: Optional[str],
+    silence_detect_noise: str,
+    silence_detect_duration: str,
     archive_path: Optional[str],
     archive_segment_size: int,
     archive_segment_filename: str,
     archive_segment_format: str,
     archive_segment_format_options: Optional[str],
     archive_copy_stream: bool,
-    silence_detect_noise: str,
-    silence_detect_duration: str,
 ):
     """
     \b
