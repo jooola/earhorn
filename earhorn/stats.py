@@ -171,7 +171,7 @@ class StatsCollector:
         self.auth = auth
 
         if registry:
-            registry.register(self)
+            registry.register(self)  # type: ignore
 
     @stats_scraping.time()
     def collect(self):
