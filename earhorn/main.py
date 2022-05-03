@@ -16,7 +16,6 @@ from .stream_archive import (
     DEFAULT_ARCHIVE_SEGMENT_SIZE,
     ArchiveHandler,
 )
-from .stream_check import check_stream
 from .stream_silence import (
     DEFAULT_SILENCE_DETECT_DURATION,
     DEFAULT_SILENCE_DETECT_NOISE,
@@ -178,35 +177,33 @@ def cli(
 
     # Starting stream listener
     if stream_url is not None:
-        while not stop_event.is_set():
-            # Check the stream until it is available
-            check_stream(event_queue, stop_event, stream_url)
-
-            handlers: List[StreamListenerHandler] = [
-                SilenceHandler(
-                    event_queue=event_queue,
-                    noise=silence_detect_noise,
-                    duration=silence_detect_duration,
-                )
-            ]
-
-            if archive_path is not None:
-                handlers.append(
-                    ArchiveHandler(
-                        path=archive_path,
-                        segment_size=archive_segment_size,
-                        segment_filename=archive_segment_filename,
-                        segment_format=archive_segment_format,
-                        segment_format_options=archive_segment_format_options,
-                        copy_stream=archive_copy_stream,
-                    )
-                )
-
-            stream_listener = StreamListener(
-                stream_url=stream_url,
-                handlers=handlers,
+        handlers: List[StreamListenerHandler] = [
+            SilenceHandler(
+                event_queue=event_queue,
+                noise=silence_detect_noise,
+                duration=silence_detect_duration,
             )
-            stream_listener.run()
+        ]
+
+        if archive_path is not None:
+            handlers.append(
+                ArchiveHandler(
+                    path=archive_path,
+                    segment_size=archive_segment_size,
+                    segment_filename=archive_segment_filename,
+                    segment_format=archive_segment_format,
+                    segment_format_options=archive_segment_format_options,
+                    copy_stream=archive_copy_stream,
+                )
+            )
+
+        stream_listener = StreamListener(
+            stop=stop_event,
+            event_queue=event_queue,
+            stream_url=stream_url,
+            handlers=handlers,
+        )
+        stream_listener.run_forever()
 
     event_handler.join()
     stats_collector.close()

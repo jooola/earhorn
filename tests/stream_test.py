@@ -1,6 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 from queue import Queue
+from threading import Event as ThreadEvent
 from unittest.mock import patch
 
 from more_itertools import grouper
@@ -69,10 +70,12 @@ def test_silence_handler():
 
         queue = Queue()
         stream_listener = StreamListener(
+            stop=ThreadEvent(),
+            event_queue=queue,
             stream_url=here / "sample.ogg",
             handlers=[SilenceHandler(event_queue=queue)],
         )
-        stream_listener.run()
+        stream_listener.listen()
 
         for expected in sample_events:
             found = queue.get(False)
