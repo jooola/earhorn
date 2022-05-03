@@ -94,4 +94,4 @@ class EventHandler(Thread):
             except Empty:
                 pass
 
-        logger.info("stopped event handler")
+        logger.info("event handler stopped")
