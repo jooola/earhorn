@@ -84,6 +84,8 @@ class StreamListener:
             self.check_stream()
             self.listen()
 
+        self._client.close()
+
     def listen(self):
         logger.info("starting stream listener")
 
