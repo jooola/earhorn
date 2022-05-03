@@ -206,4 +206,6 @@ def cli(
         stream_listener.run_forever()
 
     event_handler.join()
-    stats_collector.close()
+
+    if stats_url is not None:
+        stats_collector.close()
