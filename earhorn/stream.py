@@ -2,9 +2,10 @@ from os import getenv
 from queue import Queue
 from subprocess import DEVNULL, PIPE, Popen
 from threading import Thread
-from typing import Iterable, List, Protocol
+from typing import Iterable, List
 
 from loguru import logger
+from typing_extensions import Protocol
 
 FFMPEG = getenv("FFMPEG_PATH", "ffmpeg")
 
