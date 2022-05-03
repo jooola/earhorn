@@ -1,20 +1,19 @@
 import re
 from math import isclose
 from queue import Queue
-from subprocess import DEVNULL, PIPE, Popen
+from subprocess import Popen
 from threading import Thread
-from typing import Optional
+from typing import List, Optional
 
 from loguru import logger
 
-from ._ffmpeg import FFMPEG
 from .event import SilenceEvent
-
-NOISE = 0.001
 
 SILENCE_DETECT_RE = re.compile(
     r"\[silencedetect.*\] silence_(start|end): (\d+(?:\.\d+)?)(?: \| silence_duration: (\d+\.\d+))?"
 )
+
+DEFAULT_SILENCE_DETECT_NOISE: float = 0.001
 
 
 def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
@@ -50,20 +49,27 @@ def validate_silence_duration(
     return is_valid
 
 
-def silence_listener(event_queue: Queue, url: str):
-    with Popen(
-        (
-            *(FFMPEG, "-hide_banner", "-nostats"),
-            *("-re", "-i", url),
-            "-vn",  # Drop video
-            *("-af", f"silencedetect=noise={NOISE}"),
+# pylint: disable=too-few-public-methods
+class SilenceHandler:
+    event_queue: Queue
+
+    noise: float
+
+    def __init__(
+        self,
+        event_queue: Queue,
+        noise: float = DEFAULT_SILENCE_DETECT_NOISE,
+    ):
+        self.event_queue = event_queue
+        self.noise = noise
+
+    def ffmpeg_output(self):
+        return [
+            *("-af", f"silencedetect=noise={self.noise}"),
             *("-f", "null", "/dev/null"),
-        ),
-        bufsize=1,
-        stdout=DEVNULL,
-        stderr=PIPE,
-        text=True,
-    ) as process:
+        ]
+
+    def parse_process_output(self, process: Popen):
         previous = None
 
         logger.debug("starting to parse stdout")
@@ -76,21 +82,10 @@ def silence_listener(event_queue: Queue, url: str):
                 validate_silence_duration(previous, event)
 
             logger.info(f"silence {event.kind}: {event.when}")
-            event_queue.put(event)
+            self.event_queue.put(event)
             previous = event
 
-
-class SilenceListener(Thread):
-    name = "silence_listener"
-    event_queue: Queue
-    url: str
-
-    def __init__(self, event_queue, url):
-        Thread.__init__(self)
-        self.event_queue = event_queue
-        self.url = url
-
-    def run(self):
-        logger.info("starting silence listener")
-        silence_listener(self.event_queue, self.url)
-        logger.info("silence listener stopped")
+    def process_handler(self, threads: List[Thread], process: Popen):
+        thread = Thread(target=self.parse_process_output, args=(process,))
+        thread.start()
+        threads.append(thread)

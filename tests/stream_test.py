@@ -6,10 +6,11 @@ from unittest.mock import patch
 from more_itertools import grouper
 from pytest import mark
 
-from earhorn.silence import (
+from earhorn.stream import StreamListener
+from earhorn.stream_silence import (
     SilenceEvent,
+    SilenceHandler,
     parse_silence_detect,
-    silence_listener,
     validate_silence_duration,
 )
 
@@ -55,7 +56,7 @@ def test_validate_silence_duration(start, end):
     assert validate_silence_duration(start, end)
 
 
-def test_silence_listener():
+def test_silence_handler():
     with patch("earhorn.event.now") as now_mock:
         now_mock.return_value = now
 
@@ -67,7 +68,11 @@ def test_silence_listener():
         ]
 
         queue = Queue()
-        silence_listener(queue, here / "sample.ogg")
+        stream_listener = StreamListener(
+            stream_url=here / "sample.ogg",
+            handlers=[SilenceHandler(event_queue=queue)],
+        )
+        stream_listener.run()
 
         for expected in sample_events:
             found = queue.get(False)

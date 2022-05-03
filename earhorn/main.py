@@ -1,19 +1,23 @@
-from pathlib import Path
 from queue import Queue
 from signal import SIGINT, SIGTERM, signal
 from threading import Event as ThreadEvent
-from threading import Thread
 from typing import List, Optional
 
 import click
 from loguru import logger
 from prometheus_client import start_http_server
 
-from .archive import TIMESTAMP_FORMAT, Archiver
-from .check import check_stream
 from .event import EventHandler, FileHook, PrometheusHook
-from .silence import SilenceListener
 from .stats import StatsCollector
+from .stream import StreamListener, StreamListenerHandler
+from .stream_archive import (
+    DEFAULT_ARCHIVE_SEGMENT_FILENAME,
+    DEFAULT_ARCHIVE_SEGMENT_FORMAT,
+    DEFAULT_ARCHIVE_SEGMENT_SIZE,
+    ArchiveHandler,
+)
+from .stream_check import check_stream
+from .stream_silence import SilenceHandler
 
 
 # pylint: disable=too-many-arguments,too-many-locals
@@ -66,21 +70,21 @@ from .stats import StatsCollector
     "--archive-segment-size",
     envvar="ARCHIVE_SEGMENT_SIZE",
     help="Archive segment size in seconds.",
-    default=3600,
+    default=DEFAULT_ARCHIVE_SEGMENT_SIZE,
     show_default=True,
 )
 @click.option(
     "--archive-segment-filename",
     envvar="ARCHIVE_SEGMENT_FILENAME",
     help="Archive segment filename (without extension).",
-    default=f"archive-{TIMESTAMP_FORMAT}",
+    default=DEFAULT_ARCHIVE_SEGMENT_FILENAME,
     show_default=True,
 )
 @click.option(
     "--archive-segment-format",
     envvar="ARCHIVE_SEGMENT_FORMAT",
     help="Archive segment format.",
-    default="ogg",
+    default=DEFAULT_ARCHIVE_SEGMENT_FORMAT,
     show_default=True,
 )
 @click.option(
@@ -145,41 +149,40 @@ def cli(
 
     event_handler.start()
 
-    # Starting services
-    threads: List[Thread] = []
-
+    # Starting stats collector
     if stats_url is not None:
         stats_collector = StatsCollector(
             url=stats_url,
             auth=(stats_user, stats_password),
         )
 
+    # Starting stream listener
     if stream_url is not None:
         while not stop_event.is_set():
             # Check the stream until it is available
             check_stream(event_queue, stop_event, stream_url)
 
-            silence_listener = SilenceListener(event_queue, stream_url)
-            silence_listener.start()
-            threads.append(silence_listener)
+            handlers: List[StreamListenerHandler] = [
+                SilenceHandler(event_queue=event_queue)
+            ]
 
             if archive_path is not None:
-                archiver = Archiver(
-                    stream_url,
-                    Path(archive_path),
-                    archive_segment_size,
-                    archive_segment_filename,
-                    archive_segment_format,
-                    archive_segment_format_options,
-                    archive_copy_stream,
+                handlers.append(
+                    ArchiveHandler(
+                        path=archive_path,
+                        segment_size=archive_segment_size,
+                        segment_filename=archive_segment_filename,
+                        segment_format=archive_segment_format,
+                        segment_format_options=archive_segment_format_options,
+                        copy_stream=archive_copy_stream,
+                    )
                 )
-                archiver.start()
-                threads.append(archiver)
 
-            silence_listener.join()
-            archiver.join()
+            stream_listener = StreamListener(
+                stream_url=stream_url,
+                handlers=handlers,
+            )
+            stream_listener.run()
 
-    for thread in threads:
-        thread.join()
-
+    event_handler.join()
     stats_collector.close()
