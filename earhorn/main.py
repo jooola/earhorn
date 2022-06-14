@@ -11,10 +11,11 @@ from .event import EventHandler, FileHook, PrometheusHook
 from .stats import StatsCollector
 from .stream import StreamListener, StreamListenerHandler
 from .stream_archive import (
-    DEFAULT_ARCHIVE_SEGMENT_FILENAME,
+    DEFAULT_ARCHIVE_SEGMENT_FILEPATH,
     DEFAULT_ARCHIVE_SEGMENT_FORMAT,
     DEFAULT_ARCHIVE_SEGMENT_SIZE,
     ArchiveHandler,
+    LocalArchiveStorage,
 )
 from .stream_silence import (
     DEFAULT_SILENCE_DETECT_DURATION,
@@ -84,17 +85,17 @@ from .stream_silence import (
     type=click.Path(),
 )
 @click.option(
+    "--archive-segment-filepath",
+    envvar="ARCHIVE_SEGMENT_FILEPATH",
+    help="Archive segment filepath.",
+    default=DEFAULT_ARCHIVE_SEGMENT_FILEPATH,
+    show_default=True,
+)
+@click.option(
     "--archive-segment-size",
     envvar="ARCHIVE_SEGMENT_SIZE",
     help="Archive segment size in seconds.",
     default=DEFAULT_ARCHIVE_SEGMENT_SIZE,
-    show_default=True,
-)
-@click.option(
-    "--archive-segment-filename",
-    envvar="ARCHIVE_SEGMENT_FILENAME",
-    help="Archive segment filename (without extension).",
-    default=DEFAULT_ARCHIVE_SEGMENT_FILENAME,
     show_default=True,
 )
 @click.option(
@@ -129,15 +130,15 @@ def cli(
     silence_detect_noise: str,
     silence_detect_duration: str,
     archive_path: Optional[str],
+    archive_segment_filepath: str,
     archive_segment_size: int,
-    archive_segment_filename: str,
     archive_segment_format: str,
     archive_segment_format_options: Optional[str],
     archive_copy_stream: bool,
 ):
     """
     \b
-    See the ffmpeg documentation for details about the `--archive-segment-*` options:
+    See the ffmpeg documentation for details about some of the `--archive-*` options:
     https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment
     """
 
@@ -188,9 +189,9 @@ def cli(
         if archive_path is not None:
             handlers.append(
                 ArchiveHandler(
-                    path=archive_path,
+                    storage=LocalArchiveStorage(archive_path),
                     segment_size=archive_segment_size,
-                    segment_filename=archive_segment_filename,
+                    segment_filepath=archive_segment_filepath,
                     segment_format=archive_segment_format,
                     segment_format_options=archive_segment_format_options,
                     copy_stream=archive_copy_stream,
