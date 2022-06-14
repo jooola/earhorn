@@ -90,7 +90,7 @@ class StreamListener:
         logger.info("starting stream listener")
 
         command = self._ffmpeg_command()
-        logger.debug(f"running command {command}")
+        logger.debug(f"running command '{' '.join(command)}'")
 
         threads: List[Thread] = []
         with Popen(
