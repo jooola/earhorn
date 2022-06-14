@@ -4,6 +4,7 @@ from threading import Event as ThreadEvent
 from typing import List, Optional
 
 import click
+from dotenv import load_dotenv
 from loguru import logger
 from prometheus_client import start_http_server
 
@@ -23,6 +24,7 @@ from .stream_silence import (
     SilenceHandler,
 )
 
+load_dotenv()
 
 # pylint: disable=too-many-arguments,too-many-locals
 @click.command(context_settings={"max_content_width": 120})
@@ -137,6 +139,11 @@ def cli(
     archive_copy_stream: bool,
 ):
     """
+    ENVIRONMENT VARIABLES:
+
+    If a `.env` file is present in the current directory, it will be loaded
+    and can be used to pass environment variables to this tool.
+
     ARCHIVE SEGMENTS:
 
     \b
