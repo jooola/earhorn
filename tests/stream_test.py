@@ -72,7 +72,7 @@ def test_silence_handler():
         stream_listener = StreamListener(
             stop=ThreadEvent(),
             event_queue=queue,
-            stream_url=here / "sample.ogg",
+            stream_url=str(here / "sample.ogg"),
             handlers=[SilenceHandler(event_queue=queue)],
         )
         stream_listener.listen()
