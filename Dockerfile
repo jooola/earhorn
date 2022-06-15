@@ -1,9 +1,9 @@
 FROM python:3.10-bullseye as build
 
-COPY . .
+RUN pip install poetry
 
-RUN pip install poetry && \
-    poetry build
+COPY . .
+RUN poetry build
 
 FROM python:3.10-alpine
 
