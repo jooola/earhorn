@@ -1,3 +1,26 @@
+<a name="v0.11.0-alpha.2"></a>
+
+## [v0.11.0-alpha.2](https://github.com/jooola/earhorn/compare/v0.11.0-alpha.1...v0.11.0-alpha.2) (2022-06-15)
+
+### :bug: Bug Fixes
+
+- join command args in debug log
+- dot not log event using json
+- only close stats collector when used
+- always close httpx client
+
+### :rocket: Features
+
+- add s3 segment storage
+- load .env on run
+- wait and handle segments using a fifo
+- move check_stream in stream listener
+
+### BREAKING CHANGE
+
+The `--archive-segment-filename` option has been
+replace with `--archive-segment-filepath`, and uses an new template syntax.
+
 <a name="v0.11.0-alpha.1"></a>
 
 ## [v0.11.0-alpha.1](https://github.com/jooola/earhorn/compare/v0.11.0-alpha.0...v0.11.0-alpha.1) (2022-05-03)
