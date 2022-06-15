@@ -13,6 +13,8 @@ RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 COPY --from=build dist/*.whl .
-RUN pip install *.whl && rm -Rf *.whl
+RUN export WHEEL=$(echo *.whl) && \
+    pip install "${WHEEL}[s3]" && \
+    rm -Rf *.whl
 
 ENTRYPOINT ["earhorn"]
