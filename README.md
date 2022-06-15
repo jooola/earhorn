@@ -12,10 +12,11 @@ If you need to listen or archive an Icecast stream, you will need `ffmpeg`:
 sudo apt install ffmpeg
 ```
 
-Install earhorn from pip:
+Install earhorn from pip (install the s3 extra to upload the segment to an s3 bucket):
 
 ```sh
 pip install earhorn
+pip install earhorn[s3]
 ```
 
 You can start archiving an Icecast stream by providing a stream url and an archive path:
