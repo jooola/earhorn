@@ -47,7 +47,32 @@ docker pull ghcr.io/jooola/earhorn
 ```
 Usage: earhorn [OPTIONS]
 
-  See the ffmpeg documentation for details about the `--archive-segment-*` options:
+  ENVIRONMENT VARIABLES:
+
+  If a `.env` file is present in the current directory, it will be loaded and can be used to pass environment
+  variables to this tool.
+
+  ARCHIVE STORAGE:
+
+  The storage can be defined using a path to a local directory or an url to an s3 bucket. Segments will be saved on
+  the storage you specified.
+
+  To use an s3 bucket, you need to install the `s3` extras (`pip install earhorn[s3]`), use `s3://bucket-name` as
+  value for the `--archive-path` option and export the s3 bucket credentials listed in the table below:
+
+  | Variable                | Description                               | Example                     |
+  | ----------------------- | ----------------------------------------- | --------------------------- |
+  | AWS_ACCESS_KEY_ID       | The access key for your bucket user       | AKIA568knmklmk              |
+  | AWS_SECRET_ACCESS_KEY   | The secret key for your bucket user       | mi0y84wu498zxsasa           |
+  | AWS_S3_ENDPOINT_URL     | The endpoint to your s3 bucket (optional) | https://s3.nl-ams.scw.cloud |
+  | AWS_S3_REGION_NAME      | Region of your s3 bucket                  | us-east-2                   |
+
+  Example: export AWS_S3_ENPOINT_URL="https://s3.nl-ams.scw.cloud"
+
+  ARCHIVE SEGMENTS:
+
+  To change the segments duration or format, see the ffmpeg documentation for details
+  about the available options:
   https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment
 
 Options:
@@ -59,11 +84,12 @@ Options:
   --stream-url TEXT               URL to the icecast stream.
   --silence-detect-noise TEXT     Silence detect noise.  [default: -60dB]
   --silence-detect-duration TEXT  Silence detect duration.  [default: 2]
-  --archive-path PATH             Path to the archive storage directory. If defined, the archiver will save the
-                                  `stream` in segments in the storage path.
+  --archive-path PATH             Path or url to the archive storage, supported storage are local filesystem and s3.
+                                  If defined, the stream will be archived in the storage as segments.
+  --archive-segment-filepath TEXT
+                                  Archive segment filepath.  [default:
+                                  {year}/{month}/{day}/{hour}{minute}{second}.{format}]
   --archive-segment-size INTEGER  Archive segment size in seconds.  [default: 3600]
-  --archive-segment-filename TEXT
-                                  Archive segment filename (without extension).  [default: archive-%Y%m%d_%H%M%S]
   --archive-segment-format TEXT   Archive segment format.  [default: ogg]
   --archive-segment-format-options TEXT
                                   Archive segment format options.
