@@ -137,8 +137,11 @@ def cli(
     archive_copy_stream: bool,
 ):
     """
+    ARCHIVE SEGMENTS:
+
     \b
-    See the ffmpeg documentation for details about some of the `--archive-*` options:
+    To change the segments duration or format, see the ffmpeg documentation for details
+    about the available options:
     https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment
     """
 
