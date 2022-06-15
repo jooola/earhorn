@@ -13,7 +13,7 @@ POETRY_VIRTUALENVS_IN_PROJECT = true
 INSTALL_STAMP := .installed
 install: $(INSTALL_STAMP)
 $(INSTALL_STAMP):
-	poetry install
+	poetry install --extras=s3
 	touch $(INSTALL_STAMP)
 
 format: install

@@ -16,6 +16,7 @@ from .stream_archive import (
     DEFAULT_ARCHIVE_SEGMENT_FORMAT,
     DEFAULT_ARCHIVE_SEGMENT_SIZE,
     ArchiveHandler,
+    ArchiveStorage,
     LocalArchiveStorage,
 )
 from .stream_silence import (
@@ -81,8 +82,10 @@ load_dotenv()
     "--archive-path",
     envvar="ARCHIVE_PATH",
     help=(
-        "Path to the archive storage directory. If defined, the archiver will "
-        "save the `stream` in segments in the storage path."
+        "Path or url to the archive storage, supported "
+        "storage are local filesystem and s3. If defined, "
+        "the stream will be archived in the storage as "
+        "segments."
     ),
     type=click.Path(),
 )
@@ -138,11 +141,32 @@ def cli(
     archive_segment_format_options: Optional[str],
     archive_copy_stream: bool,
 ):
+    # pylint: disable=line-too-long
     """
     ENVIRONMENT VARIABLES:
 
     If a `.env` file is present in the current directory, it will be loaded
     and can be used to pass environment variables to this tool.
+
+    ARCHIVE STORAGE:
+
+    The storage can be defined using a path to a local directory or an
+    url to an s3 bucket. Segments will be saved on the storage you
+    specified.
+
+    To use an s3 bucket, you need to install the `s3` extras (`pip install earhorn[s3]`),
+    use `s3://bucket-name` as value for the `--archive-path` option and export the
+    s3 bucket credentials listed in the table below:
+
+    \b
+    | Variable                | Description                               | Example                     |
+    | ----------------------- | ----------------------------------------- | --------------------------- |
+    | AWS_ACCESS_KEY_ID       | The access key for your bucket user       | AKIA568knmklmk              |
+    | AWS_SECRET_ACCESS_KEY   | The secret key for your bucket user       | mi0y84wu498zxsasa           |
+    | AWS_S3_ENDPOINT_URL     | The endpoint to your s3 bucket (optional) | https://s3.nl-ams.scw.cloud |
+    | AWS_S3_REGION_NAME      | Region of your s3 bucket                  | us-east-2                   |
+
+    Example: export AWS_S3_ENPOINT_URL="https://s3.nl-ams.scw.cloud"
 
     ARCHIVE SEGMENTS:
 
@@ -197,9 +221,19 @@ def cli(
         ]
 
         if archive_path is not None:
+            archive_storage: ArchiveStorage
+
+            if archive_path.startswith("s3://"):
+                # pylint: disable=import-outside-toplevel
+                from .stream_archive_s3 import S3ArchiveStorage
+
+                archive_storage = S3ArchiveStorage(archive_path)
+            else:
+                archive_storage = LocalArchiveStorage(archive_path)
+
             handlers.append(
                 ArchiveHandler(
-                    storage=LocalArchiveStorage(archive_path),
+                    storage=archive_storage,
                     segment_size=archive_segment_size,
                     segment_filepath=archive_segment_filepath,
                     segment_format=archive_segment_format,
