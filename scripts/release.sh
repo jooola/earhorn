@@ -19,13 +19,14 @@ error() {
 
 command -v make > /dev/null || error "make command not found!"
 command -v git > /dev/null || error "git command not found!"
+command -v poetry > /dev/null || error "poetry command not found!"
 
 [[ "$(git rev-parse --show-toplevel)" == "$(pwd)" ]] || error "please go to the project root directory!"
 [[ "$(git rev-parse --abbrev-ref HEAD)" == "main" ]] || error "please change to the main git branch!"
 
 pyproject="pyproject.toml"
 
-pkg_version=$(grep "version =" $pyproject | cut -d '"' -f2 || error "could not determine package version in $pyproject!")
+pkg_version=$(poetry version -s || error "could not determine package version in $pyproject!")
 git_version=$(git describe --abbrev=0 --tags | sed 's/^v//' || error "could not determine git version!")
 
 # No version change
