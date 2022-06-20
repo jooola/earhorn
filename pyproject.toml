@@ -45,7 +45,7 @@ pytest-cov = "^3.0.0"
 pytest-httpx = "^0.20.0"
 pytest-xdist = "^2.5.0"
 types-boto3 = "^1.0.2"
-moto = "^3.1.13"
+moto = "^3.1.14"
 
 [tool.poetry.scripts]
 earhorn = 'earhorn.main:cli'
