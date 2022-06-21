@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "config:base",
+    ":enablePreCommit",
+    ":preserveSemverRanges",
+    ":disableDependencyDashboard"
+  ],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    }
+  ]
+}
