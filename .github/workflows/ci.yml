@@ -38,7 +38,6 @@ jobs:
       - run: make lint
 
   test:
-    needs: lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -65,7 +64,7 @@ jobs:
       - run: make test
 
   publish:
-    needs: test
+    needs: [pre-commit, lint, test]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags')
     steps:
@@ -87,7 +86,7 @@ jobs:
           make ci-publish
 
   publish-docker:
-    needs: test
+    needs: [pre-commit, lint, test]
     runs-on: ubuntu-latest
 
     env:
