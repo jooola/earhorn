@@ -1,3 +1,15 @@
+<a name="v0.11.1"></a>
+
+## [v0.11.1](https://github.com/jooola/earhorn/compare/v0.11.0...v0.11.1) (2022-08-09)
+
+### :bug: Bug Fixes
+
+- disable resolve_entities on xml parser
+
+### :gear: CI/CD
+
+- run linting and testing in parallel
+
 <a name="v0.11.0"></a>
 
 ## [v0.11.0](https://github.com/jooola/earhorn/compare/v0.11.0-alpha.3...v0.11.0) (2022-06-20)
