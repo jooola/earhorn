@@ -196,7 +196,10 @@ class StatsCollector:
             logger.error(error)
             return []
 
-        root = etree.fromstring(response.text)
+        root = etree.fromstring(  # nosec
+            response.text,
+            parser=etree.XMLParser(encoding="utf-8", resolve_entities=False),
+        )
 
         icecast_info, icecast_metrics = icecast_metrics_factory()
         icecast_source_info, icecast_source_metrics = icecast_source_metrics_factory()
