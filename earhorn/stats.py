@@ -197,8 +197,8 @@ class StatsCollector:
             return []
 
         root = etree.fromstring(  # nosec
-            response.text,
-            parser=etree.XMLParser(encoding="utf-8", resolve_entities=False),
+            response.content,
+            parser=etree.XMLParser(resolve_entities=False),
         )
 
         icecast_info, icecast_metrics = icecast_metrics_factory()
