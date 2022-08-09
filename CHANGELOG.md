@@ -1,3 +1,11 @@
+<a name="v0.11.2"></a>
+
+## [v0.11.2](https://github.com/jooola/earhorn/compare/v0.11.1...v0.11.2) (2022-08-09)
+
+### :bug: Bug Fixes
+
+- let the parser guess the content encoding
+
 <a name="v0.11.1"></a>
 
 ## [v0.11.1](https://github.com/jooola/earhorn/compare/v0.11.0...v0.11.1) (2022-08-09)
