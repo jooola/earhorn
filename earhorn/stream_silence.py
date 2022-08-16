@@ -43,7 +43,7 @@ def validate_silence_duration(
 
     duration_ffmpeg = end.duration
     duration_ours = end.seconds - start.seconds
-    is_valid = isclose(duration_ffmpeg, duration_ours, abs_tol=0.01)
+    is_valid = isclose(duration_ffmpeg, duration_ours, abs_tol=0.1)
     if not is_valid:
         logger.error(
             f"computed duration '{duration_ours}' "
