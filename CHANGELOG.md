@@ -1,3 +1,12 @@
+<a name="v0.11.3"></a>
+
+## [v0.11.3](https://github.com/jooola/earhorn/compare/v0.11.2...v0.11.3) (2022-08-16)
+
+### :bug: Bug Fixes
+
+- replace events float with decimal
+- allow 0.1 difference between durations
+
 <a name="v0.11.2"></a>
 
 ## [v0.11.2](https://github.com/jooola/earhorn/compare/v0.11.1...v0.11.2) (2022-08-09)
