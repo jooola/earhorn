@@ -1,4 +1,5 @@
 import re
+from decimal import Decimal
 from math import isclose
 from queue import Queue
 from subprocess import Popen
@@ -26,8 +27,8 @@ def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
 
     return SilenceEvent(
         kind=match.group(1),
-        seconds=float(match.group(2)),
-        duration=float(match.group(3)) if match.group(3) else None,
+        seconds=Decimal(match.group(2)),
+        duration=Decimal(match.group(3)) if match.group(3) else None,
     )
 
 
