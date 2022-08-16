@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
 from queue import Empty, Queue
 from subprocess import CalledProcessError, run
@@ -25,8 +26,8 @@ class Event(BaseModel):
 class SilenceEvent(Event):
     name = "silence"
     kind: Literal["start", "end"]
-    seconds: Optional[float]
-    duration: Optional[float]
+    seconds: Optional[Decimal]
+    duration: Optional[Decimal]
 
 
 class StatusEvent(Event):
