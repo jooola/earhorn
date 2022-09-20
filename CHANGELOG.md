@@ -1,3 +1,11 @@
+<a name="v0.11.4"></a>
+
+## [v0.11.4](https://github.com/jooola/earhorn/compare/v0.11.3...v0.11.4) (2022-09-20)
+
+### :bug: Bug Fixes
+
+- recreate segments.csv fifo when restarting the listener
+
 <a name="v0.11.3"></a>
 
 ## [v0.11.3](https://github.com/jooola/earhorn/compare/v0.11.2...v0.11.3) (2022-08-16)
