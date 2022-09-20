@@ -81,7 +81,6 @@ class ArchiveHandler:
 
         self.tmp_dir = Path(mkdtemp(prefix="earhorn-"))
         self.tmp_segment_list = self.tmp_dir / self.TMP_SEGMENTS_LIST_FILENAME
-        _mkfifo(self.tmp_segment_list)
 
     def _tmp_segment_filename(self) -> Path:
         return Path(
@@ -151,6 +150,9 @@ class ArchiveHandler:
                 )
 
         self.tmp_segment_list.unlink()
+
+    def before_listen_start(self):
+        _mkfifo(self.tmp_segment_list)
 
     # pylint: disable=unused-argument
     def process_handler(self, threads: List[Thread], process: Popen):
