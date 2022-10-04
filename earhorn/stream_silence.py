@@ -17,7 +17,7 @@ SILENCE_DETECT_RE = re.compile(
 # https://ffmpeg.org/ffmpeg-filters.html#silencedetect
 DEFAULT_SILENCE_DETECT_NOISE: str = "-60dB"
 # https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax
-DEFAULT_SILENCE_DETECT_DURATION: str = "2"
+DEFAULT_SILENCE_DETECT_DURATION: str = "2.0"
 
 
 def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
