@@ -21,9 +21,12 @@ DEFAULT_SILENCE_DETECT_DURATION: str = "2.0"
 
 
 def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
+    line = line.strip()
     match = SILENCE_DETECT_RE.search(line)
     if match is None:
         return None
+
+    logger.debug(line)
 
     return SilenceEvent(
         kind=match.group(1),
@@ -46,7 +49,7 @@ def validate_silence_duration(
     duration_ours = end.seconds - start.seconds
     is_valid = isclose(duration_ffmpeg, duration_ours, abs_tol=0.1)
     if not is_valid:
-        logger.error(
+        logger.warning(
             f"computed duration '{duration_ours}' "
             f"differs from ffmpeg duration '{duration_ffmpeg}'"
         )
