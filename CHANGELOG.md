@@ -1,3 +1,28 @@
+<a name="v0.13.0-alpha.0"></a>
+
+## [v0.13.0-alpha.0](https://github.com/jooola/earhorn/compare/v0.12.0...v0.13.0-alpha.0) (2022-10-07)
+
+### :bug: Bug Fixes
+
+- catch client errors and failed s3 uploads
+- clean old fifo before creating it
+- use default max_attempts for s3 retry strategy
+
+### :gear: CI/CD
+
+- allow testing docker build
+- publish container to docker.io
+
+### :rocket: Features
+
+- use pending dir for failed segment ingestion
+- set working dir to /app in container
+- save segments in the working dir before archiving
+
+### BREAKING CHANGE
+
+We now save temporary segments in `$PWD/<some_dir>` directory, this means that earhorn has to run in a dedicated directory such as `/var/lib/earhorn`.
+
 <a name="v0.12.0"></a>
 
 ## [v0.12.0](https://github.com/jooola/earhorn/compare/v0.11.5...v0.12.0) (2022-10-07)
