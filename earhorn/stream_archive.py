@@ -17,6 +17,10 @@ DEFAULT_ARCHIVE_SEGMENT_FILEPATH: str = (
 )
 
 
+class IngestSegmentError(Exception):
+    """An error occurred while ingesting a segment"""
+
+
 # pylint: disable=too-few-public-methods
 class ArchiveStorage(Protocol):
     def ingest_segment(self, segment: Path, segment_filepath: Path):
@@ -51,7 +55,8 @@ def _mkfifo(path: Path):
 
 # pylint: disable=too-many-instance-attributes
 class ArchiveHandler:
-    SEGMENTS_DIR: str = "segments"
+    SEGMENTS_DIR: str = "incoming"
+    SEGMENTS_PENDING_DIR: str = "pending"
     SEGMENTS_LIST: str = "segments.csv"
     SEGMENT_PREFIX: str = "segment"
     SEGMENT_STRFTIME: str = "%Y-%m-%d-%H-%M-%S"
@@ -84,8 +89,10 @@ class ArchiveHandler:
 
         self.segments_dir = Path(self.SEGMENTS_DIR)
         self.segments_list = Path(self.SEGMENTS_LIST)
+        self.segments_pending_dir = Path(self.SEGMENTS_PENDING_DIR)
 
         self.segments_dir.mkdir(exist_ok=True)
+        self.segments_pending_dir.mkdir(exist_ok=True)
 
     def _tmp_segment_filename(self) -> Path:
         return Path(
@@ -140,7 +147,24 @@ class ArchiveHandler:
 
         return args
 
+    def ingest_pending_segments(self):
+        if self.segments_pending_dir.is_dir():
+            for segment in self.segments_pending_dir.iterdir():
+                try:
+                    self.storage.ingest_segment(
+                        segment,
+                        self._segment_filepath(segment),
+                    )
+                except IngestSegmentError as exception:
+                    logger.error(exception)
+
+                    # Go try to ingest segments from incoming, pending can wait
+                    break
+
     def wait_for_segments(self):
+        # Ingest pending segments before starting
+        self.ingest_pending_segments()
+
         with self.segments_list.open(
             buffering=1,
             encoding="utf-8",
@@ -148,11 +172,20 @@ class ArchiveHandler:
             logger.debug(f"reading segments from {self.segments_list}")
             for row in csv.reader(segments_list_fd):
                 segment = self.segments_dir / row[0]
+                try:
+                    self.storage.ingest_segment(
+                        segment,
+                        self._segment_filepath(segment),
+                    )
 
-                self.storage.ingest_segment(
-                    segment,
-                    self._segment_filepath(segment),
-                )
+                    self.ingest_pending_segments()
+                except IngestSegmentError as exception:
+                    logger.error(exception)
+
+                    segment_pending = self.segments_pending_dir / segment.name
+                    if segment != segment_pending and not segment_pending.is_file():
+                        logger.debug(f"moving {segment} to {segment_pending}")
+                        move(segment, segment_pending)
 
         self.segments_list.unlink()
 
