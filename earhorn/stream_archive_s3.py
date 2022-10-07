@@ -23,17 +23,17 @@ class S3ArchiveStorage:
             config=Config(retries={"mode": "standard"}),
         )
 
-    def ingest_segment(self, tmp_segment: Path, segment_filepath: Path):
-        logger.debug(f"uploading segment {tmp_segment} to s3://{self.bucket}")
+    def ingest_segment(self, segment: Path, segment_filepath: Path):
+        logger.debug(f"uploading segment {segment} to s3://{self.bucket}")
         try:
             self._client.upload_file(
-                str(tmp_segment),
+                str(segment),
                 self.bucket,
                 Key=str(segment_filepath),
             )
         except (ClientError, ConnectionError_) as exception:
-            logger.exception(f"could not upload {tmp_segment}: {exception}")
+            logger.exception(f"could not upload {segment}: {exception}")
             return
 
         # Only remove if upload succeeded
-        tmp_segment.unlink()
+        segment.unlink()
