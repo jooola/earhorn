@@ -4,8 +4,7 @@ from typing import Any
 
 from boto3 import client
 from botocore.config import Config
-from botocore.exceptions import ClientError
-from botocore.exceptions import ConnectionError as ConnectionError_
+from botocore.exceptions import ClientError, ConnectionError as ConnectionError_
 from loguru import logger
 
 from .stream_archive import IngestSegmentError

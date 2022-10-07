@@ -18,11 +18,11 @@ $(INSTALL_STAMP):
 
 format: install
 	poetry run black .
-	poetry run isort . --profile black
+	poetry run isort . --combine-as --profile black
 
 lint: install
 	poetry run black . --diff --check
-	poetry run isort . --profile black --check
+	poetry run isort . --combine-as --profile black --check
 	poetry run pylint --jobs=$(CPU_CORES) earhorn tests
 	poetry run mypy earhorn tests || true
 

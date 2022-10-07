@@ -3,8 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 from queue import Empty, Queue
 from subprocess import CalledProcessError, run
-from threading import Event as ThreadEvent
-from threading import Thread
+from threading import Event as ThreadEvent, Thread
 from typing import List, Optional, Union
 
 from loguru import logger
