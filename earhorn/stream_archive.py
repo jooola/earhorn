@@ -3,7 +3,6 @@ import os
 from pathlib import Path
 from shutil import move
 from subprocess import Popen
-from tempfile import mkdtemp
 from threading import Thread
 from typing import List, Optional
 
@@ -49,9 +48,10 @@ def _mkfifo(path: Path):
 
 # pylint: disable=too-many-instance-attributes
 class ArchiveHandler:
-    TMP_SEGMENTS_LIST_FILENAME: str = "segments.csv"
-    TMP_SEGMENT_PREFIX: str = "segment"
-    TMP_SEGMENT_STRFTIME: str = "%Y-%m-%d-%H-%M-%S"
+    SEGMENTS_DIR: str = "segments"
+    SEGMENTS_LIST: str = "segments.csv"
+    SEGMENT_PREFIX: str = "segment"
+    SEGMENT_STRFTIME: str = "%Y-%m-%d-%H-%M-%S"
 
     storage: ArchiveStorage
 
@@ -79,22 +79,24 @@ class ArchiveHandler:
         self.segment_format_options = segment_format_options
         self.copy_stream = copy_stream
 
-        self.tmp_dir = Path(mkdtemp(prefix="earhorn-"))
-        self.tmp_segment_list = self.tmp_dir / self.TMP_SEGMENTS_LIST_FILENAME
+        self.segments_dir = Path(self.SEGMENTS_DIR)
+        self.segments_list = Path(self.SEGMENTS_LIST)
+
+        self.segments_dir.mkdir(exist_ok=True)
 
     def _tmp_segment_filename(self) -> Path:
         return Path(
             ".".join(
                 [
-                    self.TMP_SEGMENT_PREFIX,
-                    self.TMP_SEGMENT_STRFTIME,
+                    self.SEGMENT_PREFIX,
+                    self.SEGMENT_STRFTIME,
                     self.segment_format,
                 ]
             )
         )
 
-    def _segment_filepath(self, tmp_segment: Path) -> Path:
-        parts = tmp_segment.name.split(".")[1].split("-")
+    def _segment_filepath(self, segment: Path) -> Path:
+        parts = segment.name.split(".")[1].split("-")
 
         return Path(
             self.segment_filepath.format(
@@ -128,31 +130,31 @@ class ArchiveHandler:
             args += ("-segment_format_options", self.segment_format_options)
 
         args += (
-            *("-segment_list", str(self.tmp_segment_list)),
+            *("-segment_list", str(self.segments_list)),
             *("-reset_timestamps", "1"),
-            str(self.tmp_dir / self._tmp_segment_filename()),
+            str(self.segments_dir / self._tmp_segment_filename()),
         )
 
         return args
 
     def wait_for_segments(self):
-        with self.tmp_segment_list.open(
+        with self.segments_list.open(
             buffering=1,
             encoding="utf-8",
-        ) as tmp_segment_list_fd:
-            logger.debug(f"reading segments from {self.tmp_segment_list}")
-            for row in csv.reader(tmp_segment_list_fd):
-                tmp_segment = self.tmp_dir / row[0]
+        ) as segments_list_fd:
+            logger.debug(f"reading segments from {self.segments_list}")
+            for row in csv.reader(segments_list_fd):
+                segment = self.segments_dir / row[0]
 
                 self.storage.ingest_segment(
-                    tmp_segment,
-                    self._segment_filepath(tmp_segment),
+                    segment,
+                    self._segment_filepath(segment),
                 )
 
-        self.tmp_segment_list.unlink()
+        self.segments_list.unlink()
 
     def before_listen_start(self):
-        _mkfifo(self.tmp_segment_list)
+        _mkfifo(self.segments_list)
 
     # pylint: disable=unused-argument
     def process_handler(self, threads: List[Thread], process: Popen):

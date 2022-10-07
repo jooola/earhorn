@@ -35,33 +35,33 @@ def test_archive_handler_wait_for_segments(tmp_path: Path):
         storage.ingest_segment = MagicMock()  # type: ignore
 
         handler = ArchiveHandler(storage)
-        handler.tmp_segment_list.write_text(SEGMENTS_RAW)
+        handler.segments_list.write_text(SEGMENTS_RAW, encoding="utf-8")
 
         handler.wait_for_segments()
 
         storage.ingest_segment.assert_has_calls(
             [
                 call(
-                    handler.tmp_dir / "segment.2022-06-13-15-31-37.ogg",
+                    handler.segments_dir / "segment.2022-06-13-15-31-37.ogg",
                     Path("2022/06/13/153137.ogg"),
                 ),
                 call(
-                    handler.tmp_dir / "segment.2022-06-13-15-31-42.ogg",
+                    handler.segments_dir / "segment.2022-06-13-15-31-42.ogg",
                     Path("2022/06/13/153142.ogg"),
                 ),
                 call(
-                    handler.tmp_dir / "segment.2022-06-13-15-31-47.ogg",
+                    handler.segments_dir / "segment.2022-06-13-15-31-47.ogg",
                     Path("2022/06/13/153147.ogg"),
                 ),
                 call(
-                    handler.tmp_dir / "segment.2022-06-13-15-31-52.ogg",
+                    handler.segments_dir / "segment.2022-06-13-15-31-52.ogg",
                     Path("2022/06/13/153152.ogg"),
                 ),
                 call(
-                    handler.tmp_dir / "segment.2022-06-13-15-31-57.ogg",
+                    handler.segments_dir / "segment.2022-06-13-15-31-57.ogg",
                     Path("2022/06/13/153157.ogg"),
                 ),
             ]
         )
 
-        rmtree(handler.tmp_dir)
+        rmtree(handler.segments_dir)
