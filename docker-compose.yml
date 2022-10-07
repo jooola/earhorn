@@ -1,15 +1,17 @@
 version: "3.9"
 
 services:
-  earhorn:
-    image: earhorn:latest
+  s3:
+    image: quay.io/minio/minio:latest
+    command: server /data --console-address ":9001"
     environment:
-      URL: https://stream.example.org/mount.ogg
-      SILENCE_HOOK: /silence-hook.sh
-      ARCHIVE_PATH: /archive
-      # ARCHIVE_SEGMENT_SIZE: 3600
-      # ARCHIVE_SEGMENT_FILENAME: archive-%Y%m%d_%H%M%S.ogg
-      # ARCHIVE_SEGMENT_FORMAT: ogg
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password
+    ports:
+      - 9000:9000
+      - 9001:9001
     volumes:
-      - ./silence-hook.sh:/silence-hook.sh:ro
-      - ./archive:/archive:rw
+      - s3_data:/data:rw
+
+volumes:
+  s3_data:
