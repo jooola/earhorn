@@ -19,7 +19,7 @@ DEFAULT_ARCHIVE_SEGMENT_FILEPATH: str = (
 
 # pylint: disable=too-few-public-methods
 class ArchiveStorage(Protocol):
-    def ingest_segment(self, tmp_segment: Path, segment_filepath: Path):
+    def ingest_segment(self, segment: Path, segment_filepath: Path):
         ...
 
 
@@ -32,12 +32,12 @@ class LocalArchiveStorage:
         if not self.path.is_dir():
             raise ValueError(f"archive path '{path}' is not a directory!")
 
-    def ingest_segment(self, tmp_segment: Path, segment_filepath: Path):
+    def ingest_segment(self, segment: Path, segment_filepath: Path):
         segment_fullpath = self.path / segment_filepath
 
         logger.debug(f"moving segment to {segment_fullpath}")
         segment_fullpath.parent.mkdir(parents=True, exist_ok=True)
-        move(tmp_segment, segment_fullpath)
+        move(segment, segment_fullpath)
 
 
 def _mkfifo(path: Path):
