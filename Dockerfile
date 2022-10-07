@@ -17,4 +17,5 @@ RUN export WHEEL=$(echo *.whl) && \
     pip install "${WHEEL}[s3]" && \
     rm -Rf *.whl
 
+WORKDIR /app
 ENTRYPOINT ["earhorn"]
