@@ -8,6 +8,8 @@ from botocore.exceptions import ClientError
 from botocore.exceptions import ConnectionError as ConnectionError_
 from loguru import logger
 
+from .stream_archive import IngestSegmentError
+
 
 # pylint: disable=too-few-public-methods
 class S3ArchiveStorage:
@@ -32,8 +34,7 @@ class S3ArchiveStorage:
                 Key=str(segment_filepath),
             )
         except (ClientError, ConnectionError_) as exception:
-            logger.exception(f"could not upload {segment}: {exception}")
-            return
+            raise IngestSegmentError(exception) from exception
 
         # Only remove if upload succeeded
         segment.unlink()
