@@ -20,7 +20,7 @@ class S3ArchiveStorage:
             "s3",
             region_name=os.getenv("AWS_S3_REGION_NAME"),
             endpoint_url=os.getenv("AWS_S3_ENDPOINT_URL"),
-            config=Config(retries={"max_attempts": 10, "mode": "standard"}),
+            config=Config(retries={"mode": "standard"}),
         )
 
     def ingest_segment(self, tmp_segment: Path, segment_filepath: Path):
