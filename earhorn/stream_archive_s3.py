@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any
 
 from boto3 import client
+from botocore.config import Config
 from botocore.exceptions import ClientError
 from botocore.exceptions import ConnectionError as ConnectionError_
 from loguru import logger
@@ -19,6 +20,7 @@ class S3ArchiveStorage:
             "s3",
             region_name=os.getenv("AWS_S3_REGION_NAME"),
             endpoint_url=os.getenv("AWS_S3_ENDPOINT_URL"),
+            config=Config(retries={"max_attempts": 10, "mode": "standard"}),
         )
 
     def ingest_segment(self, tmp_segment: Path, segment_filepath: Path):
