@@ -1,3 +1,7 @@
+<a name="v0.13.0"></a>
+
+## [v0.13.0](https://github.com/jooola/earhorn/compare/v0.13.0-alpha.0...v0.13.0) (2022-10-07)
+
 <a name="v0.13.0-alpha.0"></a>
 
 ## [v0.13.0-alpha.0](https://github.com/jooola/earhorn/compare/v0.12.0...v0.13.0-alpha.0) (2022-10-07)
