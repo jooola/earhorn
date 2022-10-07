@@ -4,6 +4,7 @@ from typing import Any
 
 from boto3 import client
 from botocore.exceptions import ClientError
+from botocore.exceptions import ConnectionError as ConnectionError_
 from loguru import logger
 
 
@@ -28,8 +29,8 @@ class S3ArchiveStorage:
                 self.bucket,
                 Key=str(segment_filepath),
             )
-        except ClientError as exception:
-            logger.error(f"could not upload {tmp_segment}: {exception}")
+        except (ClientError, ConnectionError_) as exception:
+            logger.exception(f"could not upload {tmp_segment}: {exception}")
             return
 
         # Only remove if upload succeeded
