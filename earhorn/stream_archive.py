@@ -41,6 +41,9 @@ class LocalArchiveStorage:
 
 
 def _mkfifo(path: Path):
+    if path.exists():
+        path.unlink()
+
     logger.debug(f"creating a fifo at {path}")
     os.mkfifo(path)
     logger.debug(f"fifo at {path} created!")
