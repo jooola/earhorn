@@ -1,3 +1,15 @@
+<a name="v0.12.0"></a>
+
+## [v0.12.0](https://github.com/jooola/earhorn/compare/v0.11.5...v0.12.0) (2022-10-07)
+
+### :bug: Bug Fixes
+
+- catch boto connection errors
+
+### :rocket: Features
+
+- add boto default retry strategy
+
 <a name="v0.11.5"></a>
 
 ## [v0.11.5](https://github.com/jooola/earhorn/compare/v0.11.4...v0.11.5) (2022-10-04)
