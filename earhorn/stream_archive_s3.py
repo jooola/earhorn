@@ -3,8 +3,13 @@ from pathlib import Path
 from typing import Any
 
 from boto3 import client
+from boto3.exceptions import S3UploadFailedError
 from botocore.config import Config
-from botocore.exceptions import ClientError, ConnectionError as ConnectionError_
+from botocore.exceptions import (
+    ClientError,
+    ConnectionError as ConnectionError_,
+    HTTPClientError,
+)
 from loguru import logger
 
 from .stream_archive import IngestSegmentError
@@ -32,7 +37,12 @@ class S3ArchiveStorage:
                 self.bucket,
                 Key=str(segment_filepath),
             )
-        except (ClientError, ConnectionError_) as exception:
+        except (
+            ClientError,
+            ConnectionError_,
+            HTTPClientError,
+            S3UploadFailedError,
+        ) as exception:
             raise IngestSegmentError(exception) from exception
 
         # Only remove if upload succeeded
