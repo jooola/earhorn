@@ -60,6 +60,11 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
+
+      - if: matrix.python-version == '3.11'
+        run: |
+          sudo apt-get install -y libxml2-dev libxslt1-dev
+
       - run: make install-poetry
       - run: make test
 
