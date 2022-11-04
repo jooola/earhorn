@@ -1,3 +1,18 @@
+<a name="v0.13.1"></a>
+
+## [v0.13.1](https://github.com/jooola/earhorn/compare/v0.13.0...v0.13.1) (2022-11-04)
+
+### :bug: Bug Fixes
+
+- catch timeout / network errors for stream check
+
+### :gear: CI/CD
+
+- use python 3.10 as stable version
+- split install and test step
+- build lxml for python 3.11
+- test python3.11
+
 <a name="v0.13.0"></a>
 
 ## [v0.13.0](https://github.com/jooola/earhorn/compare/v0.13.0-alpha.0...v0.13.0) (2022-10-07)
