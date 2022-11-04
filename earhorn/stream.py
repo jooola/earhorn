@@ -72,7 +72,11 @@ class StreamListener:
                     self.event_queue.put(SilenceEvent(kind="end", seconds=0.0))
                     return
 
-            except (httpx.ConnectError, httpx.HTTPStatusError) as error:
+            except (
+                httpx.HTTPStatusError,
+                httpx.NetworkError,
+                httpx.TimeoutException,
+            ) as error:
                 logger.error(f"could not stream from '{self.stream_url}'")
                 logger.debug(error)
                 self.event_queue.put(StatusEvent(kind="down"))
