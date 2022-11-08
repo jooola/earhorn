@@ -782,14 +782,6 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
-name = "more-itertools"
-version = "9.0.0"
-description = "More routines for operating on iterables, beyond itertools"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[[package]]
 name = "moto"
 version = "4.0.1"
 description = "A library that allows your python tests to easily mock out the boto library"
@@ -1354,7 +1346,7 @@ s3 = ["boto3"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4.0"
-content-hash = "9ee412b95b48a55c8f19453a9a4e420f986da663f43697ae208a4e33d1d0c5b6"
+content-hash = "c0ce313d4e285df5742bc4ef157388681bf270eb7c856c9cdb0afbf8b26fd562"
 
 [metadata.files]
 anyio = [
@@ -1766,10 +1758,6 @@ markupsafe = [
 mccabe = [
     {file = "mccabe-0.7.0-py2.py3-none-any.whl", hash = "sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e"},
     {file = "mccabe-0.7.0.tar.gz", hash = "sha256:348e0240c33b60bbdf4e523192ef919f28cb2c3d7d5c7794f74009290f236325"},
-]
-more-itertools = [
-    {file = "more-itertools-9.0.0.tar.gz", hash = "sha256:5a6257e40878ef0520b1803990e3e22303a41b5714006c32a3fd8304b26ea1ab"},
-    {file = "more_itertools-9.0.0-py3-none-any.whl", hash = "sha256:250e83d7e81d0c87ca6bd942e6aeab8cc9daa6096d12c5308f3f92fa5e5c1f41"},
 ]
 moto = [
     {file = "moto-4.0.1-py3-none-any.whl", hash = "sha256:6fb81f500c49f46f19f44b1db1c2ea56f19f90d0ca6b944866ae0f0eeab76398"},

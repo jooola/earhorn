@@ -4,16 +4,8 @@ from queue import Queue
 from threading import Event as ThreadEvent
 from unittest.mock import patch
 
-from more_itertools import grouper
-from pytest import mark
-
 from earhorn.stream import StreamListener
-from earhorn.stream_silence import (
-    SilenceEvent,
-    SilenceHandler,
-    parse_silence_detect,
-    validate_silence_duration,
-)
+from earhorn.stream_silence import SilenceEvent, SilenceHandler, parse_silence_detect
 
 now = datetime.now()
 here = Path(__file__).parent
@@ -47,14 +39,6 @@ def test_parse_silence_detect():
         ):
             found = parse_silence_detect(line)
             assert found == expected
-
-
-@mark.parametrize(
-    "start,end",
-    grouper(SILENCE_DETECT_EVENTS, 2),
-)
-def test_validate_silence_duration(start, end):
-    assert validate_silence_duration(start, end)
 
 
 def test_silence_handler():

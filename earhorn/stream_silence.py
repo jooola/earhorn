@@ -1,6 +1,5 @@
 import re
 from decimal import Decimal
-from math import isclose
 from queue import Queue
 from subprocess import Popen
 from threading import Thread
@@ -35,27 +34,6 @@ def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
     )
 
 
-def validate_silence_duration(
-    start: SilenceEvent,
-    end: Optional[SilenceEvent],
-) -> Optional[bool]:
-    if end is None:
-        return None
-
-    if end.duration is None or end.seconds is None or start.seconds is None:
-        return False
-
-    duration_ffmpeg = end.duration
-    duration_ours = end.seconds - start.seconds
-    is_valid = isclose(duration_ffmpeg, duration_ours, abs_tol=0.1)
-    if not is_valid:
-        logger.warning(
-            f"computed duration '{duration_ours}' "
-            f"differs from ffmpeg duration '{duration_ffmpeg}'"
-        )
-    return is_valid
-
-
 # pylint: disable=too-few-public-methods
 class SilenceHandler:
     event_queue: Queue
@@ -80,20 +58,14 @@ class SilenceHandler:
         ]
 
     def parse_process_output(self, process: Popen):
-        previous = None
-
         logger.debug("starting to parse stdout")
         for line in process.stderr:  # type: ignore
             event = parse_silence_detect(line)
             if event is None:
                 continue
 
-            if event.kind == "end" and previous is not None:
-                validate_silence_duration(previous, event)
-
             logger.info(f"silence {event.kind}: {event.when}")
             self.event_queue.put(event)
-            previous = event
 
     def process_handler(self, threads: List[Thread], process: Popen):
         thread = Thread(target=self.parse_process_output, args=(process,))
