@@ -21,6 +21,10 @@ class IngestSegmentError(Exception):
     """An error occurred while ingesting a segment"""
 
 
+class InvalidSegmentFilename(IngestSegmentError):
+    """Invalid segment filename"""
+
+
 # pylint: disable=too-few-public-methods
 class ArchiveStorage(Protocol):
     def ingest_segment(self, segment: Path, segment_filepath: Path):
@@ -106,21 +110,28 @@ class ArchiveHandler:
         )
 
     def _segment_filepath(self, segment: Path) -> Path:
-        parts = segment.name.split(".")[1].split("-")
+        try:
+            filename_parts = segment.name.split(".")
+            datetime_str = filename_parts[1]
+            datetime_parts = datetime_str.split("-")
 
-        return Path(
-            self.segment_filepath.format(
-                **{
-                    "format": self.segment_format,
-                    "year": parts[0],
-                    "month": parts[1],
-                    "day": parts[2],
-                    "hour": parts[3],
-                    "minute": parts[4],
-                    "second": parts[5],
-                }
+            return Path(
+                self.segment_filepath.format(
+                    **{
+                        "format": self.segment_format,
+                        "year": datetime_parts[0],
+                        "month": datetime_parts[1],
+                        "day": datetime_parts[2],
+                        "hour": datetime_parts[3],
+                        "minute": datetime_parts[4],
+                        "second": datetime_parts[5],
+                    }
+                )
             )
-        )
+        except IndexError as error:
+            raise InvalidSegmentFilename(
+                f"found invalid segment filename {segment.name}"
+            ) from error
 
     def ffmpeg_output(self):
         args = ["-map_metadata", "-1"]
@@ -179,6 +190,9 @@ class ArchiveHandler:
                     )
 
                     self.ingest_pending_segments()
+                except InvalidSegmentFilename as exception:
+                    logger.error(exception)
+                    continue
                 except IngestSegmentError as exception:
                     logger.error(exception)
 

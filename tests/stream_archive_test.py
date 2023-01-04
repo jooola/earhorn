@@ -2,7 +2,33 @@ from pathlib import Path
 from shutil import rmtree
 from unittest.mock import MagicMock, call, patch
 
-from earhorn.stream_archive import ArchiveHandler, LocalArchiveStorage
+import pytest
+
+from earhorn.stream_archive import (
+    ArchiveHandler,
+    InvalidSegmentFilename,
+    LocalArchiveStorage,
+)
+
+
+def test_archive_handler_segment_filepath(tmp_path: Path):
+    handler = ArchiveHandler(None)  # type: ignore
+    # pylint: disable=protected-access
+    assert handler._segment_filepath(tmp_path / "segment.2022-06-13-15-31-37.ogg")
+
+
+@pytest.mark.parametrize(
+    "filename",
+    [
+        "2022-06-13-15-31-37.ogg",  # no prefix
+        "segment.06-13-15-31-37.ogg",  # no year
+    ],
+)
+def test_archive_handler_segment_filepath_invalid(tmp_path: Path, filename: str):
+    handler = ArchiveHandler(None)  # type: ignore
+    with pytest.raises(InvalidSegmentFilename):
+        # pylint: disable=protected-access
+        handler._segment_filepath(tmp_path / filename)
 
 
 def test_local_archive_storage_ingest_segment(tmp_path: Path):
@@ -19,6 +45,7 @@ def test_local_archive_storage_ingest_segment(tmp_path: Path):
 
 
 SEGMENTS_RAW = """
+invalid.0000006-13-15-31-37.ogg,0.000000,4.993741
 segment.2022-06-13-15-31-37.ogg,0.000000,4.993741
 segment.2022-06-13-15-31-42.ogg,5.003900,10.001995
 segment.2022-06-13-15-31-47.ogg,10.001995,15.000091
