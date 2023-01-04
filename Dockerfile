@@ -1,11 +1,11 @@
-FROM python:3.10-alpine as build
+FROM python:3.11-alpine as build
 
 RUN pip install build
 
 COPY . .
 RUN python3 -m build
 
-FROM python:3.10-alpine
+FROM python:3.11-alpine
 
 RUN apk add --no-cache ffmpeg
 
