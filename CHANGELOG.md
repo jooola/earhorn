@@ -1,3 +1,17 @@
+<a name="v0.14.0a0"></a>
+
+## [v0.14.0a0](https://github.com/jooola/earhorn/compare/v0.13.1...v0.14.0a0) (2023-01-10)
+
+### :bug: Bug Fixes
+
+- do not hang on container shutdown
+- catch and ignore invalid segment filename
+
+### :rocket: Features
+
+- rework container image
+- remove inaccurate validate_silence_duration
+
 <a name="v0.13.1"></a>
 
 ## [v0.13.1](https://github.com/jooola/earhorn/compare/v0.13.0...v0.13.1) (2022-11-04)
