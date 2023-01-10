@@ -4,7 +4,6 @@ from queue import Queue
 from threading import Event as ThreadEvent
 from unittest.mock import patch
 
-from earhorn.event import AnyEvent
 from earhorn.stream import StreamListener
 from earhorn.stream_silence import SilenceEvent, SilenceHandler, parse_silence_detect
 
@@ -53,7 +52,7 @@ def test_silence_handler():
             SilenceEvent(name="silence", kind="end", seconds=20.0061, duration=5.00336),
         ]
 
-        queue: Queue[AnyEvent] = Queue()
+        queue: Queue = Queue()
         stream_listener = StreamListener(
             stop=ThreadEvent(),
             event_queue=queue,
