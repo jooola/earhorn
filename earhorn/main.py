@@ -1,7 +1,7 @@
 from queue import Queue
 from signal import SIGINT, SIGTERM, signal
 from threading import Event as ThreadEvent
-from typing import List, Optional
+from typing import Callable, List, Optional
 
 import click
 from dotenv import load_dotenv
@@ -181,10 +181,14 @@ def cli(
 
     # Setup stop mechanism
     stop_event = ThreadEvent()
+    stop_functions: List[Callable] = []
 
     def stop_handler(_signum, _frame):
         logger.info("stopping...")
         stop_event.set()
+
+        for function in stop_functions:
+            function()
 
     signal(SIGINT, stop_handler)
     signal(SIGTERM, stop_handler)
@@ -248,6 +252,7 @@ def cli(
             stream_url=stream_url,
             handlers=handlers,
         )
+        stop_functions.append(stream_listener.stop_listener)
         stream_listener.run_forever()
 
     event_handler.join()

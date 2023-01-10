@@ -3,7 +3,7 @@ from queue import Queue
 from subprocess import DEVNULL, PIPE, Popen
 from threading import Event as ThreadEvent, Thread
 from time import sleep
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 
 import httpx
 from loguru import logger
@@ -30,6 +30,7 @@ class StreamListener:
 
     _handlers: List[StreamListenerHandler] = []
     _client: httpx.Client
+    _process: Optional[Popen]
 
     # pylint: disable=too-many-arguments
     def __init__(
@@ -109,9 +110,11 @@ class StreamListener:
             stderr=PIPE,
             text=True,
         ) as process:
+            self._process = process
+
             for handler in self._handlers:
-                handler.process_handler(threads, process)
-            exit_code = process.wait()
+                handler.process_handler(threads, self._process)
+            exit_code = self._process.wait()
 
         logger.debug(f"command exited with {exit_code}")
 
@@ -119,3 +122,7 @@ class StreamListener:
             thread.join()
 
         logger.info("stream listener stopped")
+
+    def stop_listener(self):
+        if self._process is not None:
+            self._process.terminate()
