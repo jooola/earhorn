@@ -9,7 +9,7 @@ from earhorn.stats import StatsCollector
 here = Path(__file__).parent
 
 
-def test_icecast_collector(benchmark, httpx_mock: HTTPXMock):
+def test_icecast_collector(httpx_mock: HTTPXMock):
     stats_filepath = here / "stats.xml"
     stats_url = "http://example.com/admin/stats.xml"
     stats_auth = ("admin", "hackme")
@@ -23,7 +23,7 @@ def test_icecast_collector(benchmark, httpx_mock: HTTPXMock):
         registry=registry,
     )
 
-    benchmark(registry.collect)
+    registry.collect()
 
     assert generate_latest(registry).decode(encoding="utf-8").splitlines() == [
         "# HELP icecast_info Details usually set in the server config, such as: admin, host, location, server_id, server_start_iso8601.",
