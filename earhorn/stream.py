@@ -3,7 +3,7 @@ from queue import Queue
 from subprocess import DEVNULL, PIPE, Popen
 from threading import Event as ThreadEvent, Thread
 from time import sleep
-from typing import Iterable, List, Optional
+from typing import List, Optional
 
 import httpx
 from loguru import logger
@@ -15,7 +15,7 @@ FFMPEG = getenv("FFMPEG_PATH", "ffmpeg")
 
 
 class StreamListenerHandler(Protocol):
-    def ffmpeg_output(self) -> Iterable[str]:
+    def ffmpeg_output(self) -> List[str]:
         pass
 
     def process_handler(self, threads: List[Thread], process: Popen):

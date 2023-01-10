@@ -65,3 +65,6 @@ disable = [
   "missing-function-docstring",
   "missing-class-docstring"
 ]
+
+[tool.mypy]
+check_untyped_defs = true

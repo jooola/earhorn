@@ -68,13 +68,13 @@ class PrometheusHook:  # pylint: disable=too-few-public-methods
 
 class EventHandler(Thread):
     name = "event_handler"
-    queue: Queue
+    queue: Queue[AnyEvent]
     stop: ThreadEvent
     hooks: List[Hook] = []
 
     def __init__(
         self,
-        queue: Queue,
+        queue: Queue[AnyEvent],
         stop: ThreadEvent,
     ):
         Thread.__init__(self)
@@ -86,7 +86,7 @@ class EventHandler(Thread):
 
         while not self.stop.is_set() or not self.queue.empty():
             try:
-                event: AnyEvent = self.queue.get(timeout=2)
+                event = self.queue.get(timeout=2)
                 logger.debug(event)
                 for hook in self.hooks:
                     hook(event)
