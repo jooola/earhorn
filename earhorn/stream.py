@@ -1,3 +1,4 @@
+import logging
 from os import getenv
 from queue import Queue
 from subprocess import DEVNULL, PIPE, Popen
@@ -6,10 +7,11 @@ from time import sleep
 from typing import List, Optional
 
 import httpx
-from loguru import logger
 from typing_extensions import Protocol
 
 from .event import SilenceEvent, StatusEvent
+
+logger = logging.getLogger(__name__)
 
 FFMPEG = getenv("FFMPEG_PATH", "ffmpeg")
 

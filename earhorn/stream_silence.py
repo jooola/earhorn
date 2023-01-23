@@ -1,3 +1,4 @@
+import logging
 import re
 from decimal import Decimal
 from queue import Queue
@@ -5,9 +6,9 @@ from subprocess import Popen
 from threading import Thread
 from typing import List, Optional
 
-from loguru import logger
-
 from .event import SilenceEvent
+
+logger = logging.getLogger(__name__)
 
 SILENCE_DETECT_RE = re.compile(
     r"\[silencedetect.*\] silence_(start|end): (\d+(?:\.\d+)?)(?: \| silence_duration: (\d+\.\d+))?"

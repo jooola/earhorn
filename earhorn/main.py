@@ -1,3 +1,4 @@
+import logging
 import os
 from queue import Queue
 from signal import SIGINT, SIGTERM, signal
@@ -6,7 +7,6 @@ from typing import Callable, List, Optional
 
 import click
 from dotenv import load_dotenv
-from loguru import logger
 from prometheus_client import start_http_server
 
 from .event import EventHandler, FileHook, PrometheusHook
@@ -25,6 +25,10 @@ from .stream_silence import (
     DEFAULT_SILENCE_DETECT_NOISE,
     SilenceHandler,
 )
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
+
 
 load_dotenv()
 
@@ -182,6 +186,10 @@ def cli(
     about the available options:
     https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment
     """
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="%(asctime)s | %(levelname)-8s | %(module)s:%(funcName)s:%(lineno)s - %(message)s",
+    )
 
     if stream_url is None and stats_url is None:
         raise click.UsageError("Specify at least one of --stream-url or --stats-url.")

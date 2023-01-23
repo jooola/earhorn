@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 from typing import Any
@@ -10,10 +11,10 @@ from botocore.exceptions import (
     ConnectionError as ConnectionError_,
     HTTPClientError,
 )
-from loguru import logger
 
 from .stream_archive import IngestSegmentError
 
+logger = logging.getLogger(__name__)
 
 # pylint: disable=too-few-public-methods
 class S3ArchiveStorage:

@@ -21,7 +21,6 @@ classifiers = [
 python = ">=3.7,<4.0"
 click = "^8.0.1"
 httpx = ">=0.23.0,<0.24.0"
-loguru = ">=0.5.3,<0.7.0"
 lxml = ">=4.6.3,<4.10.0"
 prometheus-client = ">=0.15.0,<0.16.0"
 pydantic = "^1.9.0"
@@ -66,6 +65,9 @@ disable = [
   "missing-function-docstring",
   "missing-class-docstring"
 ]
+
+[tool.pylint.format]
+disable = "logging-fstring-interpolation"
 
 [tool.mypy]
 check_untyped_defs = true

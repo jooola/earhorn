@@ -1,7 +1,7 @@
+import logging
 from typing import Dict, Tuple
 
 import httpx
-from loguru import logger
 from lxml import etree
 from prometheus_client.core import (
     REGISTRY,
@@ -11,6 +11,8 @@ from prometheus_client.core import (
 )
 
 from .prometheus import stats_scraping
+
+logger = logging.getLogger(__name__)
 
 ICECAST_SOURCE_INFO_KEYS = {
     "server_name",
@@ -182,7 +184,7 @@ class StatsCollector:
 
     @stats_scraping.time()
     def collect(self):
-        logger.trace(f"collecting stats from '{self.url}'")
+        logger.debug(f"collecting stats from '{self.url}'")
         try:
             response = self._client.get(self.url, auth=self.auth)
             response.raise_for_status()

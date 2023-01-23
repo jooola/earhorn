@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
@@ -6,11 +7,12 @@ from subprocess import CalledProcessError, run
 from threading import Event as ThreadEvent, Thread
 from typing import List, Optional, Union
 
-from loguru import logger
 from pydantic import BaseModel, Field
 from typing_extensions import Literal, Protocol, TypeAlias
 
 from .prometheus import stream_silence, stream_status
+
+logger = logging.getLogger(__name__)
 
 
 def now():

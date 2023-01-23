@@ -1,4 +1,5 @@
 import csv
+import logging
 import os
 from pathlib import Path
 from shutil import move
@@ -6,8 +7,9 @@ from subprocess import Popen
 from threading import Thread
 from typing import List, Optional
 
-from loguru import logger
 from typing_extensions import Protocol
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_ARCHIVE_SEGMENT_SIZE: int = 3600
 DEFAULT_ARCHIVE_SEGMENT_FORMAT: str = "ogg"
