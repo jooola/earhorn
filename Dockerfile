@@ -31,7 +31,7 @@ WORKDIR /src
 COPY --from=build /src/dist/*.whl .
 RUN set -eux; \
     export WHEEL=$(echo *.whl); \
-    pip --no-cache-dir install --no-compile "${WHEEL}[s3]"; \
+    pip --no-cache-dir install --no-compile "${WHEEL}[s3,sentry]"; \
     rm -Rf /src
 
 # Run

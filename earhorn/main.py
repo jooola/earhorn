@@ -1,3 +1,4 @@
+import os
 from queue import Queue
 from signal import SIGINT, SIGTERM, signal
 from threading import Event as ThreadEvent
@@ -26,6 +27,12 @@ from .stream_silence import (
 )
 
 load_dotenv()
+
+
+if "SENTRY_DSN" in os.environ:
+    import sentry_sdk
+
+    sentry_sdk.init(traces_sample_rate=1.0)
 
 # pylint: disable=too-many-arguments,too-many-locals
 @click.command(context_settings={"max_content_width": 120})
