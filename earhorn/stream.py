@@ -98,11 +98,11 @@ class StreamListener:
         # Run setup tasks before starting to listen for the stream
         for handler in self._handlers:
             if hasattr(handler, "before_listen_start"):
-                logger.debug(f"preparing {handler.__class__.__name__} ")
+                logger.info(f"preparing {handler.__class__.__name__} ")
                 handler.before_listen_start()
 
         command = self._ffmpeg_command()
-        logger.debug(f"running command '{' '.join(command)}'")
+        logger.debug(f"running ffmpeg command '{' '.join(command)}'")
 
         threads: List[Thread] = []
         with Popen(
@@ -120,7 +120,7 @@ class StreamListener:
                 handler.process_handler(threads, self._process)
             exit_code = self._process.wait()
 
-        logger.debug(f"command exited with {exit_code}")
+        logger.info(f"ffmpeg command exited with {exit_code}")
 
         for thread in threads:
             thread.join()

@@ -182,7 +182,7 @@ class ArchiveHandler:
             buffering=1,
             encoding="utf-8",
         ) as segments_list_fd:
-            logger.debug(f"reading segments from {self.segments_list}")
+            logger.info(f"reading segments from {self.segments_list}")
             for row in csv.reader(segments_list_fd):
                 segment = self.segments_dir / row[0]
                 try:

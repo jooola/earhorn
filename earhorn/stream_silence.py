@@ -59,7 +59,7 @@ class SilenceHandler:
         ]
 
     def parse_process_output(self, process: Popen):
-        logger.debug("starting to parse stdout")
+        logger.info("starting to parse stdout")
         for line in process.stderr:  # type: ignore
             event = parse_silence_detect(line)
             if event is None:

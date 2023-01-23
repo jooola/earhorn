@@ -136,6 +136,17 @@ if "SENTRY_DSN" in os.environ:
     ),
     is_flag=True,
 )
+@click.option(
+    "--log-level",
+    envvar="LOG_LEVEL",
+    help="Logging level.",
+    default="info",
+    show_default=True,
+    type=click.Choice(
+        ["critical", "error", "warning", "info", "debug"],
+        case_sensitive=False,
+    ),
+)
 def cli(
     listen_port: int,
     hook: Optional[str],
@@ -151,6 +162,7 @@ def cli(
     archive_segment_format: str,
     archive_segment_format_options: Optional[str],
     archive_copy_stream: bool,
+    log_level: str,
 ):
     # pylint: disable=line-too-long
     """
@@ -187,7 +199,7 @@ def cli(
     https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment
     """
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=log_level.upper(),
         format="%(asctime)s | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)s - %(message)s",
     )
 
