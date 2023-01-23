@@ -8,7 +8,7 @@ COPY . .
 RUN set -eux; \
     python3 -m build
 
-FROM python:3.11-alpine
+FROM python:3.11-alpine as base
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -25,6 +25,23 @@ RUN set -eux; \
 # Install ffmpeg
 RUN set -eux; \
     apk add --no-cache ffmpeg
+
+# Development target
+FROM base as dev
+
+# Install earhorn
+WORKDIR /src
+COPY . .
+RUN set -eux; \
+    pip --no-cache-dir install --editable .[s3,sentry]
+
+# Run
+USER ${UID}:${GID}
+WORKDIR /app
+ENTRYPOINT ["/usr/local/bin/earhorn"]
+
+# Production target
+FROM base
 
 # Install earhorn
 WORKDIR /src

@@ -4,6 +4,9 @@ services:
   earhorn:
     build:
       context: .
+      target: dev
+    volumes:
+      - .:/src
 
   s3:
     image: quay.io/minio/minio:latest
