@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "earhorn"
-version = "0.14.0a0"
+version = "0.14.0"
 description = "Listen, monitor and archive your streams!"
 authors = ["Joola <jooola@users.noreply.github.com>"]
 readme = "README.md"
