@@ -1379,7 +1379,7 @@ sentry = ["sentry-sdk"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4.0"
-content-hash = "9434fc9dd137cab21eb61b26f699ed89963a6d77f31da9309b2fc368facc9e27"
+content-hash = "4e164ea2adcbbb582f5d62ee5bd6194b4d549be0d360b0546a978cbc00e708d8"
 
 [metadata.files]
 anyio = [
