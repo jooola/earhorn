@@ -188,7 +188,7 @@ def cli(
     """
     logging.basicConfig(
         level=logging.DEBUG,
-        format="%(asctime)s | %(levelname)-8s | %(module)s:%(funcName)s:%(lineno)s - %(message)s",
+        format="%(asctime)s | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)s - %(message)s",
     )
 
     if stream_url is None and stats_url is None:
