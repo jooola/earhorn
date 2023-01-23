@@ -1,3 +1,15 @@
+<a name="v0.15.0-alpha.1"></a>
+
+## [v0.15.0-alpha.1](https://github.com/jooola/earhorn/compare/v0.15.0-alpha.0...v0.15.0-alpha.1) (2023-01-23)
+
+### :bug: Bug Fixes
+
+- use logger name instead of module
+
+### :rocket: Features
+
+- improve log level handling
+
 <a name="v0.15.0-alpha.0"></a>
 
 ## [v0.15.0-alpha.0](https://github.com/jooola/earhorn/compare/v0.14.0...v0.15.0-alpha.0) (2023-01-23)
