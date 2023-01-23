@@ -1,3 +1,12 @@
+<a name="v0.14.0"></a>
+
+## [v0.14.0](https://github.com/jooola/earhorn/compare/v0.14.0a0...v0.14.0) (2023-01-23)
+
+### :bug: Bug Fixes
+
+- handle encoding errors in ffmpeg stderr
+- queue 'type' object is not subscriptable
+
 <a name="v0.14.0a0"></a>
 
 ## [v0.14.0a0](https://github.com/jooola/earhorn/compare/v0.13.1...v0.14.0a0) (2023-01-10)
