@@ -1,17 +1,14 @@
 version: "3.9"
 
 services:
-  s3:
-    image: quay.io/minio/minio:latest
-    command: server /data --console-address ":9001"
-    environment:
-      - MINIO_ROOT_USER=admin
-      - MINIO_ROOT_PASSWORD=password
+  earhorn:
+    image: docker.io/jooola/earhorn:latest
+    user: 1000:1000
+    restart: unless-stopped
     ports:
-      - 9000:9000
-      - 9001:9001
+      - 9950:9950
     volumes:
-      - s3_data:/data:rw
-
-volumes:
-  s3_data:
+      - ./data/app:/app
+      - ./data/archive:/archive
+    env_file:
+      - .env

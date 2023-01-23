@@ -3,6 +3,7 @@
 /*.ogg
 /archive
 /app
+/data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
