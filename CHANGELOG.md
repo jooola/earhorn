@@ -1,3 +1,12 @@
+<a name="v0.15.0-alpha.0"></a>
+
+## [v0.15.0-alpha.0](https://github.com/jooola/earhorn/compare/v0.14.0...v0.15.0-alpha.0) (2023-01-23)
+
+### :rocket: Features
+
+- replace loguru with logging
+- add sentry python integration
+
 <a name="v0.14.0"></a>
 
 ## [v0.14.0](https://github.com/jooola/earhorn/compare/v0.14.0a0...v0.14.0) (2023-01-23)
