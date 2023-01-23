@@ -34,15 +34,6 @@ logger.addHandler(logging.NullHandler())
 load_dotenv()
 
 
-if "SENTRY_DSN" in os.environ:
-    logger.info("installing sentry")
-    import sentry_sdk
-
-    sentry_sdk.init(
-        traces_sample_rate=1.0,
-        release=version,
-    )
-
 # pylint: disable=too-many-arguments,too-many-locals
 @click.command(context_settings={"max_content_width": 120})
 @click.option(
@@ -207,6 +198,16 @@ def cli(
         level=log_level.upper(),
         format="%(asctime)s | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)s - %(message)s",
     )
+
+    if "SENTRY_DSN" in os.environ:
+        logger.info("installing sentry")
+        # pylint: disable=import-outside-toplevel
+        import sentry_sdk
+
+        sentry_sdk.init(
+            traces_sample_rate=1.0,
+            release=version,
+        )
 
     if stream_url is None and stats_url is None:
         raise click.UsageError("Specify at least one of --stream-url or --stats-url.")
