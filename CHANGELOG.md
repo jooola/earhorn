@@ -1,3 +1,16 @@
+<a name="v0.15.0"></a>
+
+## [v0.15.0](https://github.com/jooola/earhorn/compare/v0.15.0-alpha.1...v0.15.0) (2023-01-23)
+
+### :bug: Bug Fixes
+
+- python3.7 importlib.metatadata import
+- add release to sentry init
+
+### :rocket: Features
+
+- guess version using importlib.metadata
+
 <a name="v0.15.0-alpha.1"></a>
 
 ## [v0.15.0-alpha.1](https://github.com/jooola/earhorn/compare/v0.15.0-alpha.0...v0.15.0-alpha.1) (2023-01-23)
