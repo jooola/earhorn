@@ -9,6 +9,7 @@ import click
 from dotenv import load_dotenv
 from prometheus_client import start_http_server
 
+from . import version
 from .event import EventHandler, FileHook, PrometheusHook
 from .stats import StatsCollector
 from .stream import StreamListener, StreamListenerHandler
@@ -34,9 +35,13 @@ load_dotenv()
 
 
 if "SENTRY_DSN" in os.environ:
+    logger.info("installing sentry")
     import sentry_sdk
 
-    sentry_sdk.init(traces_sample_rate=1.0)
+    sentry_sdk.init(
+        traces_sample_rate=1.0,
+        release=version,
+    )
 
 # pylint: disable=too-many-arguments,too-many-locals
 @click.command(context_settings={"max_content_width": 120})
