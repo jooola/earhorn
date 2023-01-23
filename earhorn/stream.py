@@ -109,6 +109,7 @@ class StreamListener:
             stdout=DEVNULL,
             stderr=PIPE,
             text=True,
+            encoding="utf-8",
         ) as process:
             self._process = process
 
