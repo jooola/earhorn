@@ -1,10 +1,28 @@
-from prometheus_client import Enum, Summary
+from prometheus_client import Counter, Enum, Summary
 
 # Internal
 
 stats_scraping = Summary(
     "earhorn_stats_scraping",
     "Time spent extracting Icecast stats",
+)
+
+stats_errors = Counter(
+    "earhorn_stats_errors",
+    "Errors count extracting Icecast stats",
+)
+
+# Archive
+
+archive_segments = Counter(
+    "earhorn_archive_segments",
+    "Archiver segments counter",
+    labelnames=["state"],
+)
+
+archive_errors = Counter(
+    "earhorn_archive_errors",
+    "Archiver errors counter",
 )
 
 # Stream

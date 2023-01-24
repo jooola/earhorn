@@ -10,7 +10,7 @@ from prometheus_client.core import (
     InfoMetricFamily,
 )
 
-from .prometheus import stats_scraping
+from .prometheus import stats_errors, stats_scraping
 
 logger = logging.getLogger(__name__)
 
@@ -194,6 +194,7 @@ class StatsCollector:
             httpx.ReadError,
             httpx.ReadTimeout,
         ) as error:
+            stats_errors.inc()
             logger.error(error)
             return []
 

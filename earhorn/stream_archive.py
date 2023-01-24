@@ -9,6 +9,8 @@ from typing import List, Optional
 
 from typing_extensions import Protocol
 
+from .prometheus import archive_errors, archive_segments
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_ARCHIVE_SEGMENT_SIZE: int = 3600
@@ -163,14 +165,19 @@ class ArchiveHandler:
 
         return args
 
+    def _ingest_segment(self, segment: Path):
+        with archive_errors.count_exceptions(IngestSegmentError):
+            self.storage.ingest_segment(
+                segment,
+                self._segment_filepath(segment),
+            )
+            archive_segments.labels(state="ingested").inc()
+
     def ingest_pending_segments(self):
         if self.segments_pending_dir.is_dir():
             for segment in self.segments_pending_dir.iterdir():
                 try:
-                    self.storage.ingest_segment(
-                        segment,
-                        self._segment_filepath(segment),
-                    )
+                    self._ingest_segment(segment)
                 except IngestSegmentError as exception:
                     logger.error(exception)
 
@@ -187,12 +194,10 @@ class ArchiveHandler:
         ) as segments_list_fd:
             logger.info(f"reading segments from {self.segments_list}")
             for row in csv.reader(segments_list_fd):
+                archive_segments.labels(state="incoming").inc()
                 segment = self.segments_dir / row[0]
                 try:
-                    self.storage.ingest_segment(
-                        segment,
-                        self._segment_filepath(segment),
-                    )
+                    self._ingest_segment(segment)
 
                     self.ingest_pending_segments()
                 except InvalidSegmentFilename as exception:
@@ -205,6 +210,7 @@ class ArchiveHandler:
                     if segment != segment_pending and not segment_pending.is_file():
                         logger.debug(f"moving {segment} to {segment_pending}")
                         move(segment, segment_pending)
+                        archive_segments.labels(state="pending").inc()
 
         self.segments_list.unlink()
 
