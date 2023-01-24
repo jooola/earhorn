@@ -45,9 +45,12 @@ class LocalArchiveStorage:
     def ingest_segment(self, segment: Path, segment_filepath: Path):
         segment_fullpath = self.path / segment_filepath
 
-        logger.debug(f"moving segment to {segment_fullpath}")
-        segment_fullpath.parent.mkdir(parents=True, exist_ok=True)
-        move(segment, segment_fullpath)
+        try:
+            logger.debug(f"moving segment to {segment_fullpath}")
+            segment_fullpath.parent.mkdir(parents=True, exist_ok=True)
+            move(segment, segment_fullpath)
+        except OSError as exception:
+            raise IngestSegmentError(exception) from exception
 
 
 def _mkfifo(path: Path):
