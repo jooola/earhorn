@@ -27,8 +27,11 @@ from .stream_silence import (
     SilenceHandler,
 )
 
+for module in ("urllib3", "httpx"):
+    logging.getLogger(module).setLevel(logging.WARNING)
+    logging.getLogger(module).propagate = False
+
 logger = logging.getLogger(__name__)
-logger.addHandler(logging.NullHandler())
 
 
 load_dotenv()
