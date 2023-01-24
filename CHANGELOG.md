@@ -1,3 +1,11 @@
+<a name="v0.15.2"></a>
+
+## [v0.15.2](https://github.com/jooola/earhorn/compare/v0.15.1...v0.15.2) (2023-01-24)
+
+### :bug: Bug Fixes
+
+- don't log httpx or urllib3 debug messages
+
 <a name="v0.15.1"></a>
 
 ## [v0.15.1](https://github.com/jooola/earhorn/compare/v0.15.0...v0.15.1) (2023-01-23)
