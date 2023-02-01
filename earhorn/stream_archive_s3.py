@@ -16,6 +16,7 @@ from .stream_archive import IngestSegmentError
 
 logger = logging.getLogger(__name__)
 
+
 # pylint: disable=too-few-public-methods
 class S3ArchiveStorage:
     bucket: str
