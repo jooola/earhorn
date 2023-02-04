@@ -24,6 +24,7 @@ from .stream_archive import (
 from .stream_silence import (
     DEFAULT_SILENCE_DETECT_DURATION,
     DEFAULT_SILENCE_DETECT_NOISE,
+    DEFAULT_SILENCE_DETECT_RAW,
     SilenceHandler,
 )
 
@@ -86,6 +87,17 @@ load_dotenv()
     envvar="SILENCE_DETECT_DURATION",
     help="Silence detect duration.",
     default=DEFAULT_SILENCE_DETECT_DURATION,
+    show_default=True,
+)
+@click.option(
+    "--silence-detect-raw",
+    envvar="SILENCE_DETECT_RAW",
+    help=(
+        "Silence detect ffmpeg raw filter. Can be used "
+        "to add extra filters (e.g. highpass) or extra "
+        "options to the silencedetect filter."
+    ),
+    default=DEFAULT_SILENCE_DETECT_RAW,
     show_default=True,
 )
 @click.option(

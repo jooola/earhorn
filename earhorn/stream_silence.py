@@ -15,6 +15,7 @@ SILENCE_DETECT_RE = re.compile(
 )
 
 # https://ffmpeg.org/ffmpeg-filters.html#silencedetect
+DEFAULT_SILENCE_DETECT_RAW: str = "silencedetect=noise={noise}:d={duration}"
 DEFAULT_SILENCE_DETECT_NOISE: str = "-60dB"
 # https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax
 DEFAULT_SILENCE_DETECT_DURATION: str = "2.0"
@@ -41,20 +42,23 @@ class SilenceHandler:
 
     noise: str
     duration: str
+    raw: str
 
     def __init__(
         self,
         event_queue: Queue,
         noise: str = DEFAULT_SILENCE_DETECT_NOISE,
         duration: str = DEFAULT_SILENCE_DETECT_DURATION,
+        raw: str = DEFAULT_SILENCE_DETECT_RAW,
     ):
         self.event_queue = event_queue
         self.noise = noise
         self.duration = duration
+        self.raw = raw
 
     def ffmpeg_output(self):
         return [
-            *("-af", f"silencedetect=noise={self.noise}:d={self.duration}"),
+            *("-af", self.raw.format(noise=self.noise, duration=self.duration)),
             *("-f", "null", "/dev/null"),
         ]
 
