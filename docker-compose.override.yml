@@ -5,6 +5,7 @@ services:
     build:
       context: .
       target: dev
+    user: 1000:1000
     volumes:
       - .:/src
 

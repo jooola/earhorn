@@ -3,7 +3,6 @@ version: "3.9"
 services:
   earhorn:
     image: docker.io/jooola/earhorn:latest
-    user: 1000:1000
     restart: unless-stopped
     ports:
       - 9950:9950
