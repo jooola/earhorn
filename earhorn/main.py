@@ -167,6 +167,7 @@ def cli(
     stream_url: Optional[str],
     silence_detect_noise: str,
     silence_detect_duration: str,
+    silence_detect_raw: str,
     archive_path: Optional[str],
     archive_segment_filepath: str,
     archive_segment_size: int,
@@ -269,6 +270,7 @@ def cli(
                 event_queue=event_queue,
                 noise=silence_detect_noise,
                 duration=silence_detect_duration,
+                raw=silence_detect_raw,
             )
         ]
 
