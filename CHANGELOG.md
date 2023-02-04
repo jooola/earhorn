@@ -1,3 +1,16 @@
+<a name="v0.16.0"></a>
+
+## [v0.16.0](https://github.com/jooola/earhorn/compare/v0.15.2...v0.16.0) (2023-02-04)
+
+### :bug: Bug Fixes
+
+- catch os errors in local archive storage
+
+### :rocket: Features
+
+- allow tweaking the raw filter string
+- add metrics to stats and archive handler
+
 <a name="v0.15.2"></a>
 
 ## [v0.15.2](https://github.com/jooola/earhorn/compare/v0.15.1...v0.15.2) (2023-01-24)
