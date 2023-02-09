@@ -72,3 +72,7 @@ disable = "logging-fstring-interpolation"
 
 [tool.mypy]
 check_untyped_defs = true
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
