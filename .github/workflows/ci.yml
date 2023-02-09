@@ -77,11 +77,11 @@ jobs:
 
     container:
       image: ghcr.io/jooola/earhorn-ci:${{ matrix.python-version }}
-    services:
-      docker:
-        image: docker:20.10-dind
-    env:
-      DOCKER_HOST: tcp://docker:2375/
+    # services:
+    #   docker:
+    #     image: docker:20.10-dind
+    # env:
+    #   DOCKER_HOST: tcp://docker:2375/
 
     steps:
       - uses: actions/checkout@v3
