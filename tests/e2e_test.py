@@ -20,15 +20,17 @@ def test_cli(tmp_path: Path):
     archive_path = tmp_path / "archive"
     archive_path.mkdir()
 
-    with DockerCompose(here, compose_file_name="e2e-stack.yml", pull=True):
+    with DockerCompose(here, compose_file_name="e2e-stack.yml", pull=True) as infra:
+        icecast_port = infra.get_service_port("icecast", 8000)
+
         with Popen(
             [sys.executable, "-m", "earhorn.main"],
             env={
                 "LOG_LEVEL": "debug",
-                "STATS_URL": "http://localhost:32814/admin/stats.xml",
+                "STATS_URL": f"http://localhost:{icecast_port}/admin/stats.xml",
                 "STATS_USER": "admin",
                 "STATS_PASSWORD": "hackme",
-                "STREAM_URL": "http://localhost:32814/main.ogg",
+                "STREAM_URL": f"http://localhost:{icecast_port}/main.ogg",
                 "ARCHIVE_PATH": str(archive_path),
                 "ARCHIVE_COPY_STREAM": "true",
             },

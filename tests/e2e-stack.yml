@@ -4,7 +4,7 @@ services:
   icecast:
     image: libretime/icecast:latest
     ports:
-      - 32814:8000
+      - 8000
 
   liquidsoap:
     image: savonet/liquidsoap:v2.1.3
