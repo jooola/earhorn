@@ -36,8 +36,8 @@ jobs:
             PYTHON_VERSION=${{ matrix.python-version }}
           push: ${{ github.repository_owner == 'jooola' && github.ref == 'refs/heads/main' }}
           tags: ghcr.io/jooola/earhorn-ci:${{ matrix.python-version }}
-          cache-from: type=gha,scope=earhorn-ci
-          cache-to: type=gha,scope=earhorn-ci,mode=max
+          cache-from: type=gha,scope=ci-container-${{ matrix.python-version }}
+          cache-to: type=gha,scope=ci-container-${{ matrix.python-version }},mode=max
 
   pre-commit:
     runs-on: ubuntu-latest
