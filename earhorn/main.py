@@ -335,3 +335,8 @@ def cli(
 
     if stats_url is not None:
         stats_collector.close()
+
+
+if __name__ == "__main__":
+    # pylint: disable=no-value-for-parameter
+    cli()
