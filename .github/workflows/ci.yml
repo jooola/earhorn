@@ -34,7 +34,7 @@ jobs:
           context: ci
           build-args: |
             PYTHON_VERSION=${{ matrix.python-version }}
-          push: ${{ github.repository_owner == 'jooola' && github.ref == 'refs/heads/main' }}
+          push: ${{ github.repository_owner == 'jooola' }}
           tags: ghcr.io/jooola/earhorn-ci:${{ matrix.python-version }}
           cache-from: type=gha,scope=ci-container-${{ matrix.python-version }}
           cache-to: type=gha,scope=ci-container-${{ matrix.python-version }},mode=max
