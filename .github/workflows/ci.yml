@@ -69,34 +69,30 @@ jobs:
       - run: make lint
 
   test:
+    needs: [ci-container]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    container:
+      image: ghcr.io/jooola/earhorn-ci:${{ matrix.python-version }}
+    services:
+      docker:
+        image: docker:20.10-dind
+    env:
+      DOCKER_HOST: tcp://docker:2375/
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
 
       - uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-py${{ matrix.python-version }}-pip-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
+            ${{ runner.os }}-py${{ matrix.python-version }}-pip-
 
-      - run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-
-      - if: matrix.python-version == '3.11'
-        run: |
-          sudo apt-get install -y libxml2-dev libxslt1-dev
-
-      - run: make install-poetry
       - run: make install
       - run: make test
 
