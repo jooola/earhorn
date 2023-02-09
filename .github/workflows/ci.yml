@@ -8,6 +8,34 @@ on:
     branches: [main]
 
 jobs:
+  ci-container:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: ci
+          build-args: |
+            PYTHON_VERSION=${{ matrix.python-version }}
+          push: ${{ github.repository_owner == 'jooola' && github.ref == 'refs/heads/main' }}
+          tags: ghcr.io/jooola/earhorn-ci:${{ matrix.python-version }}
+          cache-from: type=gha,scope=earhorn-ci
+          cache-to: type=gha,scope=earhorn-ci,mode=max
+
   pre-commit:
     runs-on: ubuntu-latest
 
