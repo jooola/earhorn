@@ -1,3 +1,16 @@
+<a name="v0.17.0"></a>
+
+## [v0.17.0](https://github.com/jooola/earhorn/compare/v0.16.1...v0.17.0) (2023-02-09)
+
+### :rocket: Features
+
+- use env variables to pass data to file hook
+- allow logging the file hook stderr output
+
+### BREAKING CHANGE
+
+Passing a JSON blob to the file hook using system arguments has been removed. The file hook now uses environment variables for passing event data.
+
 <a name="v0.16.1"></a>
 
 ## [v0.16.1](https://github.com/jooola/earhorn/compare/v0.16.0...v0.16.1) (2023-02-04)
