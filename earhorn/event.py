@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 from queue import Empty, Queue
-from subprocess import CalledProcessError, run
+from subprocess import PIPE, CalledProcessError, run
 from threading import Event as ThreadEvent, Thread
 from typing import List, Optional, Union
 
@@ -44,19 +44,29 @@ class Hook(Protocol):  # pylint: disable=too-few-public-methods
         pass
 
 
+class HookError(Exception):
+    """
+    An error occurred during the hook execution.
+    """
+
+
 class FileHook:  # pylint: disable=too-few-public-methods
     filepath: Path
+    log_stderr: bool
 
-    def __init__(self, filepath: str) -> None:
+    def __init__(self, filepath: str, log_stderr: bool = False) -> None:
         self.filepath = Path(filepath)
         if not self.filepath.is_file():
             raise ValueError(f"hook '{self.filepath}' is not a file!")
+        self.log_stderr = log_stderr
 
     def __call__(self, event: AnyEvent):
         try:
-            run((self.filepath, event.json()), check=True)
+            cmd = run((self.filepath, event.json()), check=True, stderr=PIPE, text=True)
+            if self.log_stderr and cmd.stderr:
+                logger.info(cmd.stderr)
         except CalledProcessError as exception:
-            logger.error(exception)
+            raise HookError(exception.stderr) from exception
 
 
 class PrometheusHook:  # pylint: disable=too-few-public-methods
@@ -91,7 +101,11 @@ class EventHandler(Thread):
                 event = self.queue.get(timeout=2)
                 logger.debug(event)
                 for hook in self.hooks:
-                    hook(event)
+                    try:
+                        hook(event)
+                    except HookError as exception:
+                        logger.exception(exception)
+
                 self.queue.task_done()
             except Empty:
                 pass

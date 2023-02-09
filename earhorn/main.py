@@ -54,6 +54,12 @@ load_dotenv()
     type=click.Path(),
 )
 @click.option(
+    "--hook-log-stderr",
+    envvar="HOOK_LOG_STDERR",
+    help="Log the hook stderr output.",
+    is_flag=True,
+)
+@click.option(
     "--stats-url",
     envvar="STATS_URL",
     help="URL to the icecast admin xml stats page.",
@@ -161,6 +167,7 @@ load_dotenv()
 def cli(
     listen_port: int,
     hook: Optional[str],
+    hook_log_stderr: bool,
     stats_url: Optional[str],
     stats_user: str,
     stats_password: str,
@@ -252,7 +259,7 @@ def cli(
 
     # Setup file hook
     if hook is not None:
-        event_handler.hooks.append(FileHook(hook))
+        event_handler.hooks.append(FileHook(hook, hook_log_stderr))
 
     event_handler.start()
 
