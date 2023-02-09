@@ -1,8 +1,13 @@
 import json
 from datetime import datetime
 from decimal import Decimal
+from pathlib import Path
 
-from earhorn.event import SilenceEvent
+import pytest
+
+from earhorn.event import FileHook, HookError, SilenceEvent
+
+here = Path(__file__).parent
 
 
 def test_event_json():
@@ -33,3 +38,29 @@ def test_event_json():
             "name": "silence",
         }
     )
+
+
+@pytest.fixture(name="file_hook_event")
+def fixture_file_hook_event():
+    return SilenceEvent(
+        when=datetime(2022, 8, 16, 19, 1, 36, 791399),
+        kind="start",
+        seconds=Decimal("0"),
+    )
+
+
+def test_file_hook(file_hook_event: SilenceEvent):
+    hook = FileHook(str(here / "event_hook.sh"))
+    hook(file_hook_event)
+
+
+def test_file_hook_failure(file_hook_event: SilenceEvent):
+    hook = FileHook(str(here / "event_hook.sh"))
+    file_hook_event.kind = "invalid"  # type: ignore[assignment]
+    with pytest.raises(HookError):
+        hook(file_hook_event)
+
+
+def test_file_hook_must_exists():
+    with pytest.raises(ValueError):
+        FileHook(str(here / "inexistent.sh"))

@@ -216,6 +216,25 @@ def cli(
     To change the segments duration or format, see the ffmpeg documentation for details
     about the available options:
     https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment
+
+    HOOK SCRIPT:
+
+    To handle events using a custom script, define the `--hook` option with a path to
+    your script. This script will not receive any arguments, and the event details will be
+    passed via environment variables.
+
+    \b
+    | Event   | Environment variables | Values                                                |
+    | ------- | --------------------- | ----------------------------------------------------- |
+    | status  |                       |                                                       |
+    |         | EVENT_NAME            | `status`                                              |
+    |         | EVENT_KIND            | `up` or `down`                                        |
+    |         | EVENT_WHEN            | ISO 8601 datetime                                     |
+    | silence |                       |                                                       |
+    |         | EVENT_NAME            | `silence`                                             |
+    |         | EVENT_KIND            | `start` or `end`                                      |
+    |         | EVENT_WHEN            | ISO 8601 datetime                                     |
+    |         | EVENT_DURATION        | Duration in seconds (only available on silence end) |
     """
     logging.basicConfig(
         level=log_level.upper(),

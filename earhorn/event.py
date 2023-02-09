@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime
 from decimal import Decimal
@@ -62,7 +63,16 @@ class FileHook:  # pylint: disable=too-few-public-methods
 
     def __call__(self, event: AnyEvent):
         try:
-            cmd = run((self.filepath, event.json()), check=True, stderr=PIPE, text=True)
+            # Improve once pydantic v2 is released
+            # See https://github.com/pydantic/pydantic/discussions/4456
+            event_dict = json.loads(event.json())
+
+            env = {}
+            for key, value in event_dict.items():
+                if value is not None:
+                    env[f"EVENT_{key.upper()}"] = str(value)
+
+            cmd = run(str(self.filepath), env=env, check=True, stderr=PIPE, text=True)
             if self.log_stderr and cmd.stderr:
                 logger.info(cmd.stderr)
         except CalledProcessError as exception:
