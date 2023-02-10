@@ -20,7 +20,8 @@ RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     docker \
     ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && install -m 755 <(echo -e '#!/usr/bin/env bash\nexec docker compose "$@"') /usr/local/bin/docker-compose
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
