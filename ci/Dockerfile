@@ -5,9 +5,21 @@ FROM python:${PYTHON_VERSION}-slim as ci-python
 RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    ffmpeg \
+    curl \
     git \
+    gpg \
     make \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN set -eux \
+    && mkdir -m 0755 -p /etc/apt/keyrings \
+    && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
+    && echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bullseye stable" \
+    | tee /etc/apt/sources.list.d/docker.list \
+    && DEBIAN_FRONTEND=noninteractive apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    docker \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONDONTWRITEBYTECODE=1
