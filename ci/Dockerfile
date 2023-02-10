@@ -21,7 +21,8 @@ RUN set -eux \
     docker \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/* \
-    && install -m 755 <(echo -e '#!/usr/bin/env bash\nexec docker compose "$@"') /usr/local/bin/docker-compose
+    && echo -e '#!/usr/bin/env bash\nexec docker compose "$@"' > /usr/local/bin/docker-compose \
+    && chmod +x /usr/local/bin/docker-compose
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
