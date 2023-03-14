@@ -54,7 +54,7 @@ Passing a JSON blob to the file hook using system arguments has been removed. Th
 
 ### :bug: Bug Fixes
 
-- python3.7 importlib.metatadata import
+- python3.7 importlib.metadata import
 - add release to sentry init
 
 ### :rocket: Features
