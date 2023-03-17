@@ -51,6 +51,7 @@ class StreamListener:
 
         self._handlers = handlers
         self._client = httpx.Client()
+        self._process = None
 
     def _ffmpeg_command(self):
         command = [
