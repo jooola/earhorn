@@ -80,6 +80,7 @@ class StreamListener:
                 httpx.HTTPStatusError,
                 httpx.NetworkError,
                 httpx.TimeoutException,
+                httpx.TransportError,
             ) as error:
                 logger.error(f"could not stream from '{self.stream_url}'")
                 logger.debug(error)
