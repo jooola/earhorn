@@ -66,6 +66,8 @@ def _mkfifo(path: Path):
 
 # pylint: disable=too-many-instance-attributes
 class ArchiveHandler:
+    name = "archive_handler"
+
     SEGMENTS_DIR: str = "incoming"
     SEGMENTS_PENDING_DIR: str = "pending"
     SEGMENTS_LIST: str = "segments.csv"

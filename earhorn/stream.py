@@ -17,6 +17,8 @@ FFMPEG = getenv("FFMPEG_PATH", "ffmpeg")
 
 
 class StreamListenerHandler(Protocol):
+    name: str
+
     def ffmpeg_output(self) -> List[str]:
         pass
 
@@ -26,6 +28,7 @@ class StreamListenerHandler(Protocol):
 
 # pylint: disable=too-few-public-methods
 class StreamListener:
+    name = "stream_listener"
     stop: ThreadEvent
     event_queue: Queue
     stream_url: str
@@ -95,12 +98,12 @@ class StreamListener:
         self._client.close()
 
     def listen(self):
-        logger.info("starting stream listener")
+        logger.info("starting %s", self.name)
 
         # Run setup tasks before starting to listen for the stream
         for handler in self._handlers:
             if hasattr(handler, "before_listen_start"):
-                logger.info(f"preparing {handler.__class__.__name__} ")
+                logger.info(f"before_listen_start: {handler.name}")
                 handler.before_listen_start()
 
         command = self._ffmpeg_command()
@@ -127,7 +130,7 @@ class StreamListener:
         for thread in threads:
             thread.join()
 
-        logger.info("stream listener stopped")
+        logger.info("%s stopped", self.name)
 
     def stop_listener(self):
         if self._process is not None:
