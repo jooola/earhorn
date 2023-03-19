@@ -38,6 +38,8 @@ def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
 
 # pylint: disable=too-few-public-methods
 class SilenceHandler:
+    name = "silence_handler"
+
     event_queue: Queue
 
     noise: str

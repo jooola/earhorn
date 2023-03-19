@@ -104,7 +104,7 @@ class EventHandler(Thread):
         self.stop = stop
 
     def run(self):
-        logger.info("starting event handler")
+        logger.info("starting %s", self.name)
 
         while not self.stop.is_set() or not self.queue.empty():
             try:
@@ -120,4 +120,4 @@ class EventHandler(Thread):
             except Empty:
                 pass
 
-        logger.info("event handler stopped")
+        logger.info("%s stopped", self.name)
