@@ -28,8 +28,8 @@ from .stream_silence import (
     SilenceHandler,
 )
 
-for module in ("urllib3", "httpx"):
-    logging.getLogger(module).setLevel(logging.WARNING)
+for module in ("httpx", "urllib3", "botocore", "s3transfer"):
+    logging.getLogger(module).setLevel(logging.INFO)
     logging.getLogger(module).propagate = False
 
 logger = logging.getLogger(__name__)
