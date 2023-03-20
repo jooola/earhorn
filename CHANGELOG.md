@@ -1,3 +1,22 @@
+<a name="v0.18.0"></a>
+
+## [v0.18.0](https://github.com/jooola/earhorn/compare/v0.17.0...v0.18.0) (2023-03-20)
+
+### :bug: Bug Fixes
+
+- add names to stream handler threads
+- handle transport error on check_stream
+- prevent unbound var on early shutdown
+
+### :gear: CI/CD
+
+- cache container build
+- split test cache per python version
+
+### :rocket: Features
+
+- parse ffmpeg stderr instead of named pipes
+
 <a name="v0.17.0"></a>
 
 ## [v0.17.0](https://github.com/jooola/earhorn/compare/v0.16.1...v0.17.0) (2023-02-09)
