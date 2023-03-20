@@ -1,4 +1,5 @@
 import logging
+from abc import ABC, abstractmethod
 from os import getenv
 from queue import Queue
 from subprocess import DEVNULL, PIPE, Popen
@@ -7,7 +8,6 @@ from time import sleep
 from typing import List, Optional
 
 import httpx
-from typing_extensions import Protocol
 
 from .event import SilenceEvent, StatusEvent
 
@@ -16,13 +16,12 @@ logger = logging.getLogger(__name__)
 FFMPEG = getenv("FFMPEG_PATH", "ffmpeg")
 
 
-class StreamListenerHandler(Protocol):
+class StreamListenerHandler(ABC, Thread):
     name: str
+    queue: Queue
 
+    @abstractmethod
     def ffmpeg_output(self) -> List[str]:
-        pass
-
-    def process_handler(self, threads: List[Thread], process: Popen):
         pass
 
 
@@ -56,9 +55,14 @@ class StreamListener:
         self._client = httpx.Client()
         self._process = None
 
+        for handler in self._handlers:
+            logger.debug("starting %s", handler.name)
+            handler.start()
+
     def _ffmpeg_command(self):
         command = [
             *(FFMPEG, "-hide_banner", "-nostats"),
+            *("-loglevel", "40"),  # Verbose
             *("-re", "-vn", "-i", self.stream_url),
         ]
 
@@ -97,19 +101,16 @@ class StreamListener:
 
         self._client.close()
 
+        for handler in self._handlers:
+            logger.debug("joining %s", handler.name)
+            handler.join(timeout=3.0)
+
     def listen(self):
         logger.info("starting %s", self.name)
-
-        # Run setup tasks before starting to listen for the stream
-        for handler in self._handlers:
-            if hasattr(handler, "before_listen_start"):
-                logger.info(f"before_listen_start: {handler.name}")
-                handler.before_listen_start()
 
         command = self._ffmpeg_command()
         logger.debug(f"running ffmpeg command '{' '.join(command)}'")
 
-        threads: List[Thread] = []
         with Popen(
             command,
             bufsize=1,
@@ -121,14 +122,16 @@ class StreamListener:
         ) as process:
             self._process = process
 
-            for handler in self._handlers:
-                handler.process_handler(threads, self._process)
+            assert self._process.stderr is not None
+            for line in iter(self._process.stderr.readline, ""):
+                line = line.rstrip()
+                logger.debug(line)
+                for handler in self._handlers:
+                    handler.queue.put(line)
+
             exit_code = self._process.wait()
 
         logger.info(f"ffmpeg command exited with {exit_code}")
-
-        for thread in threads:
-            thread.join()
 
         logger.info("%s stopped", self.name)
 

@@ -293,6 +293,7 @@ def cli(
     if stream_url is not None:
         handlers: List[StreamListenerHandler] = [
             SilenceHandler(
+                stop=stop_event,
                 event_queue=event_queue,
                 noise=silence_detect_noise,
                 duration=silence_detect_duration,
@@ -313,6 +314,7 @@ def cli(
 
             handlers.append(
                 ArchiveHandler(
+                    stop=stop_event,
                     storage=archive_storage,
                     segment_size=archive_segment_size,
                     segment_filepath=archive_segment_filepath,

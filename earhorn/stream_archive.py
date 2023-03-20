@@ -1,15 +1,16 @@
-import csv
 import logging
-import os
+import re
+from itertools import chain
 from pathlib import Path
+from queue import Empty, Queue
 from shutil import move
-from subprocess import Popen
-from threading import Thread
-from typing import List, Optional
+from threading import Event as ThreadEvent
+from typing import Optional, Set
 
 from typing_extensions import Protocol
 
 from .prometheus import archive_errors, archive_segments
+from .stream import StreamListenerHandler
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +20,22 @@ DEFAULT_ARCHIVE_SEGMENT_FORMAT: str = "ogg"
 DEFAULT_ARCHIVE_SEGMENT_FILEPATH: str = (
     "{year}/{month}/{day}/{hour}{minute}{second}.{format}"
 )
+
+SEGMENT_STARTED_RE = re.compile(
+    r"\[segment @ .*\] segment:'(.*)' starts with packet .*",
+)
+SEGMENT_ENDED_RE = re.compile(
+    r"\[segment @ .*\] segment:'(.*)' count:\d+ ended",
+)
+
+
+def parse_segment_line(regex: re.Pattern, line: str) -> Optional[Path]:
+    line = line.strip()
+    match = regex.search(line)
+    if match is None:
+        return None
+
+    return Path(match.group(1))
 
 
 class IngestSegmentError(Exception):
@@ -55,22 +72,14 @@ class LocalArchiveStorage:
             raise IngestSegmentError(exception) from exception
 
 
-def _mkfifo(path: Path):
-    if path.exists():
-        path.unlink()
-
-    logger.debug(f"creating a fifo at {path}")
-    os.mkfifo(path)
-    logger.debug(f"fifo at {path} created!")
-
-
 # pylint: disable=too-many-instance-attributes
-class ArchiveHandler:
+class ArchiveHandler(StreamListenerHandler):
     name = "archive_handler"
+    stop: ThreadEvent
+    queue: Queue
 
     SEGMENTS_DIR: str = "incoming"
     SEGMENTS_PENDING_DIR: str = "pending"
-    SEGMENTS_LIST: str = "segments.csv"
     SEGMENT_PREFIX: str = "segment"
     SEGMENT_STRFTIME: str = "%Y-%m-%d-%H-%M-%S"
 
@@ -82,9 +91,12 @@ class ArchiveHandler:
     segment_format_options: Optional[str]
     copy_stream: bool
 
+    segments_pending_queue: Set[Path]
+
     # pylint: disable=too-many-arguments
     def __init__(
         self,
+        stop: ThreadEvent,
         storage: ArchiveStorage,
         segment_filepath: str = DEFAULT_ARCHIVE_SEGMENT_FILEPATH,
         segment_size: int = DEFAULT_ARCHIVE_SEGMENT_SIZE,
@@ -92,6 +104,10 @@ class ArchiveHandler:
         segment_format_options: Optional[str] = None,
         copy_stream: bool = False,
     ):
+        super().__init__()
+        self.stop = stop
+        self.queue = Queue()
+
         self.storage = storage
 
         self.segment_filepath = segment_filepath
@@ -101,11 +117,12 @@ class ArchiveHandler:
         self.copy_stream = copy_stream
 
         self.segments_dir = Path(self.SEGMENTS_DIR)
-        self.segments_list = Path(self.SEGMENTS_LIST)
         self.segments_pending_dir = Path(self.SEGMENTS_PENDING_DIR)
 
         self.segments_dir.mkdir(exist_ok=True)
         self.segments_pending_dir.mkdir(exist_ok=True)
+
+        self.segments_pending_queue = set()
 
     def _tmp_segment_filename(self) -> Path:
         return Path(
@@ -160,12 +177,29 @@ class ArchiveHandler:
             args += ("-segment_format_options", self.segment_format_options)
 
         args += (
-            *("-segment_list", str(self.segments_list)),
             *("-reset_timestamps", "1"),
             str(self.segments_dir / self._tmp_segment_filename()),
         )
 
         return args
+
+    def gather_unmanaged_segments(self):
+        for segment_incoming in chain(
+            self.segments_dir.iterdir(),
+            self.segments_pending_dir.iterdir(),
+        ):
+            self.accept_incoming_segment(segment_incoming)
+
+    def accept_incoming_segment(self, segment_incoming: Path) -> Path:
+        segment_pending = self.segments_pending_dir / segment_incoming.name
+
+        if segment_incoming != segment_pending:
+            logger.debug(f"moving {segment_incoming} to {segment_pending}")
+            move(segment_incoming, segment_pending)
+
+        self.segments_pending_queue.add(segment_pending)
+
+        return segment_pending
 
     def _ingest_segment(self, segment: Path):
         with archive_errors.count_exceptions(IngestSegmentError):
@@ -176,51 +210,58 @@ class ArchiveHandler:
             archive_segments.labels(state="ingested").inc()
 
     def ingest_pending_segments(self):
-        if self.segments_pending_dir.is_dir():
-            for segment in self.segments_pending_dir.iterdir():
-                try:
-                    self._ingest_segment(segment)
-                except IngestSegmentError as exception:
-                    logger.error(exception)
+        while self.segments_pending_queue:
+            segment = self.segments_pending_queue.pop()
 
-                    # Go try to ingest segments from incoming, pending can wait
-                    break
+            try:
+                self._ingest_segment(segment)
+            except IngestSegmentError as exception:
+                self.segments_pending_queue.add(segment)
 
-    def wait_for_segments(self):
+                logger.error(exception)
+
+                # Go try to ingest segments from incoming, pending can wait
+                break
+
+    def run(self):
+        logger.info("starting %s", self.name)
+
         # Ingest pending segments before starting
+        self.gather_unmanaged_segments()
         self.ingest_pending_segments()
 
-        with self.segments_list.open(
-            buffering=1,
-            encoding="utf-8",
-        ) as segments_list_fd:
-            logger.info(f"reading segments from {self.segments_list}")
-            for row in csv.reader(segments_list_fd):
+        while not self.stop.is_set() or not self.queue.empty():
+            try:
+                line = self.queue.get(timeout=1.0)
+            except Empty:
+                continue
+
+            segment_started = parse_segment_line(SEGMENT_STARTED_RE, line)
+            if segment_started is not None:
+                logger.info("segment started %s", segment_started)
+                self.queue.task_done()
+                continue
+
+            segment_ended = parse_segment_line(SEGMENT_ENDED_RE, line)
+            if segment_ended is None:
+                self.queue.task_done()
+                continue
+
+            logger.info("segment ended %s", segment_ended)
+
+            try:
+                self.accept_incoming_segment(segment_ended)
                 archive_segments.labels(state="incoming").inc()
-                segment = self.segments_dir / row[0]
-                try:
-                    self._ingest_segment(segment)
+                self.queue.task_done()
 
-                    self.ingest_pending_segments()
-                except InvalidSegmentFilename as exception:
-                    logger.error(exception)
-                    continue
-                except IngestSegmentError as exception:
-                    logger.error(exception)
+                self.ingest_pending_segments()
+            except InvalidSegmentFilename as exception:
+                logger.error(exception)
+                continue
+            except IngestSegmentError as exception:
+                logger.error(exception)
+                archive_segments.labels(state="pending").inc()
 
-                    segment_pending = self.segments_pending_dir / segment.name
-                    if segment != segment_pending and not segment_pending.is_file():
-                        logger.debug(f"moving {segment} to {segment_pending}")
-                        move(segment, segment_pending)
-                        archive_segments.labels(state="pending").inc()
-
-        self.segments_list.unlink()
-
-    def before_listen_start(self):
-        _mkfifo(self.segments_list)
-
-    # pylint: disable=unused-argument
-    def process_handler(self, threads: List[Thread], process: Popen):
-        thread = Thread(target=self.wait_for_segments)
-        thread.start()
-        threads.append(thread)
+        self.gather_unmanaged_segments()
+        self.ingest_pending_segments()
+        logger.info("%s stopped", self.name)
