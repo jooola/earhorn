@@ -2,7 +2,7 @@ from datetime import datetime
 from pathlib import Path
 from queue import Queue
 from threading import Event as ThreadEvent
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from earhorn.stream import StreamListener
 from earhorn.stream_silence import SilenceEvent, SilenceHandler, parse_silence_detect
@@ -30,41 +30,41 @@ SILENCE_DETECT_EVENTS = [
 ]
 
 
-def test_parse_silence_detect():
-    with patch("earhorn.event.now") as now_mock:
-        now_mock.return_value = now
-        for line, expected in zip(
-            SILENCE_DETECT_RAW.strip().splitlines(),
-            SILENCE_DETECT_EVENTS,
-        ):
-            found = parse_silence_detect(line)
-            assert found == expected
+@patch("earhorn.event.now")
+def test_parse_silence_detect(now_mock: Mock):
+    now_mock.return_value = now
+    for line, expected in zip(
+        SILENCE_DETECT_RAW.strip().splitlines(),
+        SILENCE_DETECT_EVENTS,
+    ):
+        found = parse_silence_detect(line)
+        assert found == expected
 
 
-def test_silence_handler():
-    with patch("earhorn.event.now") as now_mock:
-        now_mock.return_value = now
+@patch("earhorn.event.now")
+def test_silence_handler(now_mock: Mock):
+    now_mock.return_value = now
 
-        sample_events = [
-            SilenceEvent(name="silence", kind="start", seconds=5.00338, duration=None),
-            SilenceEvent(name="silence", kind="end", seconds=9.99696, duration=4.99358),
-            SilenceEvent(name="silence", kind="start", seconds=15.0027, duration=None),
-            SilenceEvent(name="silence", kind="end", seconds=20.0061, duration=5.00336),
-        ]
+    sample_events = [
+        SilenceEvent(name="silence", kind="start", seconds=5.00338, duration=None),
+        SilenceEvent(name="silence", kind="end", seconds=9.99696, duration=4.99358),
+        SilenceEvent(name="silence", kind="start", seconds=15.0027, duration=None),
+        SilenceEvent(name="silence", kind="end", seconds=20.0061, duration=5.00336),
+    ]
 
-        stop = ThreadEvent()
-        queue: Queue = Queue()
-        stream_listener = StreamListener(
-            stop=stop,
-            event_queue=queue,
-            stream_url=str(here / "sample.ogg"),
-            handlers=[SilenceHandler(stop=stop, event_queue=queue)],
-        )
-        stream_listener.listen()
-        stop.set()
+    stop = ThreadEvent()
+    queue: Queue = Queue()
+    stream_listener = StreamListener(
+        stop=stop,
+        event_queue=queue,
+        stream_url=str(here / "sample.ogg"),
+        handlers=[SilenceHandler(stop=stop, event_queue=queue)],
+    )
+    stream_listener.listen()
+    stop.set()
 
-        for expected in sample_events:
-            found = queue.get(False)
-            assert found == expected
+    for expected in sample_events:
+        found = queue.get(False)
+        assert found == expected
 
-        assert queue.empty()
+    assert queue.empty()
