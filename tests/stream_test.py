@@ -52,14 +52,16 @@ def test_silence_handler():
             SilenceEvent(name="silence", kind="end", seconds=20.0061, duration=5.00336),
         ]
 
+        stop = ThreadEvent()
         queue: Queue = Queue()
         stream_listener = StreamListener(
-            stop=ThreadEvent(),
+            stop=stop,
             event_queue=queue,
             stream_url=str(here / "sample.ogg"),
-            handlers=[SilenceHandler(event_queue=queue)],
+            handlers=[SilenceHandler(stop=stop, event_queue=queue)],
         )
         stream_listener.listen()
+        stop.set()
 
         for expected in sample_events:
             found = queue.get(False)

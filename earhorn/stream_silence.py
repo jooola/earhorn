@@ -1,12 +1,12 @@
 import logging
 import re
 from decimal import Decimal
-from queue import Queue
-from subprocess import Popen
-from threading import Thread
-from typing import List, Optional
+from queue import Empty, Queue
+from threading import Event as ThreadEvent
+from typing import Optional
 
 from .event import SilenceEvent
+from .stream import StreamListenerHandler
 
 logger = logging.getLogger(__name__)
 
@@ -37,8 +37,10 @@ def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
 
 
 # pylint: disable=too-few-public-methods
-class SilenceHandler:
+class SilenceHandler(StreamListenerHandler):
     name = "silence_handler"
+    stop: ThreadEvent
+    queue: Queue
 
     event_queue: Queue
 
@@ -46,13 +48,19 @@ class SilenceHandler:
     duration: str
     raw: str
 
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
+        stop: ThreadEvent,
         event_queue: Queue,
         noise: str = DEFAULT_SILENCE_DETECT_NOISE,
         duration: str = DEFAULT_SILENCE_DETECT_DURATION,
         raw: str = DEFAULT_SILENCE_DETECT_RAW,
     ):
+        super().__init__()
+        self.stop = stop
+        self.queue = Queue()
+
         self.event_queue = event_queue
         self.noise = noise
         self.duration = duration
@@ -64,17 +72,21 @@ class SilenceHandler:
             *("-f", "null", "/dev/null"),
         ]
 
-    def parse_process_output(self, process: Popen):
-        logger.info("starting to parse stdout")
-        for line in process.stderr:  # type: ignore
-            event = parse_silence_detect(line)
-            if event is None:
+    def run(self):
+        logger.info("starting %s", self.name)
+
+        # pylint: disable=duplicate-code
+        while not self.stop.is_set() or not self.queue.empty():
+            try:
+                line = self.queue.get(timeout=1.0)
+            except Empty:
                 continue
 
-            logger.info(f"silence {event.kind}: {event.when}")
-            self.event_queue.put(event)
+            event = parse_silence_detect(line)
+            if event is not None:
+                logger.info(f"silence {event.kind}: {event.when}")
+                self.event_queue.put(event)
 
-    def process_handler(self, threads: List[Thread], process: Popen):
-        thread = Thread(target=self.parse_process_output, args=(process,))
-        thread.start()
-        threads.append(thread)
+            self.queue.task_done()
+
+        logger.info("%s stopped", self.name)
