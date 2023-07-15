@@ -1,5 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
+from decimal import Decimal
 from os import getenv
 from queue import Queue
 from subprocess import DEVNULL, PIPE, Popen
@@ -80,7 +81,9 @@ class StreamListener:
                 with self._client.stream("GET", self.stream_url) as response:
                     response.raise_for_status()
                     self.event_queue.put(StatusEvent(kind="up"))
-                    self.event_queue.put(SilenceEvent(kind="end", seconds=0.0))
+                    self.event_queue.put(
+                        SilenceEvent(kind="end", seconds=Decimal("0.0"))
+                    )
                     return
 
             except (

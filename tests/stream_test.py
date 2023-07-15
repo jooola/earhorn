@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
 from queue import Queue
 from threading import Event as ThreadEvent
@@ -21,12 +22,27 @@ SILENCE_DETECT_RAW = """
 """
 
 SILENCE_DETECT_EVENTS = [
-    SilenceEvent(when=now, kind="start", seconds=52.697, duration=None),
-    SilenceEvent(when=now, kind="end", seconds=55.23, duration=2.53304),
-    SilenceEvent(when=now, kind="start", seconds=2216, duration=None),
-    SilenceEvent(when=now, kind="end", seconds=2218.73, duration=2.73506),
-    SilenceEvent(when=now, kind="start", seconds=2421.39, duration=None),
-    SilenceEvent(when=now, kind="end", seconds=2423.92, duration=2.53304),
+    SilenceEvent(when=now, kind="start", seconds=Decimal("52.697"), duration=None),
+    SilenceEvent(
+        when=now,
+        kind="end",
+        seconds=Decimal("55.23"),
+        duration=Decimal("2.53304"),
+    ),
+    SilenceEvent(when=now, kind="start", seconds=Decimal("2216"), duration=None),
+    SilenceEvent(
+        when=now,
+        kind="end",
+        seconds=Decimal("2218.73"),
+        duration=Decimal("2.73506"),
+    ),
+    SilenceEvent(when=now, kind="start", seconds=Decimal("2421.39"), duration=None),
+    SilenceEvent(
+        when=now,
+        kind="end",
+        seconds=Decimal("2423.92"),
+        duration=Decimal("2.53304"),
+    ),
 ]
 
 
@@ -46,10 +62,30 @@ def test_silence_handler(now_mock: Mock):
     now_mock.return_value = now
 
     sample_events = [
-        SilenceEvent(name="silence", kind="start", seconds=5.00338, duration=None),
-        SilenceEvent(name="silence", kind="end", seconds=9.99696, duration=4.99358),
-        SilenceEvent(name="silence", kind="start", seconds=15.0027, duration=None),
-        SilenceEvent(name="silence", kind="end", seconds=20.0061, duration=5.00336),
+        SilenceEvent(
+            name="silence",
+            kind="start",
+            seconds=Decimal("5.00338"),
+            duration=None,
+        ),
+        SilenceEvent(
+            name="silence",
+            kind="end",
+            seconds=Decimal("9.99696"),
+            duration=Decimal("4.99358"),
+        ),
+        SilenceEvent(
+            name="silence",
+            kind="start",
+            seconds=Decimal("15.0027"),
+            duration=None,
+        ),
+        SilenceEvent(
+            name="silence",
+            kind="end",
+            seconds=Decimal("20.0061"),
+            duration=Decimal("5.00336"),
+        ),
     ]
 
     stop = ThreadEvent()

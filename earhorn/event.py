@@ -1,4 +1,3 @@
-import json
 import logging
 from datetime import datetime
 from decimal import Decimal
@@ -26,14 +25,14 @@ class Event(BaseModel):
 
 
 class SilenceEvent(Event):
-    name = "silence"
+    name: Literal["silence"] = "silence"
     kind: Literal["start", "end"]
-    seconds: Optional[Decimal]
-    duration: Optional[Decimal]
+    seconds: Decimal
+    duration: Optional[Decimal] = None
 
 
 class StatusEvent(Event):
-    name = "status"
+    name: Literal["status"] = "status"
     kind: Literal["up", "down"]
 
 
@@ -63,13 +62,11 @@ class FileHook:  # pylint: disable=too-few-public-methods
 
     def __call__(self, event: AnyEvent):
         try:
-            # Improve once pydantic v2 is released
-            # See https://github.com/pydantic/pydantic/discussions/4456
-            event_dict = json.loads(event.json())
-
             env = {}
-            for key, value in event_dict.items():
+            for key, value in event.model_dump().items():
                 if value is not None:
+                    if isinstance(value, datetime):
+                        value = value.isoformat()
                     env[f"EVENT_{key.upper()}"] = str(value)
 
             cmd = run(str(self.filepath), env=env, check=True, stderr=PIPE, text=True)
