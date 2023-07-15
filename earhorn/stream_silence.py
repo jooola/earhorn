@@ -30,7 +30,7 @@ def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
     logger.debug(line)
 
     return SilenceEvent(
-        kind=match.group(1),
+        kind=match.group(1),  # type: ignore[arg-type]
         seconds=Decimal(match.group(2)),
         duration=Decimal(match.group(3)) if match.group(3) else None,
     )
