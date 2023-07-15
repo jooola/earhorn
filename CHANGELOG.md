@@ -1,3 +1,17 @@
+<a name="v0.19.0"></a>
+
+## [v0.19.0](https://github.com/jooola/earhorn/compare/v0.18.0...v0.19.0) (2023-07-15)
+
+### :gear: CI/CD
+
+- use python 3.11 as default
+- enable renovate lock file maintenance
+- remove python 3.7
+
+### :rocket: Features
+
+- require python >=3.8
+
 <a name="v0.18.0"></a>
 
 ## [v0.18.0](https://github.com/jooola/earhorn/compare/v0.17.0...v0.18.0) (2023-03-20)
