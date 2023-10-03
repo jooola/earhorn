@@ -105,7 +105,7 @@ def test_silence_handler(now_mock: Mock):
         found = queue.get(False)
         assert found.name == expected.name
         assert found.kind == expected.kind
-        assert found.seconds == pytest.approx(expected.seconds, rel=1e-3)
-        assert found.duration == pytest.approx(expected.duration, rel=1e-3)
+        assert found.seconds == pytest.approx(expected.seconds, rel=Decimal(1e-3))
+        assert found.duration == pytest.approx(expected.duration, rel=Decimal(1e-3))
 
     assert queue.empty()
