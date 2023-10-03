@@ -1,3 +1,12 @@
+<a name="v0.20.0"></a>
+
+## [v0.20.0](https://github.com/jooola/earhorn/compare/v0.19.0...v0.20.0) (2023-10-03)
+
+### :rocket: Features
+
+- support python 3.12 ([#212](https://github.com/jooola/earhorn/issues/212))
+- require python>=3.9
+
 <a name="v0.19.0"></a>
 
 ## [v0.19.0](https://github.com/jooola/earhorn/compare/v0.18.0...v0.19.0) (2023-07-15)
