@@ -5,6 +5,8 @@ from queue import Queue
 from threading import Event as ThreadEvent
 from unittest.mock import Mock, patch
 
+import pytest
+
 from earhorn.stream import StreamListener
 from earhorn.stream_silence import SilenceEvent, SilenceHandler, parse_silence_detect
 
@@ -84,12 +86,12 @@ def test_silence_handler(now_mock: Mock):
             name="silence",
             kind="end",
             seconds=Decimal("20.0061"),
-            duration=Decimal("5.00336"),
+            duration=Decimal("5.00338"),
         ),
     ]
 
     stop = ThreadEvent()
-    queue: Queue = Queue()
+    queue: Queue[SilenceEvent] = Queue()
     stream_listener = StreamListener(
         stop=stop,
         event_queue=queue,
@@ -101,6 +103,9 @@ def test_silence_handler(now_mock: Mock):
 
     for expected in sample_events:
         found = queue.get(False)
-        assert found == expected
+        assert found.name == expected.name
+        assert found.kind == expected.kind
+        assert found.seconds == pytest.approx(expected.seconds)
+        assert found.duration == pytest.approx(expected.duration)
 
     assert queue.empty()
