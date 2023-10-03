@@ -6,7 +6,7 @@ from queue import Queue
 from subprocess import DEVNULL, PIPE, Popen
 from threading import Event as ThreadEvent, Thread
 from time import sleep
-from typing import List, Optional
+from typing import Optional
 
 import httpx
 
@@ -22,7 +22,7 @@ class StreamListenerHandler(ABC, Thread):
     queue: Queue
 
     @abstractmethod
-    def ffmpeg_output(self) -> List[str]:
+    def ffmpeg_output(self) -> list[str]:
         pass
 
 
@@ -33,7 +33,7 @@ class StreamListener:
     event_queue: Queue
     stream_url: str
 
-    _handlers: List[StreamListenerHandler] = []
+    _handlers: list[StreamListenerHandler] = []
     _client: httpx.Client
     _process: Optional[Popen]
 
@@ -43,7 +43,7 @@ class StreamListener:
         stop: ThreadEvent,
         event_queue: Queue,
         stream_url: str,
-        handlers: List[StreamListenerHandler],
+        handlers: list[StreamListenerHandler],
     ):
         self.stop = stop
         self.event_queue = event_queue

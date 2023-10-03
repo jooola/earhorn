@@ -5,7 +5,7 @@ from pathlib import Path
 from queue import Empty, Queue
 from subprocess import PIPE, CalledProcessError, run
 from threading import Event as ThreadEvent, Thread
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, Field
 from typing_extensions import Literal, Protocol, TypeAlias
@@ -89,7 +89,7 @@ class EventHandler(Thread):
     name = "event_handler"
     queue: Queue
     stop: ThreadEvent
-    hooks: List[Hook] = []
+    hooks: list[Hook] = []
 
     def __init__(
         self,

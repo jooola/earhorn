@@ -1,5 +1,4 @@
 import logging
-from typing import Dict, Tuple
 
 import httpx
 from lxml import etree
@@ -36,7 +35,7 @@ def gauge_metric_family_with_labels(
     name: str,
     documentation: str,
     value: str,
-    labels: Dict[str, str],
+    labels: dict[str, str],
 ):
     metric = GaugeMetricFamily(
         name=name,
@@ -162,12 +161,12 @@ class StatsCollector:
 
     _client: httpx.Client
     url: str
-    auth: Tuple[str, str]
+    auth: tuple[str, str]
 
     def __init__(
         self,
         url: str,
-        auth: Tuple[str, str],
+        auth: tuple[str, str],
         registry: CollectorRegistry = REGISTRY,
     ):
         self.url = url
@@ -212,7 +211,7 @@ class StatsCollector:
         metrics.append(icecast_source_info)
         metrics.extend(icecast_source_metrics.values())
 
-        infos: Dict[str, str] = {}
+        infos: dict[str, str] = {}
         for child in root.iterchildren():
             if child.tag in ICECAST_INFO_KEYS:
                 if child.text is not None:
@@ -226,7 +225,7 @@ class StatsCollector:
                     )
 
             elif child.tag == "source":
-                source_infos: Dict[str, str] = {}
+                source_infos: dict[str, str] = {}
                 source_labels = [child.attrib.get("mount")]
 
                 for source_child in child.iterchildren():

@@ -3,7 +3,7 @@ import os
 from queue import Queue
 from signal import SIGINT, SIGTERM, signal
 from threading import Event as ThreadEvent
-from typing import Callable, List, Optional
+from typing import Callable, Optional
 
 import click
 from dotenv import load_dotenv
@@ -256,7 +256,7 @@ def cli(
 
     # Setup stop mechanism
     stop_event = ThreadEvent()
-    stop_functions: List[Callable] = []
+    stop_functions: list[Callable] = []
 
     def stop_handler(_signum, _frame):
         logger.info("stopping...")
@@ -291,7 +291,7 @@ def cli(
 
     # Starting stream listener
     if stream_url is not None:
-        handlers: List[StreamListenerHandler] = [
+        handlers: list[StreamListenerHandler] = [
             SilenceHandler(
                 stop=stop_event,
                 event_queue=event_queue,

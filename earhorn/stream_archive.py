@@ -5,7 +5,7 @@ from pathlib import Path
 from queue import Empty, Queue
 from shutil import move
 from threading import Event as ThreadEvent
-from typing import Optional, Set
+from typing import Optional
 
 from typing_extensions import Protocol
 
@@ -91,7 +91,7 @@ class ArchiveHandler(StreamListenerHandler):
     segment_format_options: Optional[str]
     copy_stream: bool
 
-    segments_pending_queue: Set[Path]
+    segments_pending_queue: set[Path]
 
     # pylint: disable=too-many-arguments
     def __init__(
