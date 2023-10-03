@@ -1,4 +1,4 @@
-FROM python:3.11-alpine as build
+FROM python:3.12-alpine as build
 
 RUN set -eux; \
     pip --no-cache-dir install --no-compile build
@@ -8,7 +8,7 @@ COPY . .
 RUN set -eux; \
     python3 -m build
 
-FROM python:3.11-alpine as base
+FROM python:3.12-alpine as base
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
