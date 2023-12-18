@@ -34,9 +34,3 @@ release: lint test
 
 ci-publish:
 	poetry publish --no-interaction --build
-
-changelog:
-	git-chglog --output CHANGELOG.md
-	if command -v npx > /dev/null; then npx prettier --write CHANGELOG.md; fi
-	git add CHANGELOG.md
-	git commit -m "docs: regenerate changelog"
