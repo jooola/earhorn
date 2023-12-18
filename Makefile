@@ -29,8 +29,5 @@ lint: install
 test: install
 	poetry run pytest -n $(CPU_CORES) --color=yes -v --cov=earhorn tests
 
-release: lint test
-	./scripts/release.sh
-
 ci-publish:
 	poetry publish --no-interaction --build
