@@ -1,3 +1,5 @@
+# Changelog
+
 <a name="v0.20.0"></a>
 
 ## [v0.20.0](https://github.com/jooola/earhorn/compare/v0.19.0...v0.20.0) (2023-10-03)
