@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.2](https://github.com/jooola/earhorn/compare/v0.20.1...v0.20.2) (2023-12-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency httpx to ^0.26.0 ([#234](https://github.com/jooola/earhorn/issues/234)) ([f980169](https://github.com/jooola/earhorn/commit/f980169b287bfff8bc01decd0132bc07b44794f6))
+
 ## [0.20.1](https://github.com/jooola/earhorn/compare/v0.20.0...v0.20.1) (2023-12-18)
 
 
