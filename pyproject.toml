@@ -38,7 +38,7 @@ sentry = ["sentry-sdk"]
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.4"
 black = "^23.1"
-flake8 = "^6.0.0"
+flake8 = "^7.0.0"
 isort = "^5.9.3"
 lxml-stubs = "^0.4.0"
 moto = "^4.0.0"
