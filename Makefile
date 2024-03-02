@@ -22,7 +22,7 @@ lint: .venv
 	poetry run black . --diff --check
 	poetry run isort . --check
 	poetry run pylint --jobs=$(CPU_CORES) earhorn tests
-	poetry run mypy earhorn tests || true
+	poetry run mypy earhorn tests
 
 test: .venv
 	poetry run pytest -n $(CPU_CORES) --color=yes -v --cov=earhorn tests
