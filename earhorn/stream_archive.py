@@ -48,8 +48,7 @@ class InvalidSegmentFilename(IngestSegmentError):
 
 # pylint: disable=too-few-public-methods
 class ArchiveStorage(Protocol):
-    def ingest_segment(self, segment: Path, segment_filepath: Path):
-        ...
+    def ingest_segment(self, segment: Path, segment_filepath: Path): ...
 
 
 # pylint: disable=too-few-public-methods
