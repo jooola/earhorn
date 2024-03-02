@@ -52,7 +52,7 @@ repos:
   - repo: local
     hooks:
       - id: format
-        name: Format code
+        name: format
         description: Format code
         entry: make format
         language: system
