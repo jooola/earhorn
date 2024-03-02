@@ -8,25 +8,23 @@ all: install format lint test
 install-poetry:
 	curl -sSL https://install.python-poetry.org | python3 -
 
-POETRY_VIRTUALENVS_IN_PROJECT = true
+export POETRY_VIRTUALENVS_IN_PROJECT = true
 
-INSTALL_STAMP := .installed
-install: $(INSTALL_STAMP)
-$(INSTALL_STAMP):
+install: .venv
+.venv:
 	poetry install --all-extras
-	touch $(INSTALL_STAMP)
 
-format: install
+format: .venv
 	poetry run black .
 	poetry run isort . --combine-as --profile black
 
-lint: install
+lint: .venv
 	poetry run black . --diff --check
 	poetry run isort . --combine-as --profile black --check
 	poetry run pylint --jobs=$(CPU_CORES) earhorn tests
 	poetry run mypy earhorn tests || true
 
-test: install
+test: .venv
 	poetry run pytest -n $(CPU_CORES) --color=yes -v --cov=earhorn tests
 
 ci-publish:
