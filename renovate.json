@@ -1,9 +1,9 @@
 {
   "extends": [
-    "config:base",
+    "config:recommended",
     ":enablePreCommit",
-    ":preserveSemverRanges",
-    ":disableDependencyDashboard"
+    ":automergePatch",
+    ":semanticCommits"
   ],
   "labels": ["dependencies"],
   "lockFileMaintenance": {
