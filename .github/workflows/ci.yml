@@ -61,7 +61,6 @@ jobs:
         run: |
           sudo apt-get install -y libxml2-dev libxslt1-dev
 
-      - run: make install
       - run: make test
 
   publish:
