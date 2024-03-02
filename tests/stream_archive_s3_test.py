@@ -1,12 +1,12 @@
 from pathlib import Path
 
 import boto3
-from moto import mock_s3  # type: ignore
+from moto import mock_aws
 
 from earhorn.stream_archive_s3 import S3ArchiveStorage
 
 
-@mock_s3
+@mock_aws
 def test_s3_archive_storage_ingest_segment(tmp_path: Path):
     tmp_segment = tmp_path / "somefile.txt"
     tmp_segment.write_text("test")
