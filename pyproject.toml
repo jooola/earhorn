@@ -55,6 +55,10 @@ types-boto3 = "^1.0.2"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+
 [tool.pylint.messages_control]
 extension-pkg-whitelist = ["lxml.etree", "pydantic"]
 disable = [
