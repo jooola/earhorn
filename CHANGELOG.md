@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.20.3](https://github.com/jooola/earhorn/compare/v0.20.2...v0.20.3) (2024-04-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lxml to v5 ([#238](https://github.com/jooola/earhorn/issues/238)) ([d904a2e](https://github.com/jooola/earhorn/commit/d904a2e02b012bbdaf25544446c1434c9f129257))
+* **deps:** update dependency prometheus-client to ^0.20.0 ([#248](https://github.com/jooola/earhorn/issues/248)) ([cfc9848](https://github.com/jooola/earhorn/commit/cfc9848bf0643629248f37756c5ca3d54315b397))
+* **deps:** update httpx ([#253](https://github.com/jooola/earhorn/issues/253)) ([aadb520](https://github.com/jooola/earhorn/commit/aadb520a8d013f0666d77a846b0adcee3ada8f68))
+
 ## [0.20.2](https://github.com/jooola/earhorn/compare/v0.20.1...v0.20.2) (2023-12-25)
 
 
