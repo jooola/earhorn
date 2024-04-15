@@ -563,17 +563,20 @@ crt = ["awscrt (==0.19.19)"]
 
 [[package]]
 name = "botocore-stubs"
-version = "1.27.42"
-description = "Type annotations for botocore 1.27.42 generated with mypy-boto3-builder 7.10.2"
+version = "1.34.69"
+description = "Type annotations and code completion for botocore"
 optional = false
-python-versions = ">=3.7"
+python-versions = "<4.0,>=3.8"
 files = [
-    {file = "botocore-stubs-1.27.42.tar.gz", hash = "sha256:305243411a0ec22e6e2b49e5da3b53e4f2ddcf59c39ee59b05b61714df62bf51"},
-    {file = "botocore_stubs-1.27.42-py3-none-any.whl", hash = "sha256:2add78d25b13868f379724dc893741df2ce903c44e870ddae44dd1e6013e2764"},
+    {file = "botocore_stubs-1.34.69-py3-none-any.whl", hash = "sha256:0c3835c775db1387246c1ba8063b197604462fba8603d9b36b5dc60297197b2f"},
+    {file = "botocore_stubs-1.34.69.tar.gz", hash = "sha256:463248fd1d6e7b68a0c57bdd758d04c6bd0c5c2c3bfa81afdf9d64f0930b59bc"},
 ]
 
 [package.dependencies]
-typing-extensions = ">=4.1.0"
+types-awscrt = "*"
+
+[package.extras]
+botocore = ["botocore"]
 
 [[package]]
 name = "certifi"
@@ -2175,6 +2178,17 @@ files = [
 ]
 
 [[package]]
+name = "types-awscrt"
+version = "0.20.5"
+description = "Type annotations and code completion for awscrt"
+optional = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "types_awscrt-0.20.5-py3-none-any.whl", hash = "sha256:79d5bfb01f64701b6cf442e89a37d9c4dc6dbb79a46f2f611739b2418d30ecfd"},
+    {file = "types_awscrt-0.20.5.tar.gz", hash = "sha256:61811bbf4de95248939f9276a434be93d2b95f6ccfe8aa94e56999e9778cfcc2"},
+]
+
+[[package]]
 name = "types-boto3"
 version = "1.0.2"
 description = "Proxy package for boto3-stubs"
@@ -2190,13 +2204,13 @@ boto3-stubs = "*"
 
 [[package]]
 name = "types-s3transfer"
-version = "0.6.0.post1"
+version = "0.10.0"
 description = "Type annotations and code completion for s3transfer"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7,<4.0"
 files = [
-    {file = "types-s3transfer-0.6.0.post1.tar.gz", hash = "sha256:78479647a44c9f94ca4c0d2b90f8da77013daf35485c8786b618136fb7b4501b"},
-    {file = "types_s3transfer-0.6.0.post1-py3-none-any.whl", hash = "sha256:698a671ad8c211b9df8ce284538aee7bbbb24bad1026bad2e0d96d4560a274bb"},
+    {file = "types_s3transfer-0.10.0-py3-none-any.whl", hash = "sha256:44fcdf0097b924a9aab1ee4baa1179081a9559ca62a88c807e2b256893ce688f"},
+    {file = "types_s3transfer-0.10.0.tar.gz", hash = "sha256:35e4998c25df7f8985ad69dedc8e4860e8af3b43b7615e940d53c00d413bdc69"},
 ]
 
 [[package]]
