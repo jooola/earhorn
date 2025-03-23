@@ -47,7 +47,7 @@ dev = [
   "types-boto3>=1.0.2,<2.0",
 ]
 s3 = ["boto3>=1.24.8,<2.0"]
-sentry = ["sentry-sdk>=1.14.0,<2.0"]
+sentry = ["sentry-sdk>=2.24,<2.25"]
 
 [project.scripts]
 earhorn = "earhorn.main:cli"
