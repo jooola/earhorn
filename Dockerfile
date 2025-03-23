@@ -1,4 +1,4 @@
-FROM python:3.12-alpine as build
+FROM python:3.13-alpine AS build
 
 RUN set -eux; \
     pip --no-cache-dir install --no-compile build
@@ -8,7 +8,7 @@ COPY . .
 RUN set -eux; \
     python3 -m build
 
-FROM python:3.12-alpine as base
+FROM python:3.13-alpine AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -27,7 +27,7 @@ RUN set -eux; \
     apk add --no-cache ffmpeg
 
 # Development target
-FROM base as dev
+FROM base AS dev
 
 # Install earhorn
 WORKDIR /src
