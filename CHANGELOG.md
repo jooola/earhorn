@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.4](https://github.com/jooola/earhorn/compare/v0.20.3...v0.20.4) (2025-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency prometheus-client to ^0.21.0 ([#285](https://github.com/jooola/earhorn/issues/285)) ([4227a43](https://github.com/jooola/earhorn/commit/4227a437a5e5d334e24d20e116861ccc5b87177f))
+
 ## [0.20.3](https://github.com/jooola/earhorn/compare/v0.20.2...v0.20.3) (2024-04-13)
 
 
