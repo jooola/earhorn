@@ -36,7 +36,6 @@ repos:
     hooks:
       - id: codespell
         args: [--ignore-words=.codespellignore]
-        exclude: poetry.lock$
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.19.1
@@ -44,17 +43,18 @@ repos:
       - id: pyupgrade
         args: [--py39-plus]
 
-  - repo: https://github.com/python-poetry/poetry
-    rev: 2.1.1
+  - repo: https://github.com/pycqa/isort
+    rev: 6.0.1
     hooks:
-      - id: poetry-check
+      - id: isort
 
-  - repo: local
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 25.1.0
     hooks:
-      - id: format
-        name: format
-        description: Format code
-        entry: make format
-        language: system
-        pass_filenames: false
-        always_run: true
+      - id: black
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.2
+    hooks:
+      - id: flake8
+        args: [--extend-ignore, E501]
