@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.21.0](https://github.com/jooola/earhorn/releases/tag/v0.21.0)
+
+### Features
+
+- add support for python 3.13 (#305)
+
+### Bug Fixes
+
+- **deps**: update dependency prometheus-client to ^0.21.0 (#285)
+- **deps**: update httpx (#293)
+- **deps**: update dependency sentry-sdk to v2 (#268)
+
 ## [0.20.3](https://github.com/jooola/earhorn/compare/v0.20.2...v0.20.3) (2024-04-13)
 
 
