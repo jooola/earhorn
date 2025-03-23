@@ -1,5 +1,2 @@
-import sys
-from importlib.metadata import version as get_version
-
-version = get_version("earhorn")
-__version__ = version
+__version__ = "0.20.3"  # x-releaser-pleaser-version
+version = __version__  # pylint: disable=invalid-name
