@@ -1,13 +1,17 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "earhorn"
 version = "0.20.3" # x-releaser-pleaser-version
 description = "Listen, monitor and archive your streams!"
-authors = ["Joola <jooola@users.noreply.github.com>"]
+authors = [{ name = "Joola", email = "jooola@users.noreply.github.com" }]
 readme = "README.md"
+license = "GPL-3.0-only"
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",
-  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.9",
@@ -16,44 +20,39 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
 ]
 
-[tool.poetry.scripts]
+requires-python = ">=3.9"
+
+dependencies = [
+  "click>=8.0.1,<9.0",
+  "httpx>=0.28.0,<0.29",
+  "lxml>=5.0.0,<6.0",
+  "prometheus-client>=0.21.0,<0.22",
+  "pydantic>=2.10.6,<3.0",
+  "python-dotenv>=1.0.0,<2.0",
+  "typing-extensions>=4.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "lxml-stubs>=0.5.0,<0.6",
+  "moto>=5.0.0,<6.0",
+  "mypy>=1.0,<2.0",
+  "pylint>=3.0.0,<4.0",
+  "pytest-cov>=6.0.0,<7.0",
+  "pytest-httpx>=0.35.0,<0.36",
+  "pytest-xdist>=3.0.0,<4.0",
+  "pytest>=8.0.0,<9.0",
+  "testcontainers>=4.0.0,<5.0",
+  "types-boto3>=1.0.2,<2.0",
+]
+s3 = ["boto3>=1.24.8,<2.0"]
+sentry = ["sentry-sdk>=1.14.0,<2.0"]
+
+[project.scripts]
 earhorn = "earhorn.main:cli"
 
-[tool.poetry.dependencies]
-python = ">=3.9,<4.0"
-click = "^8.0.1"
-httpx = "^0.28.0"
-lxml = "^5.0.0"
-prometheus-client = "^0.21.0"
-pydantic = "^2.0.0"
-typing-extensions = "^4.2.0"
-python-dotenv = "^1.0.0"
-boto3 = { version = "^1.24.8", optional = true }
-sentry-sdk = { version = "^1.14.0", optional = true }
-
-[tool.poetry.extras]
-s3 = ["boto3"]
-sentry = ["sentry-sdk"]
-
-[tool.poetry.group.dev.dependencies]
-bandit = "^1.7.4"
-black = "^25.1"
-flake8 = "^7.0.0"
-isort = "^5.9.3"
-lxml-stubs = "^0.5.0"
-moto = "^5.0.0"
-mypy = "^1.0"
-pylint = "^3.0.0"
-pytest = "^8.0.0"
-pytest-cov = "^6.0.0"
-pytest-httpx = "^0.35.0"
-pytest-xdist = "^3.0.0"
-testcontainers = "^4.0.0"
-types-boto3 = "^1.0.2"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.setuptools]
+packages = ["earhorn"]
 
 [tool.isort]
 profile = "black"
@@ -66,6 +65,7 @@ disable = [
   "missing-function-docstring",
   "missing-class-docstring",
   "line-too-long",
+  "too-many-positional-arguments",
 ]
 
 [tool.pylint.format]

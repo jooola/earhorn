@@ -7,16 +7,13 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  POETRY_CACHE_DIR: ${{ github.workspace }}/.cache/poetry
-
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/workflows/actions/python
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -28,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/workflows/actions/python
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -44,7 +41,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/workflows/actions/python
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -57,20 +54,6 @@ jobs:
           sudo apt-get install -y libxml2-dev libxslt1-dev
 
       - run: make test
-
-  publish:
-    needs: [pre-commit, lint, test]
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags')
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/workflows/actions/python
-        with:
-          python-version: "3.11"
-
-      - run: >
-          POETRY_PYPI_TOKEN_PYPI=${{ secrets.PYPI_TOKEN }}
-          make ci-publish
 
   container:
     needs: [pre-commit, lint, test]
