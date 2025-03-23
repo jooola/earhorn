@@ -1,5 +1,1 @@
-import sys
-from importlib.metadata import version as get_version
-
-version = get_version("earhorn")
-__version__ = version
+__version__ = "2.4.0"  # x-releaser-pleaser-version
