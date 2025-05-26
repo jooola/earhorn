@@ -27,7 +27,7 @@ services:
       - 8000:8000
 
   liquidsoap:
-    image: savonet/liquidsoap:v2.3.2
+    image: savonet/liquidsoap:v2.3.3
     command:
       - >
         output.icecast(
