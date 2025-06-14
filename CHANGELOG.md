@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.21.1](https://github.com/jooola/earhorn/releases/tag/v0.21.1)
+
+### Bug Fixes
+
+- **deps**: update dependency prometheus-client to &gt;=0.22.1,&lt;0.23 (#309)
+- **deps**: update dependency sentry-sdk to &gt;=2.30,&lt;2.31 (#307)
+
 ## [v0.21.0](https://github.com/jooola/earhorn/releases/tag/v0.21.0)
 
 ### Features

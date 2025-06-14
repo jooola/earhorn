@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "earhorn"
-version = "0.21.0" # x-releaser-pleaser-version
+version = "0.21.1" # x-releaser-pleaser-version
 description = "Listen, monitor and archive your streams!"
 authors = [{ name = "Joola", email = "jooola@users.noreply.github.com" }]
 readme = "README.md"
