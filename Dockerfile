@@ -33,7 +33,7 @@ FROM base AS dev
 WORKDIR /src
 COPY . .
 RUN set -eux; \
-    pip --no-cache-dir install --editable .[s3,sentry]
+    pip --no-cache-dir install --editable .[s3]
 
 # Run
 USER ${UID}:${GID}
@@ -48,7 +48,7 @@ WORKDIR /src
 COPY --from=build /src/dist/*.whl .
 RUN set -eux; \
     export WHEEL=$(echo *.whl); \
-    pip --no-cache-dir install --no-compile "${WHEEL}[s3,sentry]"; \
+    pip --no-cache-dir install --no-compile "${WHEEL}[s3]"; \
     rm -Rf /src
 
 # Run

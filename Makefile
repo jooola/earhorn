@@ -8,7 +8,7 @@ all: install format lint test
 install: venv
 venv:
 	python3 -m venv venv
-	venv/bin/pip install -e .[dev,s3,sentry]
+	venv/bin/pip install -e .[dev,s3]
 
 lint: venv
 	venv/bin/pylint --jobs=$(CPU_CORES) earhorn tests
