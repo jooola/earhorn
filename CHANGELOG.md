@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.22.0](https://github.com/jooola/earhorn/releases/tag/v0.22.0)
+
+### Features
+
+- remove sentry (#349)
+- upgrade python version to 3.14 (#335)
+- require python version >=3.11 (#355)
+
+### Bug Fixes
+
+- **deps**: update dependency prometheus-client to >=0.25,<0.26 (#352)
+- **deps**: update dependency lxml to >=6,<6.2 (#351)
+
 ## [v0.21.1](https://github.com/jooola/earhorn/releases/tag/v0.21.1)
 
 ### Bug Fixes
