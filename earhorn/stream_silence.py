@@ -3,7 +3,6 @@ import re
 from decimal import Decimal
 from queue import Empty, Queue
 from threading import Event as ThreadEvent
-from typing import Optional
 
 from .event import SilenceEvent
 from .stream import StreamListenerHandler
@@ -21,7 +20,7 @@ DEFAULT_SILENCE_DETECT_NOISE: str = "-60dB"
 DEFAULT_SILENCE_DETECT_DURATION: str = "2.0"
 
 
-def parse_silence_detect(line: str) -> Optional[SilenceEvent]:
+def parse_silence_detect(line: str) -> SilenceEvent | None:
     line = line.strip()
     match = SILENCE_DETECT_RE.search(line)
     if match is None:
