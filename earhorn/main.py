@@ -1,5 +1,4 @@
 import logging
-import os
 from queue import Queue
 from signal import SIGINT, SIGTERM, signal
 from threading import Event as ThreadEvent
@@ -9,7 +8,6 @@ import click
 from dotenv import load_dotenv
 from prometheus_client import start_http_server
 
-from . import version
 from .event import EventHandler, FileHook, PrometheusHook
 from .stats import StatsCollector
 from .stream import StreamListener, StreamListenerHandler
@@ -240,16 +238,6 @@ def cli(
         level=log_level.upper(),
         format="%(asctime)s | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)s - %(message)s",
     )
-
-    if "SENTRY_DSN" in os.environ:
-        logger.info("installing sentry")
-        # pylint: disable=import-outside-toplevel
-        import sentry_sdk
-
-        sentry_sdk.init(
-            traces_sample_rate=1.0,
-            release=version,
-        )
 
     if stream_url is None and stats_url is None:
         raise click.UsageError("Specify at least one of --stream-url or --stats-url.")
