@@ -168,7 +168,7 @@ class StatsCollector:
         url: str,
         auth: tuple[str, str],
         registry: CollectorRegistry = REGISTRY,
-        client: httpx.Client = None,
+        client: httpx.Client | None = None,
     ):
         self.url = url
         self.auth = auth
