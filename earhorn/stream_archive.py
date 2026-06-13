@@ -5,7 +5,6 @@ from pathlib import Path
 from queue import Empty, Queue
 from shutil import move
 from threading import Event as ThreadEvent
-from typing import Optional
 
 from typing_extensions import Protocol
 
@@ -29,7 +28,7 @@ SEGMENT_ENDED_RE = re.compile(
 )
 
 
-def parse_segment_line(regex: re.Pattern, line: str) -> Optional[Path]:
+def parse_segment_line(regex: re.Pattern, line: str) -> Path | None:
     line = line.strip()
     match = regex.search(line)
     if match is None:
@@ -87,7 +86,7 @@ class ArchiveHandler(StreamListenerHandler):
     segment_filepath: str
     segment_size: int
     segment_format: str
-    segment_format_options: Optional[str]
+    segment_format_options: str | None
     copy_stream: bool
 
     segments_pending_queue: set[Path]
@@ -100,7 +99,7 @@ class ArchiveHandler(StreamListenerHandler):
         segment_filepath: str = DEFAULT_ARCHIVE_SEGMENT_FILEPATH,
         segment_size: int = DEFAULT_ARCHIVE_SEGMENT_SIZE,
         segment_format: str = DEFAULT_ARCHIVE_SEGMENT_FORMAT,
-        segment_format_options: Optional[str] = None,
+        segment_format_options: str | None = None,
         copy_stream: bool = False,
     ):
         super().__init__()

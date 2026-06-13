@@ -5,10 +5,10 @@ from pathlib import Path
 from queue import Empty, Queue
 from subprocess import PIPE, CalledProcessError, run
 from threading import Event as ThreadEvent, Thread
-from typing import Optional, Union
+from typing import Literal, TypeAlias, Union
 
 from pydantic import BaseModel, Field
-from typing_extensions import Literal, Protocol, TypeAlias
+from typing_extensions import Protocol
 
 from .prometheus import stream_silence, stream_status
 
@@ -28,7 +28,7 @@ class SilenceEvent(Event):
     name: Literal["silence"] = "silence"
     kind: Literal["start", "end"]
     seconds: Decimal
-    duration: Optional[Decimal] = None
+    duration: Decimal | None = None
 
 
 class StatusEvent(Event):

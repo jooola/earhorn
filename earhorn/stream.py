@@ -6,7 +6,6 @@ from queue import Queue
 from subprocess import DEVNULL, PIPE, Popen
 from threading import Event as ThreadEvent, Thread
 from time import sleep
-from typing import Optional
 
 import httpx
 
@@ -35,7 +34,7 @@ class StreamListener:
 
     _handlers: list[StreamListenerHandler] = []
     _client: httpx.Client
-    _process: Optional[Popen]
+    _process: Popen | None
 
     # pylint: disable=too-many-arguments
     def __init__(

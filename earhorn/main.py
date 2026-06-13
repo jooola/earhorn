@@ -1,8 +1,8 @@
 import logging
+from collections.abc import Callable
 from queue import Queue
 from signal import SIGINT, SIGTERM, signal
 from threading import Event as ThreadEvent
-from typing import Callable, Optional
 
 import click
 from dotenv import load_dotenv
@@ -164,20 +164,20 @@ load_dotenv()
 )
 def cli(
     listen_port: int,
-    hook: Optional[str],
+    hook: str | None,
     hook_log_stderr: bool,
-    stats_url: Optional[str],
+    stats_url: str | None,
     stats_user: str,
     stats_password: str,
-    stream_url: Optional[str],
+    stream_url: str | None,
     silence_detect_noise: str,
     silence_detect_duration: str,
     silence_detect_raw: str,
-    archive_path: Optional[str],
+    archive_path: str | None,
     archive_segment_filepath: str,
     archive_segment_size: int,
     archive_segment_format: str,
-    archive_segment_format_options: Optional[str],
+    archive_segment_format_options: str | None,
     archive_copy_stream: bool,
     log_level: str,
 ):
