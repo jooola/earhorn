@@ -1,26 +1,30 @@
 # pylint: disable=line-too-long
 from pathlib import Path
 
+import httpx
 from prometheus_client import CollectorRegistry, generate_latest
-from pytest_httpx import HTTPXMock
 
 from earhorn.stats import StatsCollector
 
 here = Path(__file__).parent
 
 
-def test_icecast_collector(httpx_mock: HTTPXMock):
+def test_icecast_collector():
     stats_filepath = here / "stats.xml"
     stats_url = "http://example.com/admin/stats.xml"
     stats_auth = ("admin", "hackme")
 
-    httpx_mock.add_response(url=stats_url, content=stats_filepath.read_bytes())
+    def handler(r: httpx.Request):
+        assert r.url == "http://example.com/admin/stats.xml"
+        assert r.headers.get("Authorization") == "Basic YWRtaW46aGFja21l"
+        return httpx.Response(200, content=stats_filepath.read_bytes())
 
     registry = CollectorRegistry()
     StatsCollector(
         url=stats_url,
         auth=stats_auth,
         registry=registry,
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
     )
 
     registry.collect()

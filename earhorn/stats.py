@@ -168,10 +168,11 @@ class StatsCollector:
         url: str,
         auth: tuple[str, str],
         registry: CollectorRegistry = REGISTRY,
+        client: httpx.Client = None,
     ):
         self.url = url
         self.auth = auth
-        self._client = httpx.Client()
+        self._client = client or httpx.Client()
 
         if registry:
             logger.info("registering stats collector")
