@@ -1,4 +1,4 @@
-FROM python:3.14-alpine AS build
+FROM python:3.14-alpine@sha256:003970a263347645cd23d4f90929ad16ba7ce7d808ee4674ffcc93cb21cc289f AS build
 
 RUN set -eux; \
     pip --no-cache-dir install --no-compile build
@@ -8,7 +8,7 @@ COPY . .
 RUN set -eux; \
     python3 -m build
 
-FROM python:3.14-alpine AS base
+FROM python:3.14-alpine@sha256:003970a263347645cd23d4f90929ad16ba7ce7d808ee4674ffcc93cb21cc289f AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
