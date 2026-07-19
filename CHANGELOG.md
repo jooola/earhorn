@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.22.1](https://github.com/jooola/earhorn/releases/tag/v0.22.1)
+
+[Compare to previous version](https://github.com/jooola/earhorn/compare/v0.22.0...v0.22.1)
+
+### Bug Fixes
+
+- **deps**: update dependency pytest to >=9.1,<9.2 (#365) ([da65b2d](https://github.com/jooola/earhorn/commit/da65b2d31ef9a9122095a9cc043fa085c524651c))
+
 ## [v0.22.0](https://github.com/jooola/earhorn/releases/tag/v0.22.0)
 
 ### Features
