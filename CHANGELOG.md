@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.22.1](https://github.com/jooola/earhorn/releases/tag/v0.22.1)
+
+[Compare to previous version](https://github.com/jooola/earhorn/compare/v0.22.0...v0.22.1)
+
+### Bug Fixes
+
+- **deps**: update dependency pytest to >=9.1,<9.2 (#365) ([da65b2d](https://github.com/jooola/earhorn/commit/da65b2d31ef9a9122095a9cc043fa085c524651c))
+- **deps**: update dependency mypy to >=2.3,<2.4 (#372) ([50d3747](https://github.com/jooola/earhorn/commit/50d3747dfcff579cf1c269afcdd6459d7902dc87))
+- **deps**: update dependency prometheus-client to >=0.26,<0.27 (#376) ([22e8a2d](https://github.com/jooola/earhorn/commit/22e8a2dfd118a01978b9b81e37ef12fe6973dd6f))
+
 ## [v0.22.0](https://github.com/jooola/earhorn/releases/tag/v0.22.0)
 
 ### Features
