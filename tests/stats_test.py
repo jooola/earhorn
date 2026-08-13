@@ -91,6 +91,6 @@ def test_icecast_collector():
         'icecast_source_total_bytes_read{mount="/main.ogg"} 4.499297657e+09',
         "# HELP icecast_source_total_bytes_sent Total number of bytes sent to all listener connections since last source connect.",
         "# TYPE icecast_source_total_bytes_sent gauge",
-        'icecast_source_total_bytes_sent{mount="/main.mp3"} 2.0338244727e+010',
+        'icecast_source_total_bytes_sent{mount="/main.mp3"} 2.0338244727e+10',
         'icecast_source_total_bytes_sent{mount="/main.ogg"} 9.051758982e+09',
     ]
