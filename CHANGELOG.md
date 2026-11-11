@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.22.2](https://github.com/jooola/earhorn/releases/tag/v0.22.2)
+
+[Compare to previous version](https://github.com/jooola/earhorn/compare/v0.22.1...v0.22.2)
+
+### Bug Fixes
+
+- **deps**: update dependency pylint to >=4.1.3,<4.2 (#381) ([f8c878c](https://github.com/jooola/earhorn/commit/f8c878c24334b255170fe32fa33f0997e19905f3))
+- **deps**: update dependency mypy to >=2.4,<2.5 (#382) ([1b154ff](https://github.com/jooola/earhorn/commit/1b154ff2f2bc5e0d6a2e9acf2b9f63d25bcc08f6))
+
 ## [v0.22.1](https://github.com/jooola/earhorn/releases/tag/v0.22.1)
 
 [Compare to previous version](https://github.com/jooola/earhorn/compare/v0.22.0...v0.22.1)
