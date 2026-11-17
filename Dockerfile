@@ -44,12 +44,10 @@ ENTRYPOINT ["/usr/local/bin/earhorn"]
 FROM base
 
 # Install earhorn
-WORKDIR /src
-COPY --from=build /src/dist/*.whl .
-RUN set -eux; \
-    export WHEEL=$(echo *.whl); \
-    pip --no-cache-dir install --no-compile "${WHEEL}[s3]"; \
-    rm -Rf /src
+RUN --mount=type=bind,from=build,source=/src/dist,target=/dist \
+    set -eux; \
+    wheel=$(echo /dist/*.whl); \
+    pip --no-cache-dir install --no-compile "${wheel}[s3]"
 
 # Run
 USER ${UID}:${GID}
